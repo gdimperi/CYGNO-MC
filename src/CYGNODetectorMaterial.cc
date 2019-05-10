@@ -116,12 +116,16 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     lngsRock->AddElement(elCa,fractionmass=30.29*perCent);
    
 
-   // Perspex (Acrylic)
+    // Perspex (Acrylic)
     density = 1.180*g/cm3; //1180kg/m^3
     G4Material* Perspex = new G4Material(name="Perspex", density, ncomponents=3);
     Perspex->AddElement(elH, natoms=8);
     Perspex->AddElement(elC, natoms=5);
     Perspex->AddElement(elO, natoms=2);
+
+    // Silica glass
+    G4Material* Silica = new G4Material("Silica", density=2.203*g/cm3,ncomponents=1);
+    Silica->AddElement(elSi, natoms=1);
 
 
     // SF6_gas 

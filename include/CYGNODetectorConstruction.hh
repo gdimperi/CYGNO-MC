@@ -84,17 +84,28 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4RotationMatrix absrot_cad;
     
     
-    //CAD meshes
+    //Solids and meshes
     G4VSolid * cad_shell_solid;
     G4VSolid * cad_camera_carter_solid;
     G4VSolid * cad_cameras_all_solid;
-  
+    G4VSolid * cad_window_solid;
+    G4VSolid * cad_internal_structure_solid;
+    G4VSolid * cad_gem_support_solid;
+    G4VSolid * cad_cathode_frame_solid;
+    G4VSolid * cad_square_turn_solid;
+   
     
     // Logical volumes
     G4LogicalVolume* WorldVolume_log;
     G4LogicalVolume * cad_shell_logical;
     G4LogicalVolume * cad_camera_carter_logical;
     G4LogicalVolume * cad_cameras_all_logical;
+    G4LogicalVolume * cad_window_logical;
+    G4LogicalVolume * CYGNO_log;
+    G4LogicalVolume * cad_internal_structure_logical;
+    G4LogicalVolume * cad_gem_support_logical;
+    G4LogicalVolume * cad_cathode_frame_logical;
+    G4LogicalVolume * cad_square_turn_logical;
   
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
@@ -102,6 +113,12 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * cad_shell_physical;
     G4VPhysicalVolume * cad_camera_carter_physical;
     G4VPhysicalVolume * cad_cameras_all_physical;
+    G4VPhysicalVolume * cad_window_physical;
+    G4VPhysicalVolume * CYGNO_phys;
+    G4VPhysicalVolume * cad_internal_structure_physical;
+    G4VPhysicalVolume * cad_gem_support_physical;
+    G4VPhysicalVolume * cad_cathode_frame_physical;
+    G4VPhysicalVolume * cad_square_turn_physical;
 
 
 };

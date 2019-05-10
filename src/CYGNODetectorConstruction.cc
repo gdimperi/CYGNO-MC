@@ -99,13 +99,13 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4ThreeVector tr;
     G4RotationMatrix rot;
 
+    //**********************************************************************
+    // WORLD ***************************************
+    //**********************************************************************
     G4double world_x = 100.0*m;
     G4double world_y = 100.0*m;
     G4double world_z = 400.0*m;
       
-    //**********************************************************************
-    // WORLD ***************************************
-    //**********************************************************************
     name_phys="WorldVolume";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
@@ -195,10 +195,20 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     CADMesh * mesh_shell = new CADMesh("/storage/giulia/CYGNO/geometry/v1/shell.stl");    
     CADMesh * mesh_camera_carter = new CADMesh("/storage/giulia/CYGNO/geometry/v1/carters.stl");    
     CADMesh * mesh_camera = new CADMesh("/storage/giulia/CYGNO/geometry/v1/cameras_all.stl");    
+    CADMesh * mesh_window = new CADMesh("/storage/giulia/CYGNO/geometry/v1/glass_windows.stl");    
+    CADMesh * mesh_internal_structure = new CADMesh("/storage/giulia/CYGNO/geometry/v1/internal_structure.stl");    
+    CADMesh * mesh_gem_support = new CADMesh("/storage/giulia/CYGNO/geometry/v1/gem_support.stl");    
+    CADMesh * mesh_cathode_frame = new CADMesh("/storage/giulia/CYGNO/geometry/v1/cathode_frame.stl");   
+    CADMesh * mesh_square_turn = new CADMesh("/storage/giulia/CYGNO/geometry/v1/square_turn.stl");    
 
     mesh_shell->SetScale(mm);
     mesh_camera_carter->SetScale(mm);
     mesh_camera->SetScale(mm);
+    mesh_window->SetScale(mm);
+    mesh_internal_structure->SetScale(mm);
+    mesh_gem_support->SetScale(mm);
+    mesh_cathode_frame->SetScale(mm);
+    mesh_square_turn->SetScale(mm);
 
 
     //shell
@@ -214,16 +224,35 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Perspex"), "cad_cameras_all_logical", 0, 0, 0);
     
     //glass window
+    cad_window_solid = mesh_window->TessellatedMesh();
+    cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
     
     //CYGNO gas
-    
+    G4double CYGNO_x = 1250.*mm;
+    G4double CYGNO_y = 1250.*mm;
+    G4double CYGNO_z = 1300.*mm;
+      
+    name_phys="CYGNO";
+    name_log=name_phys+"_log";
+    name_solid=name_phys+"_solid";
+    G4Box* CYGNO_box = new G4Box(name_solid,0.5*CYGNO_x,0.5*CYGNO_y,0.5*CYGNO_z);
+    CYGNO_log = new G4LogicalVolume(CYGNO_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
+   
+    //internal structure
+    cad_internal_structure_solid = mesh_internal_structure->TessellatedMesh();
+    cad_internal_structure_logical = new G4LogicalVolume(cad_internal_structure_solid, CYGNOMaterials->Material("Cu"), "cad_internal_structure_logical", 0, 0, 0);
+
     //GEM support
+    cad_gem_support_solid = mesh_gem_support->TessellatedMesh();
+    cad_gem_support_logical = new G4LogicalVolume(cad_internal_structure_solid, CYGNOMaterials->Material("Cu"), "cad_gem_support_logical", 0, 0, 0);
     
     //cathode
+    cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();
+    cad_cathode_frame_logical = new G4LogicalVolume(cad_cathode_frame_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_frame_logical", 0, 0, 0);
     
-    //fili
-    
-    //angolari	 
+    //fili 
+    cad_square_turn_solid = mesh_square_turn->TessellatedMesh();
+    cad_square_turn_logical = new G4LogicalVolume(cad_square_turn_solid, CYGNOMaterials->Material("Cu"), "cad_square_turn_logical", 0, 0, 0);
     
     //GEM
 
@@ -237,13 +266,23 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     rot_cad=(rot_Laboratory.inverse()*absrot_Rock.inverse())*absrot_cad;//Rotation of the CYGNO outer volume
     //cad_physical = new G4PVPlacement(0, G4ThreeVector(), cad_logical,
     cad_shell_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_shell_logical,"cad_shell_physical", Laboratory_log, false, 0);
+		    cad_shell_logical,"cad_shell_physical", Laboratory_log, false, 0, true);
     cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_camera_carter_logical,"cad_camera_carter_physical", Laboratory_log, false, 0);
+		    cad_camera_carter_logical,"cad_camera_carter_physical", Laboratory_log, false, 0, true);
     cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_cameras_all_logical,"cad_cameras_all_physical", Laboratory_log, false, 0);
-
-
+		    cad_cameras_all_logical,"cad_cameras_all_physical", Laboratory_log, false, 0, true);
+    cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad),
+		    CYGNO_log,"CYGNO_gas", Laboratory_log, false, 0, true);
+    cad_internal_structure_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+		    cad_internal_structure_logical,"cad_internal_structure_physical", CYGNO_log, false, 0, true);
+    cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+		    cad_gem_support_logical,"cad_gem_support_physical", CYGNO_log, false, 0, true);
+    cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+		    cad_cathode_frame_logical,"cad_cathode_frame_physical", CYGNO_log, false, 0, true);
+    cad_square_turn_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+		    cad_square_turn_logical,"cad_square_turn_physical", CYGNO_log, false, 0, true);
 
     //
     //**********************************************************************
