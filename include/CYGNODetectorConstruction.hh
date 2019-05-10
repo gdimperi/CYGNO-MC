@@ -1,125 +1,125 @@
-/* ************************************************
- * GEANT4 CAD INTERFACE - template
- *
- * File:      DetectorConstruction.hh
- *
- * Author:    Christopher M Poole,
- * Email:     mail@christopherpoole.net
- *
- * Date:      17th August, 2017
- **************************************************/
+//SF6 DETECTOR HEADER FILE
 
-#pragma once
+#ifndef CYGNODetectorConstruction_H
+#define CYGNODetectorConstruction_H 1
 
-// STL //
-#include <string>
-
-// GEANT4 //
-class G4VSolid;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+class G4Material;
+class AllSD;
 
-#include "G4ThreeVector.hh"
+class CYGNODetectorMessenger;
+
 #include "G4VUserDetectorConstruction.hh"
-#include "G4RotationMatrix.hh"
-#include "G4SystemOfUnits.hh"
 #include "globals.hh"
-#include <vector>
+#include "G4ThreeVector.hh"
 
+#include "G4SDManager.hh" 
 
-class CYGNODetectorConstruction : public G4VUserDetectorConstruction
-{
-  public:
+class CYGNODetectorConstruction : public G4VUserDetectorConstruction {
 
-    CYGNODetectorConstruction();
-    ~CYGNODetectorConstruction();
-
-    G4VPhysicalVolume* Construct();
-
-    void SetExternalRockThickness(G4double rockthick) {rockThicknessOuter = rockthick;}
-    void SetProductionRockThickness(G4double rockthick) {productionLayerThickness = rockthick;}
-    void SetInternalRockThickness(G4double rockthick) {rockThicknessInner = rockthick;}
-
-    void SetCYGNOLab(G4String lab) {CYGNOLab = lab;}
-    G4String GetCYGNOLab() {return CYGNOLab;}
+ public:
   
-  private:
-    
-    G4String CYGNOLab;
+   CYGNODetectorConstruction();
+  ~CYGNODetectorConstruction();
 
-    //G4VSolid * world_solid;
-    //G4LogicalVolume* world_logical;
-    //G4VPhysicalVolume* world_physical;
-    
-
-    G4double InsideVolume_OR;
-    G4double InsideVolume_Z;
-    G4double rockThicknessOuter;
-    G4double rockThicknessInner;
-    G4double productionLayerThickness;
-  
-    //Building blocks: logic volumes, sizes and positions
-    G4ThreeVector  tr_Tot;
-    G4LogicalVolume* Rock_log;
-    G4ThreeVector size_Rock;
-    G4ThreeVector tr_Rock;
-    G4RotationMatrix rot_Rock;
-    G4RotationMatrix absrot_Rock;
-    G4LogicalVolume* Laboratory_log;
-    G4ThreeVector size_Laboratory;
-    G4ThreeVector tr_Laboratory;
-    G4RotationMatrix rot_Laboratory;
-    G4LogicalVolume* Shielding_log;
-    G4ThreeVector size_Shielding;
-    G4ThreeVector tr_Shielding;
-    G4RotationMatrix rot_Shielding;
-    G4RotationMatrix absrot_Shielding;
-    G4LogicalVolume* InsideVolume_log;
-    G4ThreeVector size_InsideVolume;
-    G4ThreeVector tr_InsideVolume;
-    G4RotationMatrix rot_InsideVolume;
-    G4ThreeVector size_cad;
-    G4ThreeVector tr_cad;
-    G4RotationMatrix rot_cad;
-    G4RotationMatrix absrot_cad;
-    
-    
-    //Solids and meshes
-    G4VSolid * cad_shell_solid;
-    G4VSolid * cad_camera_carter_solid;
-    G4VSolid * cad_cameras_all_solid;
-    G4VSolid * cad_window_solid;
-    G4VSolid * cad_internal_structure_solid;
-    G4VSolid * cad_gem_support_solid;
-    G4VSolid * cad_cathode_frame_solid;
-    G4VSolid * cad_square_turn_solid;
+  G4VPhysicalVolume* Construct();
    
-    
-    // Logical volumes
-    G4LogicalVolume* WorldVolume_log;
-    G4LogicalVolume * cad_shell_logical;
-    G4LogicalVolume * cad_camera_carter_logical;
-    G4LogicalVolume * cad_cameras_all_logical;
-    G4LogicalVolume * cad_window_logical;
-    G4LogicalVolume * CYGNO_log;
-    G4LogicalVolume * cad_internal_structure_logical;
-    G4LogicalVolume * cad_gem_support_logical;
-    G4LogicalVolume * cad_cathode_frame_logical;
-    G4LogicalVolume * cad_square_turn_logical;
+private:
+
+  G4LogicalVolume*   world_log;
+  G4VPhysicalVolume* world_phys;
   
-    // Physical volumes
-    G4VPhysicalVolume* WorldVolume_phys;
-    G4VPhysicalVolume* productionRockThinTube_phys;
-    G4VPhysicalVolume * cad_shell_physical;
-    G4VPhysicalVolume * cad_camera_carter_physical;
-    G4VPhysicalVolume * cad_cameras_all_physical;
-    G4VPhysicalVolume * cad_window_physical;
-    G4VPhysicalVolume * CYGNO_phys;
-    G4VPhysicalVolume * cad_internal_structure_physical;
-    G4VPhysicalVolume * cad_gem_support_physical;
-    G4VPhysicalVolume * cad_cathode_frame_physical;
-    G4VPhysicalVolume * cad_square_turn_physical;
+  G4LogicalVolume* vessel_top_log;
+  G4VPhysicalVolume* vessel_top_phys;
+ 
+  G4LogicalVolume* vessel_bottom_log;
+  G4VPhysicalVolume* vessel_bottom_phys;
+  
+  G4LogicalVolume* vessel_front_log;
+  G4VPhysicalVolume* vessel_front_phys;
+  
+  G4LogicalVolume* vessel_back_log;
+  G4VPhysicalVolume* vessel_back_phys;
+  
+  G4LogicalVolume* glass_left_log;
+  G4VPhysicalVolume* glass_left_phys;
 
+  G4LogicalVolume* glass_right_log;
+  G4VPhysicalVolume* glass_right_phys;
 
+  G4LogicalVolume* GAS_log;
+  G4VPhysicalVolume* GAS_phys;  
+  
+  G4LogicalVolume* camera_shield_bottom_log;
+  G4VPhysicalVolume* camera_shield_bottom_phys;
+
+  G4LogicalVolume* camera_shield_left_log;
+  G4VPhysicalVolume* camera_shield_left_phys;
+
+  G4LogicalVolume* camera_shield_right_log;
+  G4VPhysicalVolume* camera_shield_right_phys;
+
+  G4LogicalVolume* camera_shield_front_log;
+  G4VPhysicalVolume* camera_shield_front_phys;
+
+  G4LogicalVolume* camera_shield_back_log;
+  G4VPhysicalVolume* camera_shield_back_phys;
+  
+  G4LogicalVolume* camera_shield_log;
+  G4VPhysicalVolume* camera_shield_phys;
+
+  G4LogicalVolume* camera_box_log;
+  G4VPhysicalVolume* camera_box_phys;
+
+  G4LogicalVolume* GEM_Kapton_log;
+  G4VPhysicalVolume* GEM_Kapton_phys;
+
+  G4LogicalVolume* GEM_Copper_log;
+  G4VPhysicalVolume* GEM_Copper_phys;
+
+  G4LogicalVolume* shield_left_log;
+  G4VPhysicalVolume* shield_left_phys;
+
+  G4LogicalVolume* camera_hole_log;
+  G4VPhysicalVolume* camera_hole_phys;
+
+ 
+
+  // G4SubtractionSolid* GEM_Copper;
+  //G4UnionSolid* GEM;
+ 
+#define world_length (3*m) // Boulby : add 25 cm on each side
+#define world_width (3*m)
+#define world_height (3*m)
+   
+#define vessel_length (GAS_length+4*cm) // 2cm either side
+#define vessel_width (GAS_width+4*cm)
+#define vessel_height (GAS_height+4*cm)
+
+#define GAS_length (1*m) 
+#define GAS_width (1*m)
+#define GAS_height (1*m)  
+
+#define camera_box_length (100*mm) 
+#define camera_box_width (100*mm) 
+#define camera_box_height (150*mm) 
+
+#define camera_shield_length (140*mm)
+#define camera_shield_width (140*mm)
+#define camera_shield_height (170*mm)
+ 
+  // Sensitive Detector
+  
+  G4SDManager* SDman; 
+
+  AllSD* allSD;
+ 
+  public  :
+  G4int NbOfDrift;
+  G4int GetNbOfDrift() {return NbOfDrift;};
+  G4VPhysicalVolume* GetDriftPhys(G4int ){return GAS_phys;}
+  
 };
 
+#endif
