@@ -82,6 +82,10 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4ThreeVector tr_cad;
     G4RotationMatrix rot_cad;
     G4RotationMatrix absrot_cad;
+    G4ThreeVector tr_CYGNO_gas;
+    G4RotationMatrix rot_CYGNO_gas;
+    G4RotationMatrix absrot_CYGNO_gas;
+    G4ThreeVector tr_cad_internal;
     
     
     //Solids and meshes
@@ -91,6 +95,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VSolid * cad_window_solid;
     G4VSolid * cad_internal_structure_solid;
     G4VSolid * cad_gem_support_solid;
+    G4VSolid * cad_gem_solid;
     G4VSolid * cad_cathode_frame_solid;
     G4VSolid * cad_square_turn_solid;
    
@@ -104,6 +109,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * CYGNO_log;
     G4LogicalVolume * cad_internal_structure_logical;
     G4LogicalVolume * cad_gem_support_logical;
+    G4LogicalVolume * cad_gem_logical;
     G4LogicalVolume * cad_cathode_frame_logical;
     G4LogicalVolume * cad_square_turn_logical;
   
@@ -117,6 +123,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * CYGNO_phys;
     G4VPhysicalVolume * cad_internal_structure_physical;
     G4VPhysicalVolume * cad_gem_support_physical;
+    G4VPhysicalVolume * cad_gem_physical;
     G4VPhysicalVolume * cad_cathode_frame_physical;
     G4VPhysicalVolume * cad_square_turn_physical;
 
