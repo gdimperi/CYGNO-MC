@@ -244,7 +244,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
     //GEM support
     cad_gem_support_solid = mesh_gem_support->TessellatedMesh();
-    cad_gem_support_logical = new G4LogicalVolume(cad_internal_structure_solid, CYGNOMaterials->Material("Cu"), "cad_gem_support_logical", 0, 0, 0);
+    cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Cu"), "cad_gem_support_logical", 0, 0, 0);
     
     //cathode
     cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();
