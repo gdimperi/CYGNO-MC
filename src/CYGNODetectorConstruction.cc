@@ -192,15 +192,15 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
-    CADMesh * mesh_shell = new CADMesh("/storage/giulia/CYGNO/geometry/v1/shell.stl");    
-    CADMesh * mesh_camera_carter = new CADMesh("/storage/giulia/CYGNO/geometry/v1/carters.stl");    
-    CADMesh * mesh_camera = new CADMesh("/storage/giulia/CYGNO/geometry/v1/cameras_all.stl");    
-    CADMesh * mesh_window = new CADMesh("/storage/giulia/CYGNO/geometry/v1/glass_windows.stl");    
-    CADMesh * mesh_internal_structure = new CADMesh("/storage/giulia/CYGNO/geometry/v1/internal_structure.stl");    
-    CADMesh * mesh_gem_support = new CADMesh("/storage/giulia/CYGNO/geometry/v1/gem_support.stl");    
-    CADMesh * mesh_gem = new CADMesh("/storage/giulia/CYGNO/geometry/v1/gem.stl");    
-    CADMesh * mesh_cathode_frame = new CADMesh("/storage/giulia/CYGNO/geometry/v1/cathode_frame.stl");   
-    CADMesh * mesh_square_turn = new CADMesh("/storage/giulia/CYGNO/geometry/v1/square_turn.stl");    
+    CADMesh * mesh_shell = new CADMesh("../geometry/v1/shell.stl");    
+    CADMesh * mesh_camera_carter = new CADMesh("../geometry/v1/carters.stl");    
+    CADMesh * mesh_camera = new CADMesh("../geometry/v1/cameras_all.stl");    
+    CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");    
+    CADMesh * mesh_internal_structure = new CADMesh("../geometry/v1/internal_structure.stl");    
+    CADMesh * mesh_gem_support = new CADMesh("../geometry/v1/gem_support.stl");    
+    CADMesh * mesh_gem = new CADMesh("../geometry/v1/gem.stl");    
+    CADMesh * mesh_cathode_frame = new CADMesh("../geometry/v1/cathode_frame.stl");   
+    CADMesh * mesh_square_turn = new CADMesh("../geometry/v1/square_turn.stl");    
 
     mesh_shell->SetScale(mm);
     mesh_camera_carter->SetScale(mm);
