@@ -40,6 +40,19 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     void SetProductionRockThickness(G4double rockthick) {productionLayerThickness = rockthick;}
     void SetInternalRockThickness(G4double rockthick) {rockThicknessInner = rockthick;}
 
+    void SetShieldThick0(G4double thick) {thick0 = thick;}
+    void SetShieldThick1(G4double thick) {thick1 = thick;}
+    void SetShieldThick2(G4double thick) {thick2 = thick;}
+    void SetShieldThick3(G4double thick) {thick3 = thick;}    
+    void SetShield0Material(G4String shm) {Mat0 = shm;}
+    void SetShield1Material(G4String shm) {Mat1 = shm;}
+    void SetShield2Material(G4String shm) {Mat2 = shm;}
+    void SetShield3Material(G4String shm) {Mat3 = shm;}
+    void SetInsideVolumeRadius(G4double r) {InsideVolume_OR = r;}
+    void SetInsideVolumeHeight(G4double h) {InsideVolume_Z = h;}
+
+
+
     void SetCYGNOLab(G4String lab) {CYGNOLab = lab;}
     G4String GetCYGNOLab() {return CYGNOLab;}
   
@@ -57,6 +70,16 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4double rockThicknessOuter;
     G4double rockThicknessInner;
     G4double productionLayerThickness;
+    
+    G4double thick0;
+    G4double thick1;
+    G4double thick2;
+    G4double thick3;
+    G4String Mat0;
+    G4String Mat1;
+    G4String Mat2;
+    G4String Mat3;
+
   
     //Building blocks: logic volumes, sizes and positions
     G4ThreeVector  tr_Tot;
@@ -92,40 +115,55 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VSolid * cad_shell_solid;
     G4VSolid * cad_camera_carter_solid;
     G4VSolid * cad_cameras_all_solid;
-    G4VSolid * cad_window_solid;
-    G4VSolid * cad_internal_structure_solid;
+    //G4VSolid * cad_window_solid;
+    G4VSolid * cad_fc_support_solid;
+    G4VSolid * cad_turns_support_solid;
     G4VSolid * cad_gem_support_solid;
     G4VSolid * cad_gem_solid;
     G4VSolid * cad_cathode_frame_solid;
-    G4VSolid * cad_square_turn_solid;
+    G4VSolid * cad_field_cage_solid;
    
     
     // Logical volumes
     G4LogicalVolume* WorldVolume_log;
+    G4LogicalVolume* Shield0_log; 
+    G4LogicalVolume* Shield1_log; 
+    G4LogicalVolume* Shield2_log; 
+    G4LogicalVolume* Shield3_log; 
+    G4LogicalVolume* AirBox_log;
+
     G4LogicalVolume * cad_shell_logical;
     G4LogicalVolume * cad_camera_carter_logical;
     G4LogicalVolume * cad_cameras_all_logical;
-    G4LogicalVolume * cad_window_logical;
+    //G4LogicalVolume * cad_window_logical;
     G4LogicalVolume * CYGNO_log;
-    G4LogicalVolume * cad_internal_structure_logical;
+    G4LogicalVolume * cad_fc_support_logical;
+    G4LogicalVolume * cad_turns_support_logical;
     G4LogicalVolume * cad_gem_support_logical;
     G4LogicalVolume * cad_gem_logical;
     G4LogicalVolume * cad_cathode_frame_logical;
-    G4LogicalVolume * cad_square_turn_logical;
+    G4LogicalVolume * cad_field_cage_logical;
   
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
     G4VPhysicalVolume* productionRockThinTube_phys;
+    G4VPhysicalVolume* Shield0_phys;
+    G4VPhysicalVolume* Shield1_phys;
+    G4VPhysicalVolume* Shield2_phys;
+    G4VPhysicalVolume* Shield3_phys;
+    G4VPhysicalVolume* AirBox_phys;
+
     G4VPhysicalVolume * cad_shell_physical;
     G4VPhysicalVolume * cad_camera_carter_physical;
     G4VPhysicalVolume * cad_cameras_all_physical;
-    G4VPhysicalVolume * cad_window_physical;
+    //G4VPhysicalVolume * cad_window_physical;
     G4VPhysicalVolume * CYGNO_phys;
-    G4VPhysicalVolume * cad_internal_structure_physical;
+    G4VPhysicalVolume * cad_fc_support_physical;
+    G4VPhysicalVolume * cad_turns_support_physical;
     G4VPhysicalVolume * cad_gem_support_physical;
     G4VPhysicalVolume * cad_gem_physical;
     G4VPhysicalVolume * cad_cathode_frame_physical;
-    G4VPhysicalVolume * cad_square_turn_physical;
+    G4VPhysicalVolume * cad_field_cage_physical;
 
 
 };
