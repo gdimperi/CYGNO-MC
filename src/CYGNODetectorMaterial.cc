@@ -77,6 +77,8 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     PyrexGlass->AddMaterial (Si, fractionmass = 0.377219);
     PyrexGlass->AddMaterial (K, fractionmass = 0.00332099);
 
+
+
     //Hamamatsu R5912 uses Borosilicate glass.
     //Cribbed properties from:
     //http://www.schott.com/d/tubing/9a0f5126-6e35-43bd-bf2a-349912caf9f2/schott-algae-brochure-borosilicate.pdf 
@@ -89,20 +91,17 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     BSglass->AddElement(elNa, natoms = 4*2);
     BSglass->AddElement(elK, natoms = 4*2);
 
-    //Hamamatsu R11065-20
-    Quartz = new G4Material ("Quartz", 2.200 * g/cm3, ncomponents = 2);
-    Quartz->AddElement (elSi, natoms = 1);
-    Quartz->AddElement (elO, natoms = 2);
-    G4double QuartzRindex[] = {1.4667,1.4667};
     
-    Ceramic = new G4Material ("Ceramic", 3.7 * g/cm3, ncomponents = 2);
-    Ceramic->AddElement (elAl, natoms = 2);
-    Ceramic->AddElement (elO, natoms = 3);
-    
-    Kovar = new G4Material ("Kovar", 8.8 * g/cm3, ncomponents = 3);
-    Kovar->AddMaterial (Ni, fractionmass = 0.29);
-    Kovar->AddMaterial (Co, fractionmass = 0.18);
-    Kovar->AddMaterial (Fe, fractionmass = 0.53);
+    //Cameras --> effective material, at the moment pyrex glass
+    //FIXME
+    G4cout << "========== Warning ============" << G4endl;
+    G4cout << "Now cameras made of glass, need to  modify to an effective material in order to have the correct total mass" << G4endl;
+    G4cout << "===============================" << G4endl;
+
+    //
+    Camera = FindOrBuildMaterial("G4_Pyrex_Glass");
+
+
     
     //lngs rock material definition
     density = 2.71*g/cm3;
@@ -122,10 +121,6 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     Perspex->AddElement(elH, natoms=8);
     Perspex->AddElement(elC, natoms=5);
     Perspex->AddElement(elO, natoms=2);
-
-    // Silica glass
-    G4Material* Silica = new G4Material("Silica", density=2.203*g/cm3,ncomponents=1);
-    Silica->AddElement(elSi, natoms=1);
 
 
     // SF6_gas 
@@ -193,10 +188,14 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     //   DEFINITION OF VISUALIZATION ATTRIBUTES
     //**********************************************************************
     PEVis = new G4VisAttributes(G4Color(0.8,0.83,0.8)); //Polyethilene
-    WaterVis = new G4VisAttributes(G4Color(0.08,0.4,1)); //Water
+    PbVis = new G4VisAttributes(G4Color(0.,0.83,0.8)); //Pb
+    WaterVis = new G4VisAttributes(G4Color(0.08,0.,1)); //Water
     AirVis = new G4VisAttributes(G4Color(1.,1.,0.4)); //Air
     VacuumVis = new G4VisAttributes(G4Color(1.,1.,0.4));
     CopperVis = new G4VisAttributes(G4Colour(1.,0.,0.));
+    CameraVis = new G4VisAttributes(G4Colour(1.,0.,1.));
+    PerspexVis = new G4VisAttributes(G4Colour(0.,1.,1.));
+    CYGNOGasVis = new G4VisAttributes(G4Colour(0.,1.,0.));
     //CopperVis->SetForceWireframe(true);
 }
 
@@ -239,13 +238,15 @@ G4Material* CYGNODetectorMaterial::Material(G4String what)
   if(what == "Quartz")            material = Quartz;
   if(what == "Ceramic")           material = Ceramic;
   if(what == "Kovar")             material = Kovar;
-  if(what == "lngsRock")          material = lngsRock;
+  if(what == "LNGSRock")          material = lngsRock;
   if(what == "Water")             material = Water;
   if(what == "Steel")             material = Steel;
   if(what == "PE")                material = PE;
   if(what == "Concrete")          material = Concrete;
   if(what == "CYGNO_gas")         material = CYGNO_gas;
-
+  if(what == "Perspex")           material = Perspex;
+  if(what == "Camera")            material = Camera;
+ 
   return material;
 }
 
@@ -253,10 +254,16 @@ G4VisAttributes* CYGNODetectorMaterial::VisAttributes(G4String what)
 {
   G4VisAttributes* vis = 0;
   if(what == "PE")            vis = PEVis;
+  if(what == "Pb")            vis = PbVis;
   if(what == "Water")         vis = WaterVis;
   if(what == "Air")           vis = AirVis;
   if(what == "Vacuum")        vis = VacuumVis;
-  if(what == "Copper")        vis = CopperVis;
+  if(what == "Cu")            vis = CopperVis;
+  if(what == "Perspex")       vis = PerspexVis;
+  if(what == "LNGSRock")      vis = LNGSRockVis;
+  if(what == "Concrete")      vis = ConcreteVis;
+  if(what == "Camera")        vis = CameraVis;
+  if(what == "CYGNO_gas")     vis = CYGNOGasVis;
   return vis;
 }
 				  

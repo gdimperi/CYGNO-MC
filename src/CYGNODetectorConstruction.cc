@@ -44,12 +44,10 @@
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
+   CYGNOLab("NoCave"),
+   //CYGNOLab("LNGS"),
    thick0(0.9*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
-   Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu"),
-
-
-
-   CYGNOLab("NoCave")
+   Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu")
 
 {
 }
@@ -203,9 +201,6 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     // SHIELDING **********************************************************
           
-    //Choose shielding, default is UPoP
-    //
-    // ---------------------------------- Full
     G4cout<<"Shielding Construction Started"<<G4endl;
     
     if (thick3==-999*m || thick2==-999*m || thick1==-999*m || thick0==-999*m || Mat0=="" || Mat1=="" || Mat2=="" || Mat3=="") 
@@ -232,7 +227,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
           							 AirBox_y/2. + thick3 + thick2 + thick1 + thick0,
           							 AirBox_z/2. + thick3 + thick2 + thick1 + thick0);
     absrot_Shielding = G4RotationMatrix();
-          
+
     // ----------------------------------- Shield 0
     G4double Shield0_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
     G4double Shield0_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
@@ -244,6 +239,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4Box* Shield0 = new G4Box(name_solid,0.5*Shield0_x,0.5*Shield0_y,0.5*Shield0_z);
     Shield0_log = new G4LogicalVolume(Shield0,Shield0Mat,name_log,0,0,0);
     Shielding_log = Shield0_log;
+    Shield0_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat0));
     
     // ----------------------------------- Shield 1
     G4double Shield1_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
@@ -255,6 +251,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     G4Box* Shield1 = new G4Box(name_solid,0.5*Shield1_x,0.5*Shield1_y,0.5*Shield1_z);
     Shield1_log = new G4LogicalVolume(Shield1,Shield1Mat,name_log,0,0,0);
+    Shield1_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat1));
     
     // ----------------------------------- Shield 2        
     G4double Shield2_x = AirBox_x + 2.*thick3 + 2.*thick2 ;
@@ -266,6 +263,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     G4Box* Shield2 = new G4Box(name_solid,0.5*Shield2_x,0.5*Shield2_y,0.5*Shield2_z);
     Shield2_log = new G4LogicalVolume(Shield2,Shield2Mat,name_log,0,0,0);
+    Shield2_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat2));
     
     // ----------------------------------- Shield 3        
     G4double Shield3_x = AirBox_x + 2.*thick3 ;
@@ -277,6 +275,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     G4Box* Shield3 = new G4Box(name_solid,0.5*Shield3_x,0.5*Shield3_y,0.5*Shield3_z);
     Shield3_log = new G4LogicalVolume(Shield3,Shield3Mat,name_log,0,0,0);
+    Shield3_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat3));
     
     // ----------------------------------- Airbox
     name_phys="AirBox";
@@ -284,7 +283,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
     G4LogicalVolume* AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log,0,0,0);
-    AirBox_log->SetVisAttributes(G4Color(1.,0.,0.));
+    AirBox_log->SetVisAttributes(CYGNOMaterials->VisAttributes("Air"));
     InsideVolume_log = AirBox_log;
     
     //**********************************************************************
@@ -300,6 +299,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     CADMesh * mesh_gem_support = new CADMesh("../geometry/v2/gem_frame.stl");    
     CADMesh * mesh_gem = new CADMesh("../geometry/v2/gem.stl");    
     CADMesh * mesh_cathode_frame = new CADMesh("../geometry/v2/cathode_frame.stl");   
+    CADMesh * mesh_cathode = new CADMesh("../geometry/v2/cathode.stl");   
 
     mesh_shell->SetScale(mm);
     mesh_camera_carter->SetScale(mm);
@@ -310,20 +310,27 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     mesh_gem_support->SetScale(mm);
     mesh_gem->SetScale(mm);
     mesh_cathode_frame->SetScale(mm);
+    mesh_cathode->SetScale(mm);
 
 
     //shell
     cad_shell_solid = mesh_shell->TessellatedMesh();
     cad_shell_logical = new G4LogicalVolume(cad_shell_solid, CYGNOMaterials->Material("Perspex"), "cad_shell_logical", 0, 0, 0);
-    
+    cad_shell_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
+
     //camera carter
     cad_camera_carter_solid = mesh_camera_carter->TessellatedMesh();
     cad_camera_carter_logical = new G4LogicalVolume(cad_camera_carter_solid, CYGNOMaterials->Material("Perspex"), "cad_camera_carter_logical", 0, 0, 0);
-    
+    //cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_camera_carter_logical->GetMaterial()->GetName()));
+    cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
     //cameras
     cad_cameras_all_solid = mesh_camera->TessellatedMesh();
-    cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Perspex"), "cad_cameras_all_logical", 0, 0, 0);
-    
+    cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Camera"), "cad_cameras_all_logical", 0, 0, 0);
+    //cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cameras_all_logical->GetMaterial()->GetName()));
+    cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Camera"));
+
     //window
     //cad_window_solid = mesh_window->TessellatedMesh();
     //cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
@@ -338,63 +345,92 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     G4Box* CYGNO_box = new G4Box(name_solid,0.5*CYGNO_x,0.5*CYGNO_y,0.5*CYGNO_z);
     CYGNO_log = new G4LogicalVolume(CYGNO_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
-   
+    //CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes(CYGNO_log->GetMaterial()->GetName()));
+    CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes("CYGNO_gas"));
+
     //fc support
     cad_fc_support_solid = mesh_fc_support->TessellatedMesh();
-    cad_fc_support_logical = new G4LogicalVolume(cad_fc_support_solid, CYGNOMaterials->Material("Cu"), "cad_fc_support_logical", 0, 0, 0);
-
+    cad_fc_support_logical = new G4LogicalVolume(cad_fc_support_solid, CYGNOMaterials->Material("Perspex"), "cad_fc_support_logical", 0, 0, 0);
+    //cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_fc_support_logical->GetMaterial()->GetName()));
+    cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+ 
     //turns support
     cad_turns_support_solid = mesh_turns_support->TessellatedMesh();
-    cad_turns_support_logical = new G4LogicalVolume(cad_turns_support_solid, CYGNOMaterials->Material("Cu"), "cad_turns_support_logical", 0, 0, 0);
-    
+    cad_turns_support_logical = new G4LogicalVolume(cad_turns_support_solid, CYGNOMaterials->Material("Perspex"), "cad_turns_support_logical", 0, 0, 0);
+    //cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_turns_support_logical->GetMaterial()->GetName()));
+    cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
     //field cage  
     cad_field_cage_solid = mesh_field_cage->TessellatedMesh();
     cad_field_cage_logical = new G4LogicalVolume(cad_field_cage_solid, CYGNOMaterials->Material("Cu"), "cad_field_cage_logical", 0, 0, 0);
-    
+    //cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_field_cage_logical->GetMaterial()->GetName()));
+    cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+
     //GEM support
     cad_gem_support_solid = mesh_gem_support->TessellatedMesh();
-    cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Cu"), "cad_gem_support_logical", 0, 0, 0);
-    
+    cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Perspex"), "cad_gem_support_logical", 0, 0, 0);
+    //cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_support_logical->GetMaterial()->GetName()));
+    cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
     //GEM
     cad_gem_solid = mesh_gem->TessellatedMesh();
     cad_gem_logical = new G4LogicalVolume(cad_gem_solid, CYGNOMaterials->Material("Kapton"), "cad_gem_logical", 0, 0, 0);
+    //cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_logical->GetMaterial()->GetName()));
+    cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Kapton"));
     
-    //cathode
+    //cathode frame
     cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();
     cad_cathode_frame_logical = new G4LogicalVolume(cad_cathode_frame_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_frame_logical", 0, 0, 0);
+    //cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cathode_frame_logical->GetMaterial()->GetName()));
+    cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
     
+    //cathode frame
+    cad_cathode_solid = mesh_cathode->TessellatedMesh();
+    cad_cathode_logical = new G4LogicalVolume(cad_cathode_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_logical", 0, 0, 0);
+    cad_cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
 
 
     tr_CYGNO_gas+=G4ThreeVector(0.,0., 0.);	  
 
     if (CYGNOLab == "LNGS"){
-    	tr_cad+=G4ThreeVector(0.,-1*size_Laboratory.y()+1*m,size_Laboratory.z()-10*m);	  
+	tr+=G4ThreeVector(0.,-1*size_Laboratory.y()+size_Shielding.y(),size_Laboratory.z()-10*m);
+	tr_cad+=G4ThreeVector(0.,1.0*m-1*size_Laboratory.y()+size_Shielding.y(),size_Laboratory.z()-10*m);	  
+    
+        rot = G4RotationMatrix();// rotation of daughter volume
+	tr_Shielding+=(rot_Shielding*tr);
+           
+
     }
     else if (CYGNOLab == "NoCave") {
-    	tr_cad_internal= -1*tr_CYGNO_gas;	   
+        tr=G4ThreeVector(0.,0.,0.);
+	tr_cad+=G4ThreeVector(0.,0.,0.);
+	rot = G4RotationMatrix();
+        tr_Shielding+=(rot_Shielding*tr);
+
     }
+    G4PVPlacement* Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
+
     
     // ----------------------------------- Volume placements
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
+
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
     G4PVPlacement* Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
+
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
     G4PVPlacement* Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
+
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
     G4PVPlacement* Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
+
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
@@ -402,37 +438,42 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4PVPlacement* AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
     
     G4ThreeVector  size;
-    rot_cad=(rot_Laboratory.inverse()*absrot_Rock.inverse())*absrot_cad;//Rotation of the CYGNO outer volume
     
-    cad_shell_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+    cad_shell_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_shell_logical,"cad_shell_physical", AirBox_log, false, 0, true);
-    cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+    cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_camera_carter_logical,"cad_camera_carter_physical", AirBox_log, false, 0, true);
-    cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+    cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
 //    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
 ////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
-    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot_CYGNO_gas,tr_CYGNO_gas),
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr),
 		    CYGNO_log,"CYGNO_gas", AirBox_log, false, 0, true);
-    cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+        
+    tr=G4ThreeVector(0.,0.,0.);
+    tr_cad+=G4ThreeVector(0.,0.,0.);
+    rot = G4RotationMatrix();
+    cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_fc_support_logical,"cad_fc_support_physical", CYGNO_log, false, 0, true);
-    cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+    cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_turns_support_logical,"cad_turns_support_physical", CYGNO_log, false, 0, true);
-    cad_field_cage_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad_internal), 
+    cad_field_cage_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_field_cage_logical,"cad_field_cage_physical", CYGNO_log, false, 0, true);
-    cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad_internal), 
+    cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_gem_support_logical,"cad_gem_support_physical", CYGNO_log, false, 0, true);
-    cad_gem_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad_internal), 
+    cad_gem_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_gem_logical,"cad_gem_physical", CYGNO_log, false, 0, true);
-    cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad_internal), 
+    cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
 		    cad_cathode_frame_logical,"cad_cathode_frame_physical", CYGNO_log, false, 0, true);
+    cad_cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+		    cad_cathode_logical,"cad_cathode_physical", CYGNO_log, false, 0, true);
 
     //
     //**********************************************************************
     // GLOBAL TRANSLATIONS ***************************************
     G4cout<<"Placement of Laboratory in the World started"<<G4endl;
     
-    tr_Rock=-1*(tr_Laboratory+rot_Laboratory*(tr_cad+rot_cad*(tr_InsideVolume+rot_InsideVolume*(tr_cad))));//The shift of Rock_log in the world volume to make the origin be the center of the detector
+    tr_Rock=-1*(tr_Laboratory+rot_Laboratory*(tr_cad+rot_cad*(tr_InsideVolume+rot_InsideVolume*(tr_Shielding))));//The shift of Rock_log in the world volume to make the origin be the center of the detector
 
     G4RotationMatrix rot_check = absrot_Rock*(rot_Laboratory*(rot_cad*(rot_InsideVolume)));  
     name_phys="externalRock";

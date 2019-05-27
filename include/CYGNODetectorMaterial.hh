@@ -80,12 +80,19 @@ G4Material* PE;
 G4Material* Concrete;
 G4Material* CYGNO_gas;
 G4Material* Perspex;
+G4Material* Camera;
 
 G4VisAttributes* PEVis;
+G4VisAttributes* PbVis;
 G4VisAttributes* WaterVis;
 G4VisAttributes* AirVis;
 G4VisAttributes* VacuumVis;
 G4VisAttributes* CopperVis;
+G4VisAttributes* PerspexVis;
+G4VisAttributes* CameraVis;
+G4VisAttributes* ConcreteVis;
+G4VisAttributes* LNGSRockVis;
+G4VisAttributes* CYGNOGasVis;
 
 //CYGNODetectorMaterialMessenger* fMessenger;
 

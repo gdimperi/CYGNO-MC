@@ -121,6 +121,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VSolid * cad_gem_support_solid;
     G4VSolid * cad_gem_solid;
     G4VSolid * cad_cathode_frame_solid;
+    G4VSolid * cad_cathode_solid;
     G4VSolid * cad_field_cage_solid;
    
     
@@ -142,6 +143,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * cad_gem_support_logical;
     G4LogicalVolume * cad_gem_logical;
     G4LogicalVolume * cad_cathode_frame_logical;
+    G4LogicalVolume * cad_cathode_logical;
     G4LogicalVolume * cad_field_cage_logical;
   
     // Physical volumes
@@ -163,6 +165,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * cad_gem_support_physical;
     G4VPhysicalVolume * cad_gem_physical;
     G4VPhysicalVolume * cad_cathode_frame_physical;
+    G4VPhysicalVolume * cad_cathode_physical;
     G4VPhysicalVolume * cad_field_cage_physical;
 
 
