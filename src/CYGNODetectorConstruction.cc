@@ -44,6 +44,11 @@
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
+   thick0(0.9*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
+   Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu"),
+
+
+
    CYGNOLab("NoCave")
 
 {
@@ -215,9 +220,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4double AirBox_y;
     G4double AirBox_z;
     G4Box* AirBox;
-    AirBox_x = 1.6*m;
-    AirBox_y = 1.8*m;
-    AirBox_z = 2.2*m;        
+    AirBox_x = 3.0*m;
+    AirBox_y = 2.0*m;
+    AirBox_z = 2.0*m;        
     tr_InsideVolume = G4ThreeVector(0.,0.,0.);
     rot_InsideVolume = G4RotationMatrix();		
     size_InsideVolume = G4ThreeVector(AirBox_x/2.,
@@ -232,7 +237,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4double Shield0_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
     G4double Shield0_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
     G4double Shield0_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;        
-    G4Material* Shield0Mat = SABREMaterials->FindOrBuildMaterial(Mat0);
+    G4Material* Shield0Mat = CYGNOMaterials->FindOrBuildMaterial(Mat0);
     name_phys="Shield0";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
@@ -244,7 +249,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4double Shield1_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
     G4double Shield1_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
     G4double Shield1_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
-    G4Material* Shield1Mat = SABREMaterials->FindOrBuildMaterial(Mat1);
+    G4Material* Shield1Mat = CYGNOMaterials->FindOrBuildMaterial(Mat1);
     name_phys="Shield1";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
@@ -255,7 +260,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4double Shield2_x = AirBox_x + 2.*thick3 + 2.*thick2 ;
     G4double Shield2_y = AirBox_y + 2.*thick3 + 2.*thick2 ;
     G4double Shield2_z = AirBox_z + 2.*thick3 + 2.*thick2 ;
-    G4Material* Shield2Mat = SABREMaterials->FindOrBuildMaterial(Mat2);
+    G4Material* Shield2Mat = CYGNOMaterials->FindOrBuildMaterial(Mat2);
     name_phys="Shield2";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
@@ -266,7 +271,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4double Shield3_x = AirBox_x + 2.*thick3 ;
     G4double Shield3_y = AirBox_y + 2.*thick3 ;
     G4double Shield3_z = AirBox_z + 2.*thick3 ;
-    G4Material* Shield3Mat = SABREMaterials->FindOrBuildMaterial(Mat3);
+    G4Material* Shield3Mat = CYGNOMaterials->FindOrBuildMaterial(Mat3);
     name_phys="Shield3";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
@@ -278,33 +283,10 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
     AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
-    G4LogicalVolume* AirBox_log = new G4LogicalVolume(AirBox,SABREMaterials->Material("Air"),name_log,0,0,0);
+    G4LogicalVolume* AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log,0,0,0);
     AirBox_log->SetVisAttributes(G4Color(1.,0.,0.));
     InsideVolume_log = AirBox_log;
     
-    // ----------------------------------- Volume placements
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true);
-    
-
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
@@ -348,7 +330,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     
     //CYGNO gas
     G4double CYGNO_x = 1250.*mm;
-    G4double CYGNO_y = 1252.*mm;
+    G4double CYGNO_y = 1250.*mm;
     G4double CYGNO_z = 1310.*mm;
       
     name_phys="CYGNO";
@@ -391,19 +373,47 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     else if (CYGNOLab == "NoCave") {
     	tr_cad_internal= -1*tr_CYGNO_gas;	   
     }
+    
+    // ----------------------------------- Volume placements
+    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+    tr_InsideVolume+=(rot_InsideVolume*tr);
+    rot = G4RotationMatrix();// rotation of daughter volume
+    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+    G4PVPlacement* Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
+    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+    tr_InsideVolume+=(rot_InsideVolume*tr);
+    rot = G4RotationMatrix();// rotation of daughter volume
+    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+    G4PVPlacement* Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
+    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+    tr_InsideVolume+=(rot_InsideVolume*tr);
+    rot = G4RotationMatrix();// rotation of daughter volume
+    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+    G4PVPlacement* Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
+    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+    tr_InsideVolume+=(rot_InsideVolume*tr);
+    rot = G4RotationMatrix();// rotation of daughter volume
+    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+    G4PVPlacement* Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
+    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+    tr_InsideVolume+=(rot_InsideVolume*tr);
+    rot = G4RotationMatrix();// rotation of daughter volume
+    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+    G4PVPlacement* AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
+    
     G4ThreeVector  size;
     rot_cad=(rot_Laboratory.inverse()*absrot_Rock.inverse())*absrot_cad;//Rotation of the CYGNO outer volume
     
     cad_shell_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_shell_logical,"cad_shell_physical", Laboratory_log, false, 0, true);
+		    cad_shell_logical,"cad_shell_physical", AirBox_log, false, 0, true);
     cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_camera_carter_logical,"cad_camera_carter_physical", Laboratory_log, false, 0, true);
+		    cad_camera_carter_logical,"cad_camera_carter_physical", AirBox_log, false, 0, true);
     cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-		    cad_cameras_all_logical,"cad_cameras_all_physical", Laboratory_log, false, 0, true);
+		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
 //    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
 ////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
     CYGNO_phys = new G4PVPlacement(G4Transform3D(rot_CYGNO_gas,tr_CYGNO_gas),
-		    CYGNO_log,"CYGNO_gas", Laboratory_log, false, 0, true);
+		    CYGNO_log,"CYGNO_gas", AirBox_log, false, 0, true);
     cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
 		    cad_fc_support_logical,"cad_fc_support_physical", CYGNO_log, false, 0, true);
     cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
