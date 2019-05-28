@@ -35,6 +35,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     ~CYGNODetectorConstruction();
 
     G4VPhysicalVolume* Construct();
+    void SaveMassAndDensity();
 
     void SetExternalRockThickness(G4double rockthick) {rockThicknessOuter = rockthick;}
     void SetProductionRockThickness(G4double rockthick) {productionLayerThickness = rockthick;}
@@ -50,7 +51,6 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     void SetShield3Material(G4String shm) {Mat3 = shm;}
     void SetInsideVolumeRadius(G4double r) {InsideVolume_OR = r;}
     void SetInsideVolumeHeight(G4double h) {InsideVolume_Z = h;}
-
 
 
     void SetCYGNOLab(G4String lab) {CYGNOLab = lab;}
