@@ -117,7 +117,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
 
     // Perspex (Acrylic)
     density = 1.180*g/cm3; //1180kg/m^3
-    G4Material* Perspex = new G4Material(name="Perspex", density, ncomponents=3);
+    Perspex = new G4Material(name="Perspex", density, ncomponents=3);
     Perspex->AddElement(elH, natoms=8);
     Perspex->AddElement(elC, natoms=5);
     Perspex->AddElement(elO, natoms=2);
@@ -127,7 +127,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
 
     density = 156.14*g/m3; //sf6 20 torr
     pressure = 0.0263158*atmosphere; //sf6 20 torr
-    G4Material* SF6_gas = new G4Material(name="SF6_gas", density, ncomponents=2, kStateGas, temperature,pressure);
+    SF6_gas = new G4Material(name="SF6_gas", density, ncomponents=2, kStateGas, temperature,pressure);
     SF6_gas->AddElement(elS, natoms =1);
     SF6_gas->AddElement(elF, natoms =6);
 
@@ -137,20 +137,20 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     //He_gas
     density = 162.488*He_frac*g/m3;
     pressure = 1*He_frac*atmosphere;
-    G4Material* He_gas = new G4Material(name="He_gas", density, ncomponents=1, kStateGas, temperature,pressure);
+    He_gas = new G4Material(name="He_gas", density, ncomponents=1, kStateGas, temperature,pressure);
     He_gas->AddElement(elHe, natoms=1);
 
     //CF4_gas
     density = 3574.736*CF4_frac*g/m3;
     pressure = 1*CF4_frac*atmosphere;
-    G4Material* CF4_gas = new G4Material(name="CF4_gas", density, ncomponents=2, kStateGas, temperature, pressure);
+    CF4_gas = new G4Material(name="CF4_gas", density, ncomponents=2, kStateGas, temperature, pressure);
     CF4_gas->AddElement(elC, natoms=1);
     CF4_gas->AddElement(elF, natoms=4);
 
     //CYGNO_gas
     density = He_gas->GetDensity()+CF4_gas->GetDensity();
     pressure = He_gas->GetPressure()+CF4_gas->GetPressure();
-    G4Material* CYGNO_gas = new G4Material(name="CYGNO_gas", density, ncomponents=2, kStateGas, temperature, pressure);
+    CYGNO_gas = new G4Material(name="CYGNO_gas", density, ncomponents=2, kStateGas, temperature, pressure);
     CYGNO_gas->AddMaterial(He_gas, fractionmass = He_gas->GetDensity()/density*100*perCent);
     CYGNO_gas->AddMaterial(CF4_gas, fractionmass = CF4_gas->GetDensity()/density*100*perCent);
 
@@ -169,7 +169,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     //kapton
 
     density = 1.42*g/cm3;
-    G4Material* Kapton = new G4Material("Kapton", density, ncomponents=4);
+    Kapton = new G4Material("Kapton", density, ncomponents=4);
     Kapton->AddElement(elC, natoms=22);
     Kapton->AddElement(elH, natoms=10);
     Kapton->AddElement(elN, natoms=2);
@@ -246,6 +246,7 @@ G4Material* CYGNODetectorMaterial::Material(G4String what)
   if(what == "CYGNO_gas")         material = CYGNO_gas;
   if(what == "Perspex")           material = Perspex;
   if(what == "Camera")            material = Camera;
+  if(what == "Kapton")            material = Kapton;
  
   return material;
 }

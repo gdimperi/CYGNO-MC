@@ -48,28 +48,28 @@ void CYGNODetectorProperty::AddVolumeNameDensity(G4String name, G4double dens)
 
 void CYGNODetectorProperty::AddVolumeNameMassAndDensity(G4LogicalVolume* log)
 {
-  G4cout << "Saving volume mass and density"<<G4endl;
-  G4cout << "Log Volume address: "<<log<<G4endl;
+  //G4cout << "Saving volume mass and density"<<G4endl;
+  //G4cout << "Log Volume address: "<<log<<G4endl;
   G4cout << "Volume name: "<<log->GetName()<<G4endl;
   G4cout << "Volume mass (kg): "<<log->GetMass(true,false)/kg<<G4endl;
   G4String name=log->GetName();
   //if(name.size()>=4 && name.substr(name.size()-4,4)=="_log")
 //	name.remove(name.size()-4,4);
-  AddVolumeNameMass(name+"_mass",log->GetMass(true,false));
-  AddVolumeNameDensity(name+"_dens",(log->GetMaterial())->GetDensity());
+  AddVolumeNameMass(name+"_mass",(log->GetMass(true,false))/kg);
+  AddVolumeNameDensity(name+"_dens",((log->GetMaterial())->GetDensity())/(g/cm3));
 }
 
 void CYGNODetectorProperty::AddPhysVolumeNameMassAndDensity(G4VPhysicalVolume* phys)
 {
-  G4cout << "Saving volume mass and density"<<G4endl;
-  G4cout << "Phys Volume address: "<<phys<<G4endl;
+  //G4cout << "Saving volume mass and density"<<G4endl;
+  //G4cout << "Phys Volume address: "<<phys<<G4endl;
   G4cout << "Volume name: "<<phys->GetName()<<G4endl;
   G4cout << "Log Volume address: "<<phys->GetLogicalVolume()<<G4endl;
   G4cout << "Volume mass (kg): "<<(phys->GetLogicalVolume())->GetMass(true,false)/kg<<G4endl;
     
   G4String name=phys->GetName();
-  if(name.size()>=5 && name.substr(name.size()-5,5)=="_phys")
-	name.remove(name.size()-5,5);
-  AddVolumeNameMass(name+"_mass",(phys->GetLogicalVolume())->GetMass(true,false));
-  AddVolumeNameDensity(name+"_dens",((phys->GetLogicalVolume())->GetMaterial())->GetDensity());
+  //if(name.size()>=5 && name.substr(name.size()-5,5)=="_phys")
+//	name.remove(name.size()-5,5);
+  AddVolumeNameMass(name+"_mass",(phys->GetLogicalVolume())->GetMass(true,false)/kg);
+  AddVolumeNameDensity(name+"_dens",(((phys->GetLogicalVolume())->GetMaterial())->GetDensity())/(g/cm3));
 }

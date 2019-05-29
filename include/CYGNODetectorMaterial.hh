@@ -78,9 +78,14 @@ G4Material* Water;
 G4Material* Steel;
 G4Material* PE;
 G4Material* Concrete;
-G4Material* CYGNO_gas;
-G4Material* Perspex;
 G4Material* Camera;
+G4Material* Perspex;
+G4Material* CYGNO_gas;
+G4Material* SF6_gas;
+G4Material* He_gas;
+G4Material* CF4_gas; 
+G4Material* Kapton; 
+
 
 G4VisAttributes* PEVis;
 G4VisAttributes* PbVis;

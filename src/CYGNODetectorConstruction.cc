@@ -63,7 +63,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //-----------------------------
     // construction of materials
     //-----------------------------
-    G4cout << "Constructing materials...";
+    G4cout << "Constructing materials..." << G4endl;
 
     //G4Material * air = nist_manager->FindOrBuildMaterial("G4_AIR");
     //G4Material * water = nist_manager->FindOrBuildMaterial("G4_WATER");
@@ -290,7 +290,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
     AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
-    G4LogicalVolume* AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log);
+    AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log);
     AirBox_log->SetVisAttributes(CYGNOMaterials->VisAttributes("Air"));
     InsideVolume_log = AirBox_log;
     
@@ -323,8 +323,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
     //shell
     cad_shell_solid = mesh_shell->TessellatedMesh();
-    G4Material* mat = CYGNOMaterials->Material("Perspex");
-    cad_shell_logical = new G4LogicalVolume(cad_shell_solid, mat, "cad_shell_logical", 0, 0, 0);
+    cad_shell_logical = new G4LogicalVolume(cad_shell_solid, CYGNOMaterials->Material("Perspex"), "cad_shell_logical");
     cad_shell_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
 
 
@@ -516,18 +515,18 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
           CYGNOProperties->AddVolumeNameMassAndDensity(Shield1_log);
           CYGNOProperties->AddVolumeNameMassAndDensity(Shield2_log);
           CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
+          CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
           CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
-          //CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
+          CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
 
 
 	  if ( productionRockThinTube_phys )
