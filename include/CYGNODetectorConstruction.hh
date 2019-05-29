@@ -18,6 +18,7 @@
 class G4VSolid;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+class CYGNOSensitiveDetector;
 
 #include "G4ThreeVector.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -149,6 +150,8 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
     G4VPhysicalVolume* productionRockThinTube_phys;
+    G4VPhysicalVolume* externalRock_phys;
+    G4VPhysicalVolume* InnerAirSphere_phys;
     G4VPhysicalVolume* Shield0_phys;
     G4VPhysicalVolume* Shield1_phys;
     G4VPhysicalVolume* Shield2_phys;
@@ -167,6 +170,10 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * cad_cathode_frame_physical;
     G4VPhysicalVolume * cad_cathode_physical;
     G4VPhysicalVolume * cad_field_cage_physical;
+
+    //CYGNO sensitive detector
+    CYGNOSensitiveDetector * CYGNOSD;
+
 
 
 };

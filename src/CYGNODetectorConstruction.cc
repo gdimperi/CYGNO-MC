@@ -33,12 +33,14 @@
 #include "G4NistManager.hh"
 #include "G4Material.hh"
 #include "G4VisAttributes.hh"
+#include "G4SDManager.hh"
 
 // USER //
 #include "CYGNODetectorConstruction.hh"
 #include "CYGNODetectorLNGS.hh"
 #include "CYGNODetectorMaterial.hh"
 #include "CYGNODetectorProperty.hh"
+#include "CYGNOSensitiveDetector.hh"
 
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
@@ -58,6 +60,15 @@ CYGNODetectorConstruction::~CYGNODetectorConstruction()
 
 G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 {
+    
+    //register the SD
+    G4SDManager* SDmanager=G4SDManager::GetSDMpointer();
+    
+    G4String CYGNOSDname = "CYGNO/CYGNOSD";
+    CYGNOSD = new CYGNOSensitiveDetector( CYGNOSDname );
+    SDmanager->AddNewDetector( CYGNOSD );
+	
+	
     G4NistManager * nist_manager = G4NistManager::Instance();
 
     //-----------------------------
@@ -201,7 +212,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  tr_Laboratory+=(rot_Laboratory*tr);
 	  rot = G4RotationMatrix();// rotation of daughter volume
 	  rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
-	  G4PVPlacement* InnerAirSphere_phys = new G4PVPlacement(G4Transform3D(rot,tr),InnerAirSphere_log,name_phys,OuterAirSphere_log,false,0,true);        
+	  InnerAirSphere_phys = new G4PVPlacement(G4Transform3D(rot,tr),InnerAirSphere_log,name_phys,OuterAirSphere_log,false,0,true);        
     }
 
     G4cout << "Laboratory done." << G4endl;
@@ -416,7 +427,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	tr_Shielding+=(rot_Shielding*tr);
 
     }
-    G4PVPlacement* Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
+    Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
 
     
     // ----------------------------------- Volume placements
@@ -425,25 +436,25 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
+    Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
 
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
+    Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
 
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
+    Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
 
     tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
     tr_InsideVolume+=(rot_InsideVolume*tr);
     rot = G4RotationMatrix();// rotation of daughter volume
     rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    G4PVPlacement* AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
+    AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
     
     G4ThreeVector  size;
     
@@ -487,52 +498,57 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_phys="externalRock";
     name_log=name_phys+"_log";
     name_solid=name_phys+"_solid";
-    G4PVPlacement* externalRock_phys = new G4PVPlacement(G4Transform3D(absrot_Rock,tr_Rock),Rock_log,name_phys,WorldVolume_log,false,0,true);
+    externalRock_phys = new G4PVPlacement(G4Transform3D(absrot_Rock,tr_Rock),Rock_log,name_phys,WorldVolume_log,false,0,true);
 
     G4cout << "The main CYGNO volume is translated w.r.t the center of the rock volume of:\t x="<< -1*tr_Rock.x()/cm << " cm\t y=" << -1*tr_Rock.y()/cm << " cm\t z=" << -1*tr_Rock.z()/cm << " cm"<< G4endl;
 
     G4cout << "The Rock volume has been translated to put the main CYGNO volume in the center of the coordinate system"<< G4endl;
     G4cout<<"Placement of Laboratory in the World ended"<<G4endl;
     
-   
-    // Save volumes mass and density
+    //======= Sensitive detector ========
+    CYGNO_log->SetSensitiveDetector(CYGNOSD);
+ 
+    //======= Save volumes mass and density ======
     
     G4cout<<"Saving masses and densities of the volumes"<<G4endl;
     SaveMassAndDensity();
 
-   
+
+    //===========
     return WorldVolume_phys;
-	}
 
-	void CYGNODetectorConstruction::SaveMassAndDensity()
+
+}
+
+void CYGNODetectorConstruction::SaveMassAndDensity()
+{
+  CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
+
+  G4cout << "Saving masses and densities of the volumes of the CYGNODetectorConstruction class"<< G4endl;
+  CYGNOProperties->AddVolumeNameMassAndDensity(Rock_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(Laboratory_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(Shield0_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(Shield1_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(Shield2_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
+  CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
+
+
+  if ( productionRockThinTube_phys )
 	{
-	  CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
-
-	  G4cout << "Saving masses and densities of the volumes of the CYGNODetectorConstruction class"<< G4endl;
-	  CYGNOProperties->AddVolumeNameMassAndDensity(Rock_log);
-	  CYGNOProperties->AddVolumeNameMassAndDensity(Laboratory_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(Shield0_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(Shield1_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(Shield2_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
-          CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
-
-
-	  if ( productionRockThinTube_phys )
-		{
-		  CYGNOProperties->AddPhysVolumeNameMassAndDensity(productionRockThinTube_phys);
-		}
-	  G4cout << "All volume masses and densities saved"<< G4endl;
+	  CYGNOProperties->AddPhysVolumeNameMassAndDensity(productionRockThinTube_phys);
 	}
+  G4cout << "All volume masses and densities saved"<< G4endl;
+}
 
