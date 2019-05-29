@@ -45,6 +45,8 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
   newHit->SetGlobalTime  (aStep->GetTrack()->GetGlobalTime());
   // kinetic energy
   newHit->SetKineticEne  (aStep->GetPreStepPoint()->GetKineticEnergy());
+  // step length
+  newHit->SetKineticEne  (aStep->GetStepLength());
 
    
   if (aStep->GetPreStepPoint()->GetProcessDefinedStep() != NULL) {
