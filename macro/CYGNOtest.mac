@@ -1,7 +1,7 @@
 # GENERATION OF RADIOACTIVE PARTICLES
 # define particle or ion 
 /gps/particle ion
-/gps/ion 19 40
+/gps/ion 6 14
 # define energy (set 0 for radioactive decaying nuclei)
 /gps/energy 0. keV
 /gps/pos/shape Para
@@ -25,11 +25,11 @@
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
-/CYGNO/reportingfrequency 100000
+/CYGNO/reportingfrequency 1000
 #Output file name
-/CYGNO/outfile 40k_test
+/CYGNO/outfile 14C_test
 /random/setSeeds 575841909 838392975
 #/process/em/deexcitationIgnoreCut true
 
 # define number of events to be generated
-/run/beamOn 10
+/run/beamOn 10000
