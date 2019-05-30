@@ -55,8 +55,8 @@ void CYGNODetectorProperty::AddVolumeNameMassAndDensity(G4LogicalVolume* log)
   G4String name=log->GetName();
   //if(name.size()>=4 && name.substr(name.size()-4,4)=="_log")
 //	name.remove(name.size()-4,4);
-  AddVolumeNameMass(name+"_mass",(log->GetMass(true,false))/kg);
-  AddVolumeNameDensity(name+"_dens",((log->GetMaterial())->GetDensity())/(g/cm3));
+  AddVolumeNameMass(name+"_mass",(log->GetMass(true,false)));
+  AddVolumeNameDensity(name+"_dens",(log->GetMaterial())->GetDensity());
 }
 
 void CYGNODetectorProperty::AddPhysVolumeNameMassAndDensity(G4VPhysicalVolume* phys)
@@ -70,6 +70,6 @@ void CYGNODetectorProperty::AddPhysVolumeNameMassAndDensity(G4VPhysicalVolume* p
   G4String name=phys->GetName();
   //if(name.size()>=5 && name.substr(name.size()-5,5)=="_phys")
 //	name.remove(name.size()-5,5);
-  AddVolumeNameMass(name+"_mass",(phys->GetLogicalVolume())->GetMass(true,false)/kg);
-  AddVolumeNameDensity(name+"_dens",(((phys->GetLogicalVolume())->GetMaterial())->GetDensity())/(g/cm3));
+  AddVolumeNameMass(name+"_mass",(phys->GetLogicalVolume())->GetMass(true,false));
+  AddVolumeNameDensity(name+"_dens",((phys->GetLogicalVolume())->GetMaterial())->GetDensity());
 }

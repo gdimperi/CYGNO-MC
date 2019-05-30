@@ -10,7 +10,6 @@
 #include "G4RunManager.hh"
 #include "G4Gamma.hh"
 #include "G4Event.hh"
-#include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"

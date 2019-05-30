@@ -31,9 +31,9 @@ class CYGNOHit : public G4VHit
       void SetKineticEne  (G4double kene)      { kinEne = kene; };
       void SetProcessIni  (G4String prini)      { processIni = prini; };
       void SetProcessFin  (G4String prfin)      { processFin = prfin; };
-      void SetDetN     (G4int dn)         { detN = dn;};
       void SetEdep     (G4double de)      { edep = de; };
       void SetPos      (G4ThreeVector xyz){ pos = xyz; };
+      void SetLength      (G4double len){ trackLen = len; };
  
       G4int GetParentID() { return parentID; };
       G4int GetParticleID() { return particleID; };
@@ -42,9 +42,9 @@ class CYGNOHit : public G4VHit
       G4String GetProcessIni() { return processIni; };
       G4String GetProcessFin() { return processFin; };
       G4int GetTrackID()    { return trackID; };
-      G4int GetDetN()       { return detN; };
       G4double GetEdep()    { return edep; };      
       G4ThreeVector GetPos(){ return pos; };
+      G4double GetLength(){ return trackLen; };
        
   private:
  
@@ -55,9 +55,9 @@ class CYGNOHit : public G4VHit
       G4double kinEne;
       G4String processIni;
       G4String processFin;
-      G4int         detN;
       G4double      edep;
       G4ThreeVector pos;
+      G4double      trackLen;
  };
 
 typedef G4THitsCollection<CYGNOHit> CYGNOHitsCollection;

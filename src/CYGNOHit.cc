@@ -21,9 +21,9 @@ CYGNOHit::CYGNOHit(const CYGNOHit& right)
   kinEne = right.kinEne;
   processIni = right.processIni;
   processFin = right.processFin;
-  detN      = right.detN;
   edep      = right.edep;
   pos       = right.pos;
+  trackLen       = right.trackLen;
 }
 
 const CYGNOHit& CYGNOHit::operator=(const CYGNOHit& right)
@@ -35,9 +35,9 @@ const CYGNOHit& CYGNOHit::operator=(const CYGNOHit& right)
   kinEne = right.kinEne;
   processIni = right.processIni;
   processFin = right.processFin;
-  detN      = right.detN;
   edep      = right.edep;
   pos       = right.pos;
+  trackLen       = right.trackLen;
 
   return *this;
 }
@@ -64,15 +64,15 @@ void CYGNOHit::Draw()
 
 void CYGNOHit::Print()
 {
-  G4cout << "  parent id : " << parentID
-	 << "  particleID : " << particleID
-	 << "  track id : " << trackID
- 	 << "  global time : " << G4BestUnit(globalTime,"Time")
-	 << "  kinetic energy : " << G4BestUnit(kinEne,"Energy")
-	 << "  process ini : " << processIni 
-	 << "  process fin : " << processFin 
-     << "  detector number : " << detN
-	 << "  energy deposit : " << G4BestUnit(edep,"Energy")
-	 << "  position : " << G4BestUnit(pos,"Length") << G4endl;
+//  G4cout << "  parent id : " << parentID
+//	 << "  particleID : " << particleID
+//	 << "  track id : " << trackID
+// 	 << "  global time : " << G4BestUnit(globalTime,"Time")
+//	 << "  kinetic energy : " << G4BestUnit(kinEne,"Energy")
+//	 << "  process ini : " << processIni 
+//	 << "  process fin : " << processFin 
+//     << "  detector number : " << detN
+//	 << "  energy deposit : " << G4BestUnit(edep,"Energy")
+//	 << "  position : " << G4BestUnit(pos,"Length") << G4endl;
 }
 

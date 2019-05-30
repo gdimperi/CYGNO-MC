@@ -1,6 +1,7 @@
 #include "CYGNODetectorConstruction.hh"
 #include "CYGNOPhysicsList.hh"
-//#include "CYGNOActionInitialization.hh"
+#include "CYGNOPrimaryGeneratorAction.hh"
+#include "CYGNOActionInitialization.hh"
 #include "G4EmProcessOptions.hh"
 #include "G4PhysListFactory.hh"
 //#ifdef G4MULTITHREADED
@@ -68,29 +69,10 @@ int main(int argc,char** argv)
   // CYGNO physics list is the Shielding physics list with the addition of emlists option4 and of fluo,PIXE,Auger. In a second moment we can add the optical photons and simulate the scintillation
   // For the study of systematics, change Shielding to QGSP_BERT_HP and QGSP_BIC_HP, and the option4 to livermore and penelope.
   CYGNOPhysicsList* physics = new CYGNOPhysicsList;
-  /*
-  //This is to set one of the prepacked physics lists in geant. It includes hadronic interactions including low energy neutrons "HP" and a combination of livermore+penelope electromagnetic results "EMZ"
-  G4PhysListFactory factory;
-  //G4VModularPhysicsList* physics = factory.GetReferencePhysList("QGSP_BERT_HP_EMZ");
-  //G4VModularPhysicsList* physics = factory.GetReferencePhysList("FTFP_BERT_HP_EMZ");
-  //The most accurate physics list
-  G4VModularPhysicsList* physics = factory.GetReferencePhysList("Shielding_EMZ");
-  G4EmProcessOptions emOptions;
-  emOptions.SetBuildCSDARange(true);
-  emOptions.SetDEDXBinningForCSDARange(10*10);
-  //emOptions.SetDeexcitationActiveRegion(true); //TBC
-  emOptions.SetFluo(true);
-  emOptions.SetAuger(true);
-  emOptions.SetPIXE(true);
-  //NOTE: If you want to study systematics due to the cut on flourescence photon then add to the macro the following line after /run/initialize
-  //     /process/em/deexcitationIgnoreCut true
-  //This line indded remove the default cut on fluorescence photons which is set to 250 eV
-  */
   runManager->SetUserInitialization(physics);
    
   // User Action classes
-  //
-  //runManager->SetUserInitialization(new CYGNOActionInitialization(detector));
+  runManager->SetUserInitialization(new CYGNOActionInitialization(detector));
 
   // Initialize G4 kernel
   //

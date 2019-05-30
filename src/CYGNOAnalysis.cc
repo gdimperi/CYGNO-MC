@@ -50,9 +50,10 @@ CYGNOAnalysis* CYGNOAnalysis::getInstance()
     return fManager;
 }
 
+    
 CYGNOAnalysis::CYGNOAnalysis():
        	fCYGNOID(-1), 
-	fHitsInfo(0), 
+	fHitsInfo(1), 
 	fOutFileCut(0), 
 	fRegisterOn(0),
 	fTotT(0)
@@ -91,7 +92,6 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     analysisManager->SetHistoDirectoryName("histo");
     //analysisManager->SetNtupleDirectoryName("ntuple");
     
-
     CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
 
     //-------------------------------------------------------------------------------------------
@@ -556,6 +556,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_x_hits.push_back(tempvec.getX());
                     v_y_hits.push_back(tempvec.getY());
                     v_z_hits.push_back(tempvec.getZ());
+                    v_len_hits.push_back((*CYGNOHC)[i]->GetLength());
 	    }
 
 	    v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());

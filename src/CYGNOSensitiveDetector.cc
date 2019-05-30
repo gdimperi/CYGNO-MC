@@ -41,12 +41,12 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
   newHit->SetParticleID  (aStep->GetTrack()->GetDefinition()->GetPDGEncoding());
   // track ID
   newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  // global time
-  newHit->SetGlobalTime  (aStep->GetTrack()->GetGlobalTime());
-  // kinetic energy
-  newHit->SetKineticEne  (aStep->GetPreStepPoint()->GetKineticEnergy());
-  // step length
-  newHit->SetKineticEne  (aStep->GetStepLength());
+  // global time in sec
+  newHit->SetGlobalTime  (aStep->GetTrack()->GetGlobalTime()/s);
+  // kinetic energy in keV
+  newHit->SetKineticEne  (aStep->GetPreStepPoint()->GetKineticEnergy()/keV);
+  // step length in mm
+  newHit->SetLength  (aStep->GetStepLength()/mm);
 
    
   if (aStep->GetPreStepPoint()->GetProcessDefinedStep() != NULL) {
@@ -56,11 +56,8 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
 
   newHit->SetProcessFin  (aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName());
 
-  G4int depth = 2;
   G4String volumeName = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName();
-  G4int volumeNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(depth);
-  newHit->SetDetN     (volumeNumber);
-  newHit->SetEdep     (edep);
+  newHit->SetEdep     (edep/keV);
   newHit->SetPos      (aStep->GetPostStepPoint()->GetPosition());
   CYGNOCollection->insert( newHit );
   return true;
@@ -70,7 +67,7 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
 
 void CYGNOSensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 {
-  verboseLevel=1;
+  verboseLevel=0;
 
   if (verboseLevel>0) { 
     G4int NbHits = CYGNOCollection->entries();
