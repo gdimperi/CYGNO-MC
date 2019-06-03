@@ -1,6 +1,5 @@
 #include "CYGNODetectorLNGS.hh"
-//#include "CYGNODetectorLNGSMessenger.hh"
-#include "CYGNODetectorMaterial.hh"
+#include "CYGNODetectorLNGSMessenger.hh"
 
 #include "G4VisAttributes.hh"
 #include "G4PhysicalConstants.hh"
@@ -32,9 +31,9 @@ CYGNODetectorLNGS::CYGNODetectorLNGS() :
   size_Laboratory(),
   tr_Laboratory(),
   rot_Laboratory(),
-  Shielding_log(0),
-  size_Shielding(),
-  absrot_Shielding(),
+  //Shielding_log(0),
+  //size_Shielding(),
+  //absrot_Shielding(),
   InsideVolume_log(0),
   size_InsideVolume(),
   tr_InsideVolume(),
@@ -44,7 +43,7 @@ CYGNODetectorLNGS::CYGNODetectorLNGS() :
   productionLayerThickness(40.*cm)
 {
 
-  //  fMessenger = new CYGNODetectorLNGSMessenger(this);
+  fMessenger = new CYGNODetectorLNGSMessenger(this);
 
   Construct();
   
@@ -52,7 +51,7 @@ CYGNODetectorLNGS::CYGNODetectorLNGS() :
 
 CYGNODetectorLNGS::~CYGNODetectorLNGS()
 {
-  //  delete fMessenger;
+  delete fMessenger;
 }
 
 CYGNODetectorLNGS* CYGNODetectorLNGS::GetInstance()
@@ -77,7 +76,7 @@ void CYGNODetectorLNGS::Construct()
 void CYGNODetectorLNGS::ConstructRock()
 {  
   //G4cout << "Constructing materials...";
-  CYGNODetectorMaterial* CYGNOMaterials = CYGNODetectorMaterial::GetInstance();
+  //CYGNOMaterials = CYGNODetectorMaterial::GetInstance();
   //G4cout << "... done" << G4endl;
   
   absrot_Rock = G4RotationMatrix();
@@ -128,7 +127,7 @@ void CYGNODetectorLNGS::ConstructRock()
 																   0,
 																   rockTranslation);
   
-  G4LogicalVolume* externalRock_log = new G4LogicalVolume(externalRockSolid,CYGNOMaterials->Material("lngsRock"),name_log,0,0,0);
+  externalRock_log = new G4LogicalVolume(externalRockSolid,CYGNOMaterials->Material("lngsRock"),name_log,0,0,0);
   G4VisAttributes* RockExternalVisAtt = new G4VisAttributes(G4Color(1.,0.,0.));
   externalRock_log->SetVisAttributes(RockExternalVisAtt);
   Rock_log = externalRock_log;
@@ -164,7 +163,7 @@ void CYGNODetectorLNGS::ConstructRock()
   tr_Laboratory+=(rot_Laboratory*tr);
   rot = G4RotationMatrix();// rotation of daughter volume
   rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
-  G4PVPlacement* productionRock_phys = new G4PVPlacement(G4Transform3D(rot,tr),productionRock_log,name_phys,externalRock_log,false,0,true);
+  productionRock_phys = new G4PVPlacement(G4Transform3D(rot,tr),productionRock_log,name_phys,externalRock_log,false,0,true);
 
   //Innermost Layer:
   G4Box* internalRockBox = new G4Box("internalRockBox",
@@ -187,14 +186,14 @@ void CYGNODetectorLNGS::ConstructRock()
 																   0,
 																   internalRockTranslation);
   
-  G4LogicalVolume* internalRock_log = new G4LogicalVolume(internalRockSolid,CYGNOMaterials->Material("lngsRock"),name_log,0,0,0);
+  internalRock_log = new G4LogicalVolume(internalRockSolid,CYGNOMaterials->Material("lngsRock"),name_log,0,0,0);
   internalRock_log->SetVisAttributes(ProductionLayerVisAtt);
   
   tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
   tr_Laboratory+=(rot_Laboratory*tr);
   rot = G4RotationMatrix();// rotation of daughter volume
   rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
-  G4PVPlacement* internalRock_phys = new G4PVPlacement(G4Transform3D(rot,tr),internalRock_log,name_phys,productionRock_log,false,0,true);
+  internalRock_phys = new G4PVPlacement(G4Transform3D(rot,tr),internalRock_log,name_phys,productionRock_log,false,0,true);
   
   //Experimental Hall B at LNGS according to Chiara Zarra drawings
   //Concrete Wall ------------------------------------------------------------------------------------------------------
@@ -218,13 +217,14 @@ void CYGNODetectorLNGS::ConstructRock()
 																  0,
 																  expHallWallTranslation);
   
-  G4LogicalVolume* expHallWall_log = new G4LogicalVolume(expHallWallSolid,CYGNOMaterials->Material("Concrete"),name_log,0,0,0);
+  expHallWall_log = new G4LogicalVolume(expHallWallSolid,CYGNOMaterials->Material("concrete"),name_log,0,0,0);
+//  expHallWall_log = new G4LogicalVolume(expHallWallSolid,CYGNOMaterials->Material("lngsRock"),name_log,0,0,0);
   
   tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
   tr_Laboratory+=(rot_Laboratory*tr);
   rot = G4RotationMatrix();// rotation of daughter volume
   rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
-  G4PVPlacement* expeHallWall_phys = new G4PVPlacement(G4Transform3D(rot,tr),expHallWall_log,name_phys,internalRock_log,false,0,true);
+  expeHallWall_phys = new G4PVPlacement(G4Transform3D(rot,tr),expHallWall_log,name_phys,internalRock_log,false,0,true);
   
   //Hall---------------------------------------------------------------------------------------------------------------
   G4Box* expHallBox = new G4Box("expHallBox",
@@ -247,14 +247,14 @@ void CYGNODetectorLNGS::ConstructRock()
 														  expHallTube,
 														  0,
 														  expHallTranslation);
-  G4LogicalVolume* expHall_log = new G4LogicalVolume(expHallSolid,CYGNOMaterials->Material("Air"),name_log,0,0,0);
+  expHall_log = new G4LogicalVolume(expHallSolid,CYGNOMaterials->Material("air"),name_log,0,0,0);
   Laboratory_log = expHall_log;
 
   tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
   tr_Laboratory+=(rot_Laboratory*tr);
   rot = G4RotationMatrix();// rotation of daughter volume
   rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
-  G4PVPlacement* expHall_phys = new G4PVPlacement(G4Transform3D(rot,tr),expHall_log,name_phys,expHallWall_log,false,0,true);
+  expHall_phys = new G4PVPlacement(G4Transform3D(rot,tr),expHall_log,name_phys,expHallWall_log,false,0,true);
   
   
   //These variables are used to set the thin tube for depth studies in the externalRock_log
@@ -263,37 +263,37 @@ void CYGNODetectorLNGS::ConstructRock()
     
 }
 
-void CYGNODetectorLNGS::ConstructShielding()
-{
-
-  absrot_Shielding = G4RotationMatrix();
-
-  //Name of the volumes
-  G4String name_solid="";
-  G4String name_log="";
-  G4String name_phys="";
-  G4ThreeVector  tr;
-  tr_InsideVolume = G4ThreeVector(0.,0.,0.);
-  G4RotationMatrix rot;
-  rot_InsideVolume = G4RotationMatrix();
-
-  size_InsideVolume = G4ThreeVector(0.,
-									0.,
-									0.);
-  size_Shielding = G4ThreeVector(0.,
-								 0.,
-								 0.);
-  
-  Shielding_log = 0;  
-  InsideVolume_log = 0;
-
-}
+//void CYGNODetectorLNGS::ConstructShielding()
+//{
+//
+//  absrot_Shielding = G4RotationMatrix();
+//
+//  //Name of the volumes
+//  G4String name_solid="";
+//  G4String name_log="";
+//  G4String name_phys="";
+//  G4ThreeVector  tr;
+//  tr_InsideVolume = G4ThreeVector(0.,0.,0.);
+//  G4RotationMatrix rot;
+//  rot_InsideVolume = G4RotationMatrix();
+//
+//  size_InsideVolume = G4ThreeVector(0.,0.,0.);
+//  size_Shielding = G4ThreeVector(0.,0.,0.);
+//  
+//  Shielding_log = 0;  
+//  InsideVolume_log = 0;
+//
+//}
 
 
 void CYGNODetectorLNGS::SaveMassAndDensity()
 {
 
 } 
+void CYGNODetectorLNGS::SetDetectorMaterial(CYGNODetectorMaterial* materials)
+{
+	CYGNOMaterials = materials;
+}
 void CYGNODetectorLNGS::SetExternalRockThickness(G4double rockthick)
 {
 	rockThicknessOuter = rockthick;
@@ -312,7 +312,7 @@ void CYGNODetectorLNGS::SetInternalRockThickness(G4double rockthick)
 void CYGNODetectorLNGS::Refresh()
 {  
   InsideVolume_log = 0;
-  Shielding_log = 0;
+  //Shielding_log = 0;
   Laboratory_log = 0;
   Rock_log = 0;
 }

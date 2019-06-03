@@ -1,23 +1,15 @@
-/* ************************************************
- * GEANT4 CAD INTERFACE - template
- *
- * File:      DetectorConstruction.hh
- *
- * Author:    Christopher M Poole,
- * Email:     mail@christopherpoole.net
- *
- * Date:      17th August, 2017
- **************************************************/
-
 #pragma once
 
 // STL //
 #include <string>
 
+class CYGNODetectorConstructionMessenger;
 // GEANT4 //
 class G4VSolid;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+
+// USER //
 class CYGNOSensitiveDetector;
 
 #include "G4ThreeVector.hh"
@@ -37,11 +29,18 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
 
     G4VPhysicalVolume* Construct();
     void SaveMassAndDensity();
+    void UpdateGeometry();
 
     void SetExternalRockThickness(G4double rockthick) {rockThicknessOuter = rockthick;}
     void SetProductionRockThickness(G4double rockthick) {productionLayerThickness = rockthick;}
     void SetInternalRockThickness(G4double rockthick) {rockThicknessInner = rockthick;}
 
+    void SetCYGNOLab(G4String lab) {CYGNOLab = lab;}
+    G4String GetCYGNOLab() {return CYGNOLab;}
+
+    void SetCYGNOShielding(G4String shield) {CYGNOShielding = shield;}
+    G4String GetCYGNOShielding() {return CYGNOShielding;}
+    
     void SetShieldThick0(G4double thick) {thick0 = thick;}
     void SetShieldThick1(G4double thick) {thick1 = thick;}
     void SetShieldThick2(G4double thick) {thick2 = thick;}
@@ -53,13 +52,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     void SetInsideVolumeRadius(G4double r) {InsideVolume_OR = r;}
     void SetInsideVolumeHeight(G4double h) {InsideVolume_Z = h;}
 
-
-    void SetCYGNOLab(G4String lab) {CYGNOLab = lab;}
-    G4String GetCYGNOLab() {return CYGNOLab;}
-  
   private:
     
-    G4String CYGNOLab;
+    CYGNODetectorConstructionMessenger* fMessenger;
 
     //G4VSolid * world_solid;
     //G4LogicalVolume* world_logical;
@@ -72,6 +67,8 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4double rockThicknessInner;
     G4double productionLayerThickness;
     
+    G4String CYGNOLab;
+    G4String CYGNOShielding;
     G4double thick0;
     G4double thick1;
     G4double thick2;

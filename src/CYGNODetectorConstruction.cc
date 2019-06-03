@@ -1,13 +1,3 @@
-/* ************************************************
- * GEANT4 CAD INTERFACE - template
- *
- * File:      DetectorConstruction.cc
- *
- * Author:    Christopher M Poole,
- * Email:     mail@christopherpoole.net
- *
- * Date:      13th August, 2017
- **************************************************/
 
 // CADMESH //
 #include "CADMesh.hh"
@@ -35,8 +25,15 @@
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
 
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SolidStore.hh"
+#include "G4GeometryManager.hh"
+#include "G4RunManager.hh"
+
 // USER //
 #include "CYGNODetectorConstruction.hh"
+#include "CYGNODetectorConstructionMessenger.hh"
 #include "CYGNODetectorLNGS.hh"
 #include "CYGNODetectorMaterial.hh"
 #include "CYGNODetectorProperty.hh"
@@ -48,14 +45,18 @@ CYGNODetectorConstruction::CYGNODetectorConstruction() :
    rockThicknessInner(-999*m),
    CYGNOLab("NoCave"),
    //CYGNOLab("LNGS"),
-   thick0(0.9*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
+   CYGNOShielding("FullShield"),
+   //CYGNOShielding("NoShield"),
+   thick0(0.90*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
    Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu")
 
 {
+	fMessenger = new CYGNODetectorConstructionMessenger(this);
 }
 
 CYGNODetectorConstruction::~CYGNODetectorConstruction()
 {
+	delete fMessenger;
 }
 
 G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
@@ -163,7 +164,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
               LNGS->SetProductionRockThickness(productionLayerThickness);
         if (rockThicknessInner != -999*m)
               LNGS->SetInternalRockThickness(rockThicknessInner);	  
-        LNGS->ConstructRock();
+        
+	LNGS->SetDetectorMaterial(CYGNOMaterials);
+	LNGS->ConstructRock();
         Rock_log=LNGS->GetRock();
         size_Rock=LNGS->GetRockSizeXYZ();
         absrot_Rock=LNGS->GetRockAbsRotation();
@@ -214,97 +217,138 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  rot_Laboratory*=rot; //equivalent to rot_Laboratory=rot_Laboratory*rot
 	  InnerAirSphere_phys = new G4PVPlacement(G4Transform3D(rot,tr),InnerAirSphere_log,name_phys,OuterAirSphere_log,false,0,true);        
     }
+    else
+    {
+      G4cout << "ERROR: Something went wrong with the definition of the variable CYGNOLab" << G4endl;
+      //throw std::exception();
+      exit(1);		
+    }
+
 
     G4cout << "Laboratory done." << G4endl;
  
     //**********************************************************************
     // SHIELDING **********************************************************
           
-    G4cout<<"Shielding Construction Started"<<G4endl;
-    
-    if (thick3==-999*m || thick2==-999*m || thick1==-999*m || thick0==-999*m || Mat0=="" || Mat1=="" || Mat2=="" || Mat3=="") 
+    if (CYGNOShielding == "FullShield") 
     {
-        G4cout << "ERROR: Please specify the thickennses and the materials of the shielding layers if you want to use the shielding design: Full" << G4endl;
-	//throw std::exception();
-	exit(1);
+        G4cout<<"Shielding Construction Started"<<G4endl;
+        
+        if (thick3==-999*m || thick2==-999*m || thick1==-999*m || thick0==-999*m || Mat0=="" || Mat1=="" || Mat2=="" || Mat3=="") 
+        {
+            G4cout << "ERROR: Please specify the thickennses and the materials of the shielding layers if you want to use the shielding design: FullShield" << G4endl;
+            //throw std::exception();
+            exit(1);
+        }
+
+        // ----------------------------------- Inner room dimensions
+        G4double AirBox_x;
+        G4double AirBox_y;
+        G4double AirBox_z;
+        G4Box* AirBox;
+        AirBox_x = 3.0*m;
+        AirBox_y = 2.0*m;
+        AirBox_z = 2.0*m;        
+        tr_InsideVolume = G4ThreeVector(0.,0.,0.);
+        rot_InsideVolume = G4RotationMatrix();		
+        size_InsideVolume = G4ThreeVector(AirBox_x/2.,
+              								AirBox_y/2.,
+              								AirBox_z/2.);		
+        size_Shielding = G4ThreeVector(AirBox_x/2. + thick3 + thick2 + thick1 + thick0,
+              							 AirBox_y/2. + thick3 + thick2 + thick1 + thick0,
+              							 AirBox_z/2. + thick3 + thick2 + thick1 + thick0);
+        absrot_Shielding = G4RotationMatrix();
+
+        // ----------------------------------- Shield 0
+        G4double Shield0_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
+        G4double Shield0_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
+        G4double Shield0_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;        
+        G4Material* Shield0Mat = CYGNOMaterials->Material(Mat0);
+        name_phys="Shield0";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield0 = new G4Box(name_solid,0.5*Shield0_x,0.5*Shield0_y,0.5*Shield0_z);
+        Shield0_log = new G4LogicalVolume(Shield0,Shield0Mat,name_log);
+        Shielding_log = Shield0_log;
+        Shield0_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat0));
+
+        // ----------------------------------- Shield 1
+        G4double Shield1_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
+        G4double Shield1_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
+        G4double Shield1_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
+        G4Material* Shield1Mat = CYGNOMaterials->Material(Mat1);
+        name_phys="Shield1";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield1 = new G4Box(name_solid,0.5*Shield1_x,0.5*Shield1_y,0.5*Shield1_z);
+        Shield1_log = new G4LogicalVolume(Shield1,Shield1Mat,name_log);
+        Shield1_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat1));
+        
+        // ----------------------------------- Shield 2        
+        G4double Shield2_x = AirBox_x + 2.*thick3 + 2.*thick2 ;
+        G4double Shield2_y = AirBox_y + 2.*thick3 + 2.*thick2 ;
+        G4double Shield2_z = AirBox_z + 2.*thick3 + 2.*thick2 ;
+        G4Material* Shield2Mat = CYGNOMaterials->Material(Mat2);
+        name_phys="Shield2";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield2 = new G4Box(name_solid,0.5*Shield2_x,0.5*Shield2_y,0.5*Shield2_z);
+        Shield2_log = new G4LogicalVolume(Shield2,Shield2Mat,name_log);
+        Shield2_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat2));
+        
+        // ----------------------------------- Shield 3        
+        G4double Shield3_x = AirBox_x + 2.*thick3 ;
+        G4double Shield3_y = AirBox_y + 2.*thick3 ;
+        G4double Shield3_z = AirBox_z + 2.*thick3 ;
+        G4Material* Shield3Mat = CYGNOMaterials->Material(Mat3);
+        name_phys="Shield3";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield3 = new G4Box(name_solid,0.5*Shield3_x,0.5*Shield3_y,0.5*Shield3_z);
+        Shield3_log = new G4LogicalVolume(Shield3,Shield3Mat,name_log);
+        Shield3_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat3));
+        
+        // ----------------------------------- Airbox
+        name_phys="AirBox";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
+        AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log);
+        AirBox_log->SetVisAttributes(CYGNOMaterials->VisAttributes("Air"));
+	InsideVolume_log = AirBox_log;
+    
     }
+    // ---------------------------------- No shielding
+    else if (CYGNOShielding == "NoShield") 
+    {
+	  G4double AirBox_x;
+	  G4double AirBox_y;
+	  G4double AirBox_z;
+	  G4Box* AirBox;
+	  AirBox_x = 5.0*m;
+	  AirBox_y = 5.0*m;
+	  AirBox_z = 5.0*m;
+	  name_phys="AirBox";
+	  name_log=name_phys+"_log";
+	  name_solid=name_phys+"_solid";
+	  AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
+	  AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log,0,0,0);
 
-    // ----------------------------------- Inner room dimensions
-    G4double AirBox_x;
-    G4double AirBox_y;
-    G4double AirBox_z;
-    G4Box* AirBox;
-    AirBox_x = 3.0*m;
-    AirBox_y = 2.0*m;
-    AirBox_z = 2.0*m;        
-    tr_InsideVolume = G4ThreeVector(0.,0.,0.);
-    rot_InsideVolume = G4RotationMatrix();		
-    size_InsideVolume = G4ThreeVector(AirBox_x/2.,
-          								AirBox_y/2.,
-          								AirBox_z/2.);		
-    size_Shielding = G4ThreeVector(AirBox_x/2. + thick3 + thick2 + thick1 + thick0,
-          							 AirBox_y/2. + thick3 + thick2 + thick1 + thick0,
-          							 AirBox_z/2. + thick3 + thick2 + thick1 + thick0);
-    absrot_Shielding = G4RotationMatrix();
+	  Shielding_log=AirBox_log;
+	  size_Shielding=G4ThreeVector(AirBox_x/2.,AirBox_y/2.,AirBox_z/2.);
+	  absrot_Shielding = G4RotationMatrix();
+	  size_InsideVolume=G4ThreeVector(AirBox_x/2.,AirBox_y/2.,AirBox_z/2.);
+	  tr_InsideVolume=G4ThreeVector(0.,0.,0.);
+	  rot_InsideVolume=G4RotationMatrix();
+    }
+    else
+    {
+      G4cout << "ERROR: Something went wrong with the definition of the variable CYGNOShielding" << G4endl;
+      //throw std::exception();
+      exit(1);		
+    }
+     
 
-    // ----------------------------------- Shield 0
-    G4double Shield0_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
-    G4double Shield0_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;
-    G4double Shield0_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 + 2.*thick0 ;        
-    G4Material* Shield0Mat = CYGNOMaterials->Material(Mat0);
-    name_phys="Shield0";
-    name_log=name_phys+"_log";
-    name_solid=name_phys+"_solid";
-    G4Box* Shield0 = new G4Box(name_solid,0.5*Shield0_x,0.5*Shield0_y,0.5*Shield0_z);
-    Shield0_log = new G4LogicalVolume(Shield0,Shield0Mat,name_log);
-    Shielding_log = Shield0_log;
-    Shield0_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat0));
-
-    // ----------------------------------- Shield 1
-    G4double Shield1_x = AirBox_x + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
-    G4double Shield1_y = AirBox_y + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
-    G4double Shield1_z = AirBox_z + 2.*thick3 + 2.*thick2 + 2.*thick1 ;
-    G4Material* Shield1Mat = CYGNOMaterials->Material(Mat1);
-    name_phys="Shield1";
-    name_log=name_phys+"_log";
-    name_solid=name_phys+"_solid";
-    G4Box* Shield1 = new G4Box(name_solid,0.5*Shield1_x,0.5*Shield1_y,0.5*Shield1_z);
-    Shield1_log = new G4LogicalVolume(Shield1,Shield1Mat,name_log);
-    Shield1_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat1));
-    
-    // ----------------------------------- Shield 2        
-    G4double Shield2_x = AirBox_x + 2.*thick3 + 2.*thick2 ;
-    G4double Shield2_y = AirBox_y + 2.*thick3 + 2.*thick2 ;
-    G4double Shield2_z = AirBox_z + 2.*thick3 + 2.*thick2 ;
-    G4Material* Shield2Mat = CYGNOMaterials->Material(Mat2);
-    name_phys="Shield2";
-    name_log=name_phys+"_log";
-    name_solid=name_phys+"_solid";
-    G4Box* Shield2 = new G4Box(name_solid,0.5*Shield2_x,0.5*Shield2_y,0.5*Shield2_z);
-    Shield2_log = new G4LogicalVolume(Shield2,Shield2Mat,name_log);
-    Shield2_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat2));
-    
-    // ----------------------------------- Shield 3        
-    G4double Shield3_x = AirBox_x + 2.*thick3 ;
-    G4double Shield3_y = AirBox_y + 2.*thick3 ;
-    G4double Shield3_z = AirBox_z + 2.*thick3 ;
-    G4Material* Shield3Mat = CYGNOMaterials->Material(Mat3);
-    name_phys="Shield3";
-    name_log=name_phys+"_log";
-    name_solid=name_phys+"_solid";
-    G4Box* Shield3 = new G4Box(name_solid,0.5*Shield3_x,0.5*Shield3_y,0.5*Shield3_z);
-    Shield3_log = new G4LogicalVolume(Shield3,Shield3Mat,name_log);
-    Shield3_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat3));
-    
-    // ----------------------------------- Airbox
-    name_phys="AirBox";
-    name_log=name_phys+"_log";
-    name_solid=name_phys+"_solid";
-    AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
-    AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log);
-    AirBox_log->SetVisAttributes(CYGNOMaterials->VisAttributes("Air"));
-    InsideVolume_log = AirBox_log;
-    
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
@@ -427,35 +471,46 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	tr_Shielding+=(rot_Shielding*tr);
 
     }
-    Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield0_log,"Shield0",Laboratory_log,false,0,true);
 
+    Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shielding_log,"Shield0",Laboratory_log,false,0,true);
+    if (CYGNOShielding == "NoShield")
+    {
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        AirBox_log = Shielding_log;
+    }
     
-    // ----------------------------------- Volume placements
+    else if (CYGNOShielding == "FullShield") 
+    {   
+        // ----------------------------------- Volume placements
 
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shield0_log,false,0,true);
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield1_log,"Shield1",Shielding_log,false,0,true);
 
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield2_log,"Shield2",Shield1_log,false,0,true);
 
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shield3_log,"Shield3",Shield2_log,false,0,true);
 
-    tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
-    tr_InsideVolume+=(rot_InsideVolume*tr);
-    rot = G4RotationMatrix();// rotation of daughter volume
-    rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
-    AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
     
+    }
     G4ThreeVector  size;
     
     cad_shell_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
@@ -525,12 +580,14 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
   CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
 
   G4cout << "Saving masses and densities of the volumes of the CYGNODetectorConstruction class"<< G4endl;
-  CYGNOProperties->AddVolumeNameMassAndDensity(Rock_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(Laboratory_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(Shield0_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(Shield1_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(Shield2_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
+  //CYGNOProperties->AddVolumeNameMassAndDensity(Rock_log);
+  //CYGNOProperties->AddVolumeNameMassAndDensity(Laboratory_log);
+  if (CYGNOShielding=="FullShield"){
+      CYGNOProperties->AddVolumeNameMassAndDensity(Shielding_log);
+      CYGNOProperties->AddVolumeNameMassAndDensity(Shield1_log);
+      CYGNOProperties->AddVolumeNameMassAndDensity(Shield2_log);
+      CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
+  }
   CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
   CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
   CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
@@ -550,5 +607,68 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
 	  CYGNOProperties->AddPhysVolumeNameMassAndDensity(productionRockThinTube_phys);
 	}
   G4cout << "All volume masses and densities saved"<< G4endl;
+}
+
+void CYGNODetectorConstruction::UpdateGeometry()
+{
+
+  G4cout << "Updating the Geometry"<< G4endl;
+  CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
+  CYGNOProperties->Refresh();
+
+  //Removing sensitive detectors
+  CYGNO_log->SetSensitiveDetector(0);
+  CYGNO_log=0;
+
+  //Deleting all the solids, logical and physical objects
+  //G4RunManager::GetRunManager()->ReinitializeGeometry(true);
+  //Equivalent to
+  G4GeometryManager::GetInstance()->OpenGeometry();
+  G4PhysicalVolumeStore* PhysicalVolumeStore = G4PhysicalVolumeStore::GetInstance();
+  PhysicalVolumeStore->Clean();
+  G4LogicalVolumeStore* LogicalVolumeStore = G4LogicalVolumeStore::GetInstance();
+  LogicalVolumeStore->Clean();
+  G4SolidStore* SolidStore = G4SolidStore::GetInstance();
+  SolidStore->Clean();
+  
+  CYGNODetectorMaterial* CYGNOMaterials = CYGNODetectorMaterial::GetInstance();
+  CYGNOMaterials->Refresh();
+
+
+  //The memory for these pointers has been freed by the above Clean() methods
+  CYGNODetectorLNGS* CYGNOLNGS = CYGNODetectorLNGS::GetInstance();
+  CYGNOLNGS->Refresh();
+
+  Shield0_log=0; 
+  Shield1_log=0; 
+  Shield2_log=0; 
+  Shield3_log=0; 
+  AirBox_log=0;
+
+  cad_shell_logical=0;
+  cad_camera_carter_logical=0;
+  cad_cameras_all_logical=0;
+  CYGNO_log=0;
+  cad_fc_support_logical=0;
+  cad_turns_support_logical=0;
+  cad_gem_support_logical=0;
+  cad_gem_logical=0;
+  cad_cathode_frame_logical=0;
+  cad_cathode_logical=0;
+  cad_field_cage_logical=0;
+  
+
+  InsideVolume_log=0;
+  Shielding_log=0;
+  Laboratory_log=0;
+  Rock_log=0;
+  WorldVolume_log=0;
+  productionRockThinTube_phys=0;
+
+  //log->ClearDaughters();
+
+  // Delete all the geometry you had defined and build everything from scratch
+  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 

@@ -6,8 +6,9 @@
 #include "G4VPhysicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
+#include "CYGNODetectorMaterial.hh"
 
-//class CYGNODetectorLNGSMessenger;
+class CYGNODetectorLNGSMessenger;
 
 class CYGNODetectorLNGS
 {
@@ -18,7 +19,7 @@ public:
   static CYGNODetectorLNGS* GetInstance();
   void Construct();
   void ConstructRock();
-  void ConstructShielding();
+  //void ConstructShielding();
   void ConstructVessel();
   void UpdateGeometry();
   void SaveMassAndDensity();
@@ -31,9 +32,9 @@ public:
   G4ThreeVector GetLaboratorySizeXYZ() {return size_Laboratory;}
   G4ThreeVector GetLaboratoryTranslation() {return tr_Laboratory;}
   G4RotationMatrix GetLaboratoryRotation() {return rot_Laboratory;}
-  G4LogicalVolume* GetShielding() {return Shielding_log;}
-  G4ThreeVector GetShieldingSizeXYZ() {return size_Shielding;}
-  G4RotationMatrix GetShieldingAbsRotation() {return absrot_Shielding;}//Rotation wrt the world reference frame
+  //G4LogicalVolume* GetShielding() {return Shielding_log;}
+  //G4ThreeVector GetShieldingSizeXYZ() {return size_Shielding;}
+  //G4RotationMatrix GetShieldingAbsRotation() {return absrot_Shielding;}//Rotation wrt the world reference frame
   G4LogicalVolume* GetInsideVolume() {return InsideVolume_log;}
   G4ThreeVector GetInsideVolumeSizeXYZ() {return size_InsideVolume;}
   G4ThreeVector GetInsideVolumeTranslation() {return tr_InsideVolume;}
@@ -44,6 +45,8 @@ public:
   void SetExternalRockThickness(G4double);
   void SetProductionRockThickness(G4double);
   void SetInternalRockThickness(G4double);
+  void SetDetectorMaterial(CYGNODetectorMaterial* );
+
 
   static CYGNODetectorLNGS* fCYGNODetectorLNGS;
 
@@ -52,7 +55,7 @@ public:
 
 private:
 
-  //  CYGNODetectorLNGSMessenger* fMessenger;
+  CYGNODetectorLNGSMessenger* fMessenger;
 
   G4LogicalVolume* Rock_log;
   G4ThreeVector size_Rock;
@@ -61,9 +64,9 @@ private:
   G4ThreeVector size_Laboratory;
   G4ThreeVector tr_Laboratory;
   G4RotationMatrix rot_Laboratory;
-  G4LogicalVolume* Shielding_log;
-  G4ThreeVector size_Shielding;
-  G4RotationMatrix absrot_Shielding;
+  //G4LogicalVolume* Shielding_log;
+  //G4ThreeVector size_Shielding;
+  //G4RotationMatrix absrot_Shielding;
   G4LogicalVolume* InsideVolume_log;
   G4ThreeVector size_InsideVolume;
   G4ThreeVector tr_InsideVolume;
@@ -74,6 +77,16 @@ private:
   G4double productionLayerThickness;
 
   G4LogicalVolume* productionRock_log;
+  G4LogicalVolume* externalRock_log; 
+  G4LogicalVolume* internalRock_log; 
+  G4LogicalVolume* expHallWall_log;
+  G4LogicalVolume* expHall_log;
+  G4VPhysicalVolume* productionRock_phys;
+  G4VPhysicalVolume* internalRock_phys; 
+  G4VPhysicalVolume* expeHallWall_phys ;
+  G4VPhysicalVolume* expHall_phys  ; 
+  
+  CYGNODetectorMaterial* CYGNOMaterials;
 
 };
 

@@ -1,3 +1,25 @@
+#CYGNO SHIELD
+#define the experiment location:
+/CYGNO/lab/select NoCave
+
+#define if the geometry of the shielding is Full or NoShield
+/CYGNO/shield/select FullShield
+/CYGNO/shield/thick0 40 cm
+/CYGNO/shield/thick1 40 cm
+/CYGNO/shield/thick2 20 cm
+/CYGNO/shield/thick3 5 cm
+/CYGNO/shield/mat0 Water
+/CYGNO/shield/mat1 PE
+/CYGNO/shield/mat2 Pb
+/CYGNO/shield/mat3 Cu
+
+
+# FINALLY ISSUE THE GEOMETRY UPDATE
+/CYGNO/updateGeo
+####
+
+
+
 # GENERATION OF RADIOACTIVE PARTICLES
 # define particle or ion 
 /gps/particle ion
@@ -32,4 +54,4 @@
 #/process/em/deexcitationIgnoreCut true
 
 # define number of events to be generated
-/run/beamOn 10000
+/run/beamOn 100
