@@ -26,12 +26,12 @@
 /gps/pos/type Surface
 /gps/pos/shape Sphere
 /gps/pos/centre 0. 0. 0. m
-/gps/pos/radius 0.5 m
-#/gps/ang/type iso
+/gps/pos/radius 1.0 m
+/gps/ang/type iso
 
 # set the focusing point, default is (0, 0, 0)
-/gps/ang/type focused
-/gps/ang/focuspoint 0 0 0 cm
+#/gps/ang/type focused
+#/gps/ang/focuspoint 0 0 0 cm
 
 /gps/ene/type User
 /gps/hist/type energy

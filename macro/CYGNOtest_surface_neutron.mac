@@ -18,12 +18,12 @@
 /gps/pos/type Surface
 /gps/pos/shape Sphere
 /gps/pos/centre 0. 0. 0. m
-/gps/pos/radius 1.5 m
-#/gps/ang/type iso
+/gps/pos/radius 1.0 m
+/gps/ang/type iso
 
 # set the focusing point, default is (0, 0, 0)
-/gps/ang/type focused
-/gps/ang/focuspoint 0 0 0 cm
+#/gps/ang/type focused
+#/gps/ang/focuspoint 0 0 0 cm
 
 /gps/ene/type User
 /gps/hist/type energy
@@ -60,12 +60,12 @@
 #change these for debug
 /run/verbose 0
 /event/verbose 0
-/tracking/verbose 2
-/CYGNO/reportingfrequency 1
+/tracking/verbose 0
+/CYGNO/reportingfrequency 1000
 #Output file name
 /CYGNO/outfile neutron_test
 /random/setSeeds 575841909 838392975
 #/process/em/deexcitationIgnoreCut true
 
 # define number of events to be generated
-/run/beamOn 10
+/run/beamOn 10000
