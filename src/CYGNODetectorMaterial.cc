@@ -1,18 +1,20 @@
 #include "CYGNODetectorMaterial.hh"
-//#include "CYGNODetectorMaterialMessenger.hh"
+#include "CYGNODetectorMaterialMessenger.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4OpticalSurface.hh"
 
 using namespace std;
 
 CYGNODetectorMaterial* CYGNODetectorMaterial::fCYGNODetectorMaterial = NULL;
 
-CYGNODetectorMaterial::CYGNODetectorMaterial()
+CYGNODetectorMaterial::CYGNODetectorMaterial():
+	gasHeFrac(0.6), 
+	gasCF4Frac(0.4)
 {
-    //////fMessenger = new CYGNODetectorMaterialMessenger(this);
+    fMessenger = new CYGNODetectorMaterialMessenger(this);
     ConstructMaterials();
 }
+
 
 void CYGNODetectorMaterial::ConstructMaterials(){
 
@@ -131,8 +133,8 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     SF6_gas->AddElement(elS, natoms =1);
     SF6_gas->AddElement(elF, natoms =6);
 
-    G4double He_frac = 0.70;
-    G4double CF4_frac = 0.30;
+    G4double He_frac = gasHeFrac;
+    G4double CF4_frac = gasCF4Frac;
 
     //He_gas
     density = 162.488*He_frac*g/m3;
@@ -201,16 +203,20 @@ void CYGNODetectorMaterial::ConstructMaterials(){
 
 CYGNODetectorMaterial::~CYGNODetectorMaterial()
 {
+    delete fMessenger;
 }
+
 
 CYGNODetectorMaterial* CYGNODetectorMaterial::GetInstance()
 {
+  if (fCYGNODetectorMaterial == NULL) {
     fCYGNODetectorMaterial = new CYGNODetectorMaterial();
+  }
   return fCYGNODetectorMaterial;
 }
 
 void CYGNODetectorMaterial::Refresh(){
-   ConstructMaterials();
+    ConstructMaterials();
 }
 
 G4Material* CYGNODetectorMaterial::Material(G4String what)

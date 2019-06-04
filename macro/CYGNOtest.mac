@@ -13,6 +13,9 @@
 /CYGNO/shield/mat2 Pb
 /CYGNO/shield/mat3 Cu
 
+#define fraction of He and CF4 in the sensitive gas
+/CYGNO/gas/frac_He 0.7
+/CYGNO/gas/frac_CF4 0.3
 
 # FINALLY ISSUE THE GEOMETRY UPDATE
 /CYGNO/updateGeo
@@ -47,11 +50,11 @@
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
-/CYGNO/reportingfrequency 1000
+/CYGNO/reportingfrequency 1
 #Output file name
 /CYGNO/outfile 14C_test
 /random/setSeeds 575841909 838392975
 #/process/em/deexcitationIgnoreCut true
 
 # define number of events to be generated
-/run/beamOn 100
+/run/beamOn 50

@@ -15,6 +15,7 @@ class G4UIcmdWithAnInteger;
 class G4UIcmdWith3Vector;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWith3VectorAndUnit;
+class G4UIcmdWithADouble;
 class G4UIcmdWithoutParameter;
 class G4UIcmdWithABool;
 class CYGNODetectorConstruction;
@@ -44,7 +45,6 @@ protected:
 private:
     CYGNODetectorConstruction   *fDetectorPrimary;
     
-    G4UIdirectory               *fDetectorDirectory;
     G4UIdirectory               *fLabDirectory;
     G4UIcmdWithAString          *fCYGNOLabCmd;
     G4UIcmdWithADoubleAndUnit   *fexternalrockthickCmd;

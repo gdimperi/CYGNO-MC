@@ -5,6 +5,7 @@
 #include "G4UIcmdWith3Vector.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
+#include "G4UIcmdWithADouble.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithABool.hh"
 #include "G4PhysicalVolumeStore.hh"
@@ -17,10 +18,6 @@
 CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
 (CYGNODetectorConstruction *detector):fDetectorPrimary(detector)
 {
-    fDetectorDirectory = new G4UIdirectory("/CYGNO/detector/");
-    fDetectorDirectory->SetGuidance("Control commands for detector:");
-    
-
     fLabDirectory = new G4UIdirectory("/CYGNO/lab/");
     fLabDirectory->SetGuidance("Control commands for lab:");
 

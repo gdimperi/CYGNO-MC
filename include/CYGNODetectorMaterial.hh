@@ -9,9 +9,7 @@
 
 using namespace std;
 
-class G4OpticalSurface;
-//class CYGNODetectorMaterialMessenger;
-
+class CYGNODetectorMaterialMessenger;
 class CYGNODetectorMaterial
 {
 public:
@@ -25,22 +23,11 @@ public:
   static CYGNODetectorMaterial* fCYGNODetectorMaterial;
   void Refresh();
   void ConstructMaterials();
-  void UseOpticalVeto(bool flag);
-  void UseReflectionsVeto(bool flag);
-  void UseOpticalCrystal(bool flag);
-  void UseReflectionsCrystal(bool flag);
-  void UsePC(bool flag);
-  bool IsUsingOpticalVeto();
-  bool IsUsingReflectionsVeto();
-  bool IsUsingOpticalCrystal();
-  bool IsUsingReflectionsCrystal();
-  bool IsUsingPC();
-  G4OpticalSurface* GetSurf(G4String);
-  void PrintSurfs();
-  void SetPCyield(double PCLY);
-  void SetNaIyield(double NaILY);
-  void SetLAByield(double LABLY);
 
+  void SetGasHeFrac(G4double frac) {gasHeFrac = frac;}        
+  G4double GetGasHeFrac() {return gasHeFrac;}                 
+  void SetGasCF4Frac(G4double frac) {gasCF4Frac = frac;}   
+  G4double GetGasCF4Frac() {return gasCF4Frac;}            
 
 private:
 
@@ -99,7 +86,10 @@ G4VisAttributes* ConcreteVis;
 G4VisAttributes* LNGSRockVis;
 G4VisAttributes* CYGNOGasVis;
 
-//CYGNODetectorMaterialMessenger* fMessenger;
+CYGNODetectorMaterialMessenger* fMessenger;
+
+G4double gasHeFrac; 
+G4double gasCF4Frac; 
 
 
 };

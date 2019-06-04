@@ -49,7 +49,6 @@ CYGNODetectorConstruction::CYGNODetectorConstruction() :
    //CYGNOShielding("NoShield"),
    thick0(0.90*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
    Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu")
-
 {
 	fMessenger = new CYGNODetectorConstructionMessenger(this);
 }
