@@ -601,10 +601,10 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
   CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
 
 
-  if ( productionRockThinTube_phys )
-	{
-	  CYGNOProperties->AddPhysVolumeNameMassAndDensity(productionRockThinTube_phys);
-	}
+//  if ( productionRockThinTube_phys )
+//	{
+//	  CYGNOProperties->AddPhysVolumeNameMassAndDensity(productionRockThinTube_phys);
+//	}
   G4cout << "All volume masses and densities saved"<< G4endl;
 }
 
