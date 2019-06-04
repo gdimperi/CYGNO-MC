@@ -40,7 +40,7 @@
 /gps/pos/type Volume
 /gps/pos/confine CYGNO_gas
 #
-#Save only events that pass that have hits in the scintillator or crystals if 1
+#Save only events that pass that have hits in the sensitive gas
 #/CYGNO/cutoutfile 1
 /CYGNO/save_hits_branches 1
 #/CYGNO/registeron 1
@@ -50,7 +50,7 @@
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
-/CYGNO/reportingfrequency 1
+/CYGNO/reportingfrequency 1000
 #Output file name
 /CYGNO/outfile 14C_test
 /random/setSeeds 575841909 838392975
