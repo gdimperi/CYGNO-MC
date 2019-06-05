@@ -43,7 +43,7 @@ Run
 ```
 git clone git@github.com:CYGNUS-RD/CYGNO-MC.git
 ```
-or, if you don't want to configure a ssh key in baltig use https protocol
+or, if you don't want to configure a ssh key in gitlab use https protocol
 ```
 git clone https://github.com/CYGNUS-RD/CYGNO-MC.git
 ```
