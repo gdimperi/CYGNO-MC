@@ -55,8 +55,8 @@ CYGNOAnalysis::CYGNOAnalysis():
        	fCYGNOID(-1), 
 	fHitsInfo(1), 
 	fOutFileCut(0), 
-	fRegisterOn(0),
-	fTotT(0)
+	fRegisterOn(0)
+	//fTotT(0)
 {
     //fMessenger = new CYGNOAnalysisMessenger(this);
 }
@@ -165,29 +165,29 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
         analysisManager->FillH1(h+hi_list.size()+hd_list.size(), 0., hrun_list.at(h).second);
     
     
-    //-------------------------------------------------------------------------------------------
-    
-    //Ntuple always filled, no matter filter applied
-    analysisManager->CreateNtuple("TotT", "treeD");
-    
-    //These branches are all vectors. See what done with the tree nT if you want to add sigle variables
-    analysisManager->CreateNtupleDColumn("EKinTot",v_ekin_particle);
-    analysisManager->CreateNtupleDColumn("ImParaTot",v_impact_parameter);
-    analysisManager->CreateNtupleDColumn("DiAngleTot",v_direc_angle);
-    analysisManager->CreateNtupleDColumn("XPosTot",v_xpos_vertex);
-    analysisManager->CreateNtupleDColumn("YPosTot",v_ypos_vertex);
-    analysisManager->CreateNtupleDColumn("ZPosTot",v_zpos_vertex);
-    analysisManager->CreateNtupleDColumn("PxTot",v_px_particle);
-    analysisManager->CreateNtupleDColumn("PyTot",v_py_particle);
-    analysisManager->CreateNtupleDColumn("PzTot",v_pz_particle);
-    analysisManager->FinishNtuple();
+    ////-------------------------------------------------------------------------------------------
+    //
+    ////Ntuple always filled, no matter filter applied
+    //analysisManager->CreateNtuple("TotT", "treeD");
+    //
+    ////These branches are all vectors. See what done with the tree nTuple if you want to add sigle variables
+    //analysisManager->CreateNtupleDColumn("EKinTot",v_ekin_particle);
+    //analysisManager->CreateNtupleDColumn("ImParaTot",v_impact_parameter);
+    //analysisManager->CreateNtupleDColumn("DiAngleTot",v_direc_angle);
+    //analysisManager->CreateNtupleDColumn("XPosTot",v_xpos_vertex);
+    //analysisManager->CreateNtupleDColumn("YPosTot",v_ypos_vertex);
+    //analysisManager->CreateNtupleDColumn("ZPosTot",v_zpos_vertex);
+    //analysisManager->CreateNtupleDColumn("PxTot",v_px_particle);
+    //analysisManager->CreateNtupleDColumn("PyTot",v_py_particle);
+    //analysisManager->CreateNtupleDColumn("PzTot",v_pz_particle);
+    //analysisManager->FinishNtuple();
     
     
     //-------------------------------------------------------------------------------------------
     
     //Ntuple filled when the filter selection is passed
     //
-    analysisManager->CreateNtuple("nT", "tree");
+    analysisManager->CreateNtuple("nTuple", "tree");
     
     //Here define the variables that go in the tree.
     
@@ -574,22 +574,22 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
         analysisManager->FillH1(h+hi_list.size(), *(hd_list.at(h).second));
     
     //Fill all event (filter blind) histograms in TotT tree
-    if(fTotT)
-        analysisManager->AddNtupleRow(0);
+    //if(fTotT)
+    //    analysisManager->AddNtupleRow(0);
     
     //Selection cuts to be applied. The tree will be filled only if the event passes the selection
     if(fOutFileCut == 0 || (fOutFileCut == 1 && energyDep>0.) )
     {
         //Now filling the ntuple
         for(unsigned int i=0; i<i_list.size(); i++)
-            analysisManager->FillNtupleIColumn(1, i,*(i_list.at(i).second));
+            analysisManager->FillNtupleIColumn(0, i,*(i_list.at(i).second));
         for(unsigned int i=0; i<d_list.size(); i++)
-            analysisManager->FillNtupleDColumn(1, i+i_list.size(),*(d_list.at(i).second));
+            analysisManager->FillNtupleDColumn(0, i+i_list.size(),*(d_list.at(i).second));
         for(unsigned int i=0; i<f_list.size(); i++)
-            analysisManager->FillNtupleFColumn(1, i+i_list.size()+d_list.size(),*(f_list.at(i).second));
+            analysisManager->FillNtupleFColumn(0, i+i_list.size()+d_list.size(),*(f_list.at(i).second));
         for(unsigned int i=0; i<s_list.size(); i++)
-            analysisManager->FillNtupleSColumn(1, i+i_list.size()+d_list.size()+f_list.size(),*(s_list.at(i).second));
+            analysisManager->FillNtupleSColumn(0, i+i_list.size()+d_list.size()+f_list.size(),*(s_list.at(i).second));
         
-        analysisManager->AddNtupleRow(1);
+        analysisManager->AddNtupleRow(0);
     }  
 }

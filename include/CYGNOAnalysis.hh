@@ -54,8 +54,8 @@ public:
   void SetRegisterOn(G4int regOn) {fRegisterOn = regOn;};
   G4int GetRegisterOn() const {return fRegisterOn;};
 
-  void SetTotT(G4int cut) {fTotT = cut;};
-  G4int GetTotT() const {return fTotT;};
+  //void SetTotT(G4int cut) {fTotT = cut;};
+  //G4int GetTotT() const {return fTotT;};
     
   void SetHitsInfo(G4int hitsOn) {fHitsInfo = hitsOn;};
   G4int GetHitsInfo() const {return fHitsInfo;};
@@ -66,19 +66,19 @@ public:
   void RegisterParticle(G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
  
-  // Overloaded Conversion Methods: Root --> Geant 4
-  G4String  RootToG4(TString XX) { return (G4String) XX; }
-  G4double  RootToG4(Double_t XX) { return (G4double) XX; }
-  G4float   RootToG4(Float_t XX) { return (G4float) XX; }
-  G4int     RootToG4(Int_t XX) { return (G4int) XX; }
-  G4long    RootToG4(Long_t XX) { return (G4long) XX; }
-  
-  // Overloaded Conversion Methods: Geant4 --> Root
-  TString  G4ToRoot(G4String XX) { return (TString) XX; }
-  Double_t  G4ToRoot(G4double XX) { return (Double_t) XX; }
-  Float_t   G4ToRoot(G4float XX) { return (Float_t) XX; }
-  Int_t     G4ToRoot(G4int XX) { return (Int_t) XX; }
-  Long_t    G4ToRoot(G4long XX) { return (Long_t) XX; }
+  //// Overloaded Conversion Methods: Root --> Geant 4
+  //G4String  RootToG4(TString XX) { return (G4String) XX; }
+  //G4double  RootToG4(Double_t XX) { return (G4double) XX; }
+  //G4float   RootToG4(Float_t XX) { return (G4float) XX; }
+  //G4int     RootToG4(Int_t XX) { return (G4int) XX; }
+  //G4long    RootToG4(Long_t XX) { return (G4long) XX; }
+  //
+  //// Overloaded Conversion Methods: Geant4 --> Root
+  //TString  G4ToRoot(G4String XX) { return (TString) XX; }
+  //Double_t  G4ToRoot(G4double XX) { return (Double_t) XX; }
+  //Float_t   G4ToRoot(G4float XX) { return (Float_t) XX; }
+  //Int_t     G4ToRoot(G4int XX) { return (Int_t) XX; }
+  //Long_t    G4ToRoot(G4long XX) { return (Long_t) XX; }
   
   std::vector<std::pair <G4String,G4double> > *vol_name_mass;  
   std::vector<std::pair <G4String,G4double> > *vol_name_dens;  
@@ -94,7 +94,7 @@ private:
   
   G4int fOutFileCut;
   G4int fRegisterOn;
-  G4int fTotT;
+  //G4int fTotT;
   G4int fHitsInfo;
     
   //For Ntuple

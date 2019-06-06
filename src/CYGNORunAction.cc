@@ -46,7 +46,7 @@ void CYGNORunAction::BeginOfRunAction(const G4Run* aRun)
 	CYGNOAnalysis* analysis = CYGNOAnalysis::getInstance();
 	analysis->SetOutFileCut(fOutFileCut);
 	analysis->SetRegisterOn(fRegisterOn);
-	analysis->SetTotT(fTotT);
+	//analysis->SetTotT(fTotT);
 	analysis->SetHitsInfo(fHitsInfo);
 	analysis->InitRun(FileName,fDetector);
 	// Open an output file
