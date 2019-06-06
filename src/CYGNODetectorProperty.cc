@@ -19,8 +19,8 @@ CYGNODetectorProperty::CYGNODetectorProperty() :
 
 CYGNODetectorProperty::~CYGNODetectorProperty()
 {
-  //  delete vol_name_mass;
-  //  delete vol_name_dens;
+    //delete vol_name_mass;
+    //delete vol_name_dens;
 }
 
 CYGNODetectorProperty* CYGNODetectorProperty::GetInstance()

@@ -81,12 +81,12 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     CYGNODetectorMaterial* CYGNOMaterials = CYGNODetectorMaterial::GetInstance();
     G4cout << "... done" << G4endl;
 
-    //-----------------------------
-    // construction of general properties
-    //-----------------------------
-    G4cout << "Constructing general properties...";
-    CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
-    G4cout << "... done" << G4endl;
+    ////-----------------------------
+    //// construction of general properties
+    ////-----------------------------
+    //G4cout << "Constructing general properties...";
+    //CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
+    //G4cout << "... done" << G4endl;
 
 
 

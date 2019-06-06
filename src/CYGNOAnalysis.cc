@@ -65,8 +65,8 @@ CYGNOAnalysis::~CYGNOAnalysis()
 {
     //  delete G4AnalysisManager::Instance();
     //delete fMessenger;
-  delete vol_name_mass;
-  delete vol_name_dens;
+  //delete vol_name_mass;
+  //delete vol_name_dens;
 }
 
 void CYGNOAnalysis::EndOfRun()
@@ -90,7 +90,6 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     
     // Create directories inside the output file
     analysisManager->SetHistoDirectoryName("histo");
-    //analysisManager->SetNtupleDirectoryName("ntuple");
     
     CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
 
@@ -102,24 +101,28 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     // Creating histos
     
     
-    //These are the hitograms always filled, no matter filter applied
+    //These are the histograms always filled, no matter filter applied
     
     //TH1I histograms
     NAlwaysFilledHistI=0;
     hi_list.clear();//list of TH1I
+    //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
+    //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
     analysisManager->CreateH1("NTot","", 1, 0, 1);
     hi_list.push_back(std::make_pair("NTot",&NTot));
     NAlwaysFilledHistI++;
+    //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
+    //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
     
     if(NAlwaysFilledHistI>hi_list.size())
-        G4cout << "Error! The number of TH1I histograms to be filled initially > of the number of total histograms" << G4endl;
+        G4cout << "Error! The number of TH1I histograms to be filled initially ("<< NAlwaysFilledHistI<< ") > of the number of total histograms ("<< hi_list.size() <<")" << G4endl;
     
     //TH1D histograms
     NAlwaysFilledHistD=0;
     hd_list.clear();//list of TH1D
     
     if(NAlwaysFilledHistD>hd_list.size())
-        G4cout << "Error! The number of TH1D histograms to be filled initially > of the number of total histograms" << G4endl;
+        G4cout << "Error! The number of TH1D histograms to be filled initially ("<< NAlwaysFilledHistD <<") > of the number of total histograms ("<< hd_list.size()<<")" << G4endl;
     
     //-------------------------------------------------------------------------------------------
     
@@ -147,6 +150,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
        	G4cout<<"Filling histogram of masses "<<vol_name_mass->at(h).first<<" "<<vol_name_mass->at(h).second/kg<< " kg" << G4endl;
        	analysisManager->CreateH1(vol_name_mass->at(h).first,"", 1, 0, 1);
        	hrun_list.push_back(std::make_pair(vol_name_mass->at(h).first,vol_name_mass->at(h).second/kg));//Mass in kg
+        NAlwaysFilledHistD++;
       }
 
 
@@ -157,6 +161,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     	G4cout<<"Filling histogram of densities "<<vol_name_dens->at(h).first<<" "<<vol_name_dens->at(h).second*m*m*m/kg << " kg/m^3" << G4endl;
     	analysisManager->CreateH1(vol_name_dens->at(h).first,"", 1, 0, 1);
         hrun_list.push_back(std::make_pair(vol_name_dens->at(h).first,vol_name_dens->at(h).second*m*m*m/kg));//Density in kg/m^3
+        NAlwaysFilledHistD++;
       }
 
 
