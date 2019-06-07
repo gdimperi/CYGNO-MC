@@ -62,24 +62,19 @@ public:
   
   G4String GetFileName() {return filename;}
 
-  void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo);
-  void RegisterParticle(G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
+  
+  void SetNeutronFlag(G4int neuflag) { neutronflag = neuflag; }
+  void SetProtonFlag(G4int pflag) { protonflag = pflag; }
+  void SetMuonFlag(G4int muflag) { muonflag = muflag; }
+  void SetInelasticFlag(G4int inelastic) { inelasticflag = inelastic; }
+  G4int GetCopyNo(const G4Track*);
+  G4int GetVolNo(const G4Track*);
+
+
+  void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID);
+  void RegisterParticle(G4int trackID, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
  
-  //// Overloaded Conversion Methods: Root --> Geant 4
-  //G4String  RootToG4(TString XX) { return (G4String) XX; }
-  //G4double  RootToG4(Double_t XX) { return (G4double) XX; }
-  //G4float   RootToG4(Float_t XX) { return (G4float) XX; }
-  //G4int     RootToG4(Int_t XX) { return (G4int) XX; }
-  //G4long    RootToG4(Long_t XX) { return (G4long) XX; }
-  //
-  //// Overloaded Conversion Methods: Geant4 --> Root
-  //TString  G4ToRoot(G4String XX) { return (TString) XX; }
-  //Double_t  G4ToRoot(G4double XX) { return (Double_t) XX; }
-  //Float_t   G4ToRoot(G4float XX) { return (Float_t) XX; }
-  //Int_t     G4ToRoot(G4int XX) { return (Int_t) XX; }
-  //Long_t    G4ToRoot(G4long XX) { return (Long_t) XX; }
-  
   std::vector<std::pair <G4String,G4double> > *vol_name_mass;  
   std::vector<std::pair <G4String,G4double> > *vol_name_dens;  
 
@@ -158,6 +153,7 @@ private:
   G4double  energyDep;
 
   // secondary radionuclides info (former ".iso" file)
+  std::vector<G4int>         v_trackid_iso;
   std::vector<G4int>         v_A_iso;
   std::vector<G4int>         v_Z_iso;
   std::vector<G4int>         v_pdg_iso;
@@ -169,6 +165,7 @@ private:
   std::vector<G4double>      v_z_iso;
 
   // particle flux info (former ".flu" file)
+  std::vector<G4int>         v_trackid_flu;
   std::vector<G4int>         v_volNo_flu;
   std::vector<G4int>         v_copyNo_flu;
   std::vector<G4int>         v_pdg_flu;
@@ -182,6 +179,8 @@ private:
   std::vector<G4double>      v_py_flu;
   std::vector<G4double>      v_pz_flu;
   std::vector<G4double>      v_E_flu;
+  std::vector<G4double>      v_kinE_flu;
+  std::vector<G4double>      v_m_flu;
   
   // neutron info (former ".neu" file)
   std::vector<G4int>         v_trackid_neu;
@@ -193,10 +192,12 @@ private:
   std::vector<G4double>      v_py_neu;
   std::vector<G4double>      v_pz_neu;
   std::vector<G4double>      v_E_neu;
+  std::vector<G4double>      v_kinE_neu;
   
   // neutrons
   G4int neutronflag;
   G4int muonflag;
+  G4int protonflag;
   G4int inelasticflag;
 
 

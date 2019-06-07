@@ -22,7 +22,6 @@ class CYGNORunAction : public G4UserRunAction
   void SetOutFile(G4String fname) {FileName = fname;};
   void SetOutFileCut(G4int cut) {fOutFileCut = cut;};
   void SetRegisterOn(G4int regOn) {fRegisterOn = regOn;};
-  void SetTotT(G4int cut) {fTotT = cut;};
   void SetHitsInfo(G4int cut) {fHitsInfo = cut;};
 
   private:
@@ -33,13 +32,7 @@ class CYGNORunAction : public G4UserRunAction
   G4String FileName;  
   G4int fOutFileCut;
   G4int fRegisterOn;
-  G4int fTotT;
   G4int fHitsInfo;
 };
 
 #endif
-
-
-
-
-

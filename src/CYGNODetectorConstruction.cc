@@ -38,7 +38,7 @@
 #include "CYGNODetectorMaterial.hh"
 #include "CYGNODetectorProperty.hh"
 #include "CYGNOSensitiveDetector.hh"
-
+#include "CYGNOVolumes.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
    rockThicknessOuter(-999*m),

@@ -67,9 +67,6 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4double rockThicknessInner;
     G4double productionLayerThickness;
     
-    G4double gasHeFrac;
-    G4double gasCF4Frac;
-
     G4String CYGNOLab;
     G4String CYGNOShielding;
     G4double thick0;

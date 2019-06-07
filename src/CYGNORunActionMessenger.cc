@@ -18,9 +18,6 @@ CYGNORunActionMessenger::CYGNORunActionMessenger(CYGNORunAction *runAct):fRunAct
   fOutFileCmd->SetGuidance("(default: out)");
   fOutFileCmd->SetParameterName("choice",false);
 
-  /// WRANING -- NOT USED 
-  //FIXME
-
   fOutFileCutCmd = new G4UIcmdWithAnInteger("/CYGNO/cutoutfile",this);
   fOutFileCutCmd->SetGuidance("  Choice : 0 1 2");
   fOutFileCutCmd->SetGuidance("If 0 saves everything; if 1 saves only events with energy in sensitive volume");
@@ -33,12 +30,6 @@ CYGNORunActionMessenger::CYGNORunActionMessenger(CYGNORunAction *runAct):fRunAct
   fRegisterOnCmd->SetParameterName("registeron",true);
   fRegisterOnCmd->SetDefaultValue(0);
 
-  fTotTCmd = new G4UIcmdWithAnInteger("/CYGNO/tottree",this);
-  fTotTCmd->SetGuidance("  Choice : 0 1");
-  fTotTCmd->SetGuidance("If 0 the tree containing the generation information for each event is not saved");
-  fTotTCmd->SetParameterName("tottree",true);
-  fTotTCmd->SetDefaultValue(1);
-    
   fOutFileSaveHitCmd = new G4UIcmdWithAnInteger("/CYGNO/save_hits_branches",this);
   fOutFileSaveHitCmd->SetGuidance("Choice : 0 1");
   fOutFileSaveHitCmd->SetGuidance("If 0 the tree branches containing the hits information for each event are not saved");
@@ -52,7 +43,6 @@ CYGNORunActionMessenger::~CYGNORunActionMessenger()
   delete fOutFileCmd;
   delete fOutFileCutCmd;
   delete fRegisterOnCmd;
-  delete fTotTCmd;
   delete fOutFileSaveHitCmd;
 }
 
@@ -81,10 +71,6 @@ void CYGNORunActionMessenger::SetNewValue(G4UIcommand *command,
   else if (command == fRegisterOnCmd )
     {
       fRunAction->SetRegisterOn(fRegisterOnCmd->GetNewIntValue(newValue));
-    }
-  else if (command == fTotTCmd )
-    {
-      fRunAction->SetTotT(fTotTCmd->GetNewIntValue(newValue));
     }
   else if (command == fOutFileSaveHitCmd )
     {

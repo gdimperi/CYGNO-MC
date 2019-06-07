@@ -27,8 +27,8 @@
 #include "CYGNOPrimaryGeneratorAction.hh"
 #include "CYGNORunAction.hh"
 #include "CYGNOEventAction.hh"
-//#include "CYGNOSteppingAction.hh"
-//#include "CYGNOStackingAction.hh"
+#include "CYGNOSteppingAction.hh"
+#include "CYGNOStackingAction.hh"
 //#include "CYGNOTrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -62,10 +62,10 @@ void CYGNOActionInitialization::Build() const
   CYGNOEventAction* event_action = new CYGNOEventAction(run_action,fDetector);
   SetUserAction(event_action);
   
-  //G4UserSteppingAction* stepping_action = new CYGNOSteppingAction(fDetector,event_action);
-  //SetUserAction(stepping_action);
+  CYGNOSteppingAction* stepping_action = new CYGNOSteppingAction(fDetector);// ,event_action);
+  SetUserAction(stepping_action);
 
-  //SetUserAction(new CYGNOStackingAction);
+  SetUserAction(new CYGNOStackingAction);
   //SetUserAction(new CYGNOTrackingAction);
 }  
 

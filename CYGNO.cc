@@ -45,7 +45,7 @@ int main(int argc,char** argv)
   //  G4VSteppingVerbose::SetInstance(verbosity);
   
   // Run manager
-  //
+  
   //#ifdef G4MULTITHREADED
   //G4MTRunManager* runManager = new G4MTRunManager;
   //runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
