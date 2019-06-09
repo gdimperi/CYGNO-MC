@@ -23,6 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
+#include "G4StateManager.hh"
+#include "CYGNOExceptionHandler.hh"
 #include "CYGNOActionInitialization.hh"
 #include "CYGNOPrimaryGeneratorAction.hh"
 #include "CYGNORunAction.hh"
@@ -53,6 +55,7 @@ void CYGNOActionInitialization::BuildForMaster() const
 
 void CYGNOActionInitialization::Build() const
 {
+  
   CYGNOPrimaryGeneratorAction* gen_action = new CYGNOPrimaryGeneratorAction(fDetector);
   SetUserAction(gen_action);
 
@@ -67,6 +70,10 @@ void CYGNOActionInitialization::Build() const
 
   SetUserAction(new CYGNOStackingAction);
   //SetUserAction(new CYGNOTrackingAction);
+
+  //CYGNOExceptionHandler * exceptionHandler = new CYGNOExceptionHandler();
+  G4StateManager::GetStateManager()->SetExceptionHandler(new CYGNOExceptionHandler());  
+
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
