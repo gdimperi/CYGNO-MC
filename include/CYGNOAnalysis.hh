@@ -71,10 +71,12 @@ public:
   G4int GetVolNo(const G4Track*);
 
 
+  void RegisterIon(G4int A, G4int Z, G4int pdg, G4int volNo, G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStpPt, G4LorentzVector fourMom);
   void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID);
   void RegisterParticle(G4int trackID, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
- 
+  
+  
   std::vector<std::pair <G4String,G4double> > *vol_name_mass;  
   std::vector<std::pair <G4String,G4double> > *vol_name_dens;  
 
@@ -151,6 +153,20 @@ private:
 
   std::vector<double>  v_energyDep_hits;
   G4double  energyDep;
+    
+  //ions
+  std::vector<G4int>         v_A_ion;
+  std::vector<G4int>         v_Z_ion;
+  std::vector<G4int>         v_pdg_ion;
+  std::vector<G4int>         v_volNo_ion;
+  std::vector<G4int>         v_copyNo_ion;
+  std::vector<G4int>         v_trackid_ion;
+  std::vector<G4int>         v_parentid_ion;
+  std::vector<G4double>      v_poststepX_ion;
+  std::vector<G4double>      v_poststepY_ion;
+  std::vector<G4double>      v_poststepZ_ion;
+  std::vector<G4double>      v_E_ion;
+  std::vector<G4double>      v_kinE_ion;
 
   // secondary radionuclides info (former ".iso" file)
   std::vector<G4int>         v_trackid_iso;

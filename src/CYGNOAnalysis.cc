@@ -265,17 +265,32 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
       
       
     if(fRegisterOn){
-      // secondary radionuclides (former ".iso" file)
-      analysisManager->CreateNtupleIColumn("trackid_iso",v_trackid_iso);
-      analysisManager->CreateNtupleIColumn("A_iso",v_A_iso);// Mass number of the isotope
-      analysisManager->CreateNtupleIColumn("Z_iso",v_Z_iso);// Atomic number of the isotope
-      analysisManager->CreateNtupleIColumn("pdg_iso",v_pdg_iso);
-      analysisManager->CreateNtupleIColumn("volNo_iso",v_volNo_iso); // ID number of the volume of generation of the radionuclide --> check definitions in CYGNOVolumes.hh
-      analysisManager->CreateNtupleIColumn("copyNo_iso",v_copyNo_iso); // copy number of the detector of generation of the radionuclide
-      analysisManager->CreateNtupleDColumn("kinEne_iso",v_kinEne_iso);
-      analysisManager->CreateNtupleDColumn("posx_iso",v_x_iso);
-      analysisManager->CreateNtupleDColumn("posy_iso",v_y_iso);
-      analysisManager->CreateNtupleDColumn("posz_iso",v_z_iso);
+      
+      //ions
+      analysisManager->CreateNtupleIColumn("A_ion",v_A_ion);// Mass number of the isotope
+      analysisManager->CreateNtupleIColumn("Z_ion",v_Z_ion);// Atomic number of the isotope
+      analysisManager->CreateNtupleIColumn("pdg_ion",v_pdg_ion);
+      analysisManager->CreateNtupleIColumn("trackid_ion",v_trackid_ion);
+      analysisManager->CreateNtupleIColumn("volNo_ion",v_volNo_ion); // number of the volume in which the particle is entering
+      analysisManager->CreateNtupleIColumn("copyNo_ion",v_copyNo_ion); // copy number of the volume in which the particle is entering
+      analysisManager->CreateNtupleDColumn("posx_ion",v_poststepX_ion);
+      analysisManager->CreateNtupleDColumn("posy_ion",v_poststepY_ion);
+      analysisManager->CreateNtupleDColumn("posz_ion",v_poststepZ_ion);
+      analysisManager->CreateNtupleDColumn("E_ion",v_E_ion);
+      analysisManager->CreateNtupleDColumn("kinE_ion",v_kinE_ion);
+          
+      
+      //// secondary radionuclides (former ".iso" file)
+      //analysisManager->CreateNtupleIColumn("trackid_iso",v_trackid_iso);
+      //analysisManager->CreateNtupleIColumn("A_iso",v_A_iso);// Mass number of the isotope
+      //analysisManager->CreateNtupleIColumn("Z_iso",v_Z_iso);// Atomic number of the isotope
+      //analysisManager->CreateNtupleIColumn("pdg_iso",v_pdg_iso);
+      //analysisManager->CreateNtupleIColumn("volNo_iso",v_volNo_iso); // ID number of the volume of generation of the radionuclide --> check definitions in CYGNOVolumes.hh
+      //analysisManager->CreateNtupleIColumn("copyNo_iso",v_copyNo_iso); // copy number of the detector of generation of the radionuclide
+      //analysisManager->CreateNtupleDColumn("kinEne_iso",v_kinEne_iso);
+      //analysisManager->CreateNtupleDColumn("posx_iso",v_x_iso);
+      //analysisManager->CreateNtupleDColumn("posy_iso",v_y_iso);
+      //analysisManager->CreateNtupleDColumn("posz_iso",v_z_iso);
       
       // particle flux info (former ".flu" file)
       analysisManager->CreateNtupleIColumn("trackid_flu",v_trackid_flu);
@@ -359,6 +374,7 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     
     v_processIni_hits.clear();
     v_processFin_hits.clear();
+    v_pdgID_hits.clear();
     v_parentID_hits.clear();
     v_trackID_hits.clear();
     v_kinEne_hits.clear();
@@ -372,6 +388,18 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     v_energyDep_hits.clear();
     v_len_hits.clear();    
 
+    v_A_ion.clear();
+    v_Z_ion.clear();
+    v_pdg_ion.clear();
+    v_volNo_ion.clear();
+    v_copyNo_ion.clear();
+    v_trackid_ion.clear();
+    v_parentid_ion.clear();
+    v_poststepX_ion.clear();
+    v_poststepY_ion.clear();
+    v_poststepZ_ion.clear();
+    v_E_ion.clear();
+    v_kinE_ion.clear();
 
     v_A_iso.clear();
     v_Z_iso.clear();
@@ -473,10 +501,34 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     
 }
 
+void CYGNOAnalysis::RegisterIon(G4int A, G4int Z, G4int PDG, G4int volNo,G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
+{
+  if(fRegisterOn){
+    int size = v_trackid_ion.size();
+    if (size==0 || trackId != v_trackid_ion.at(size-1)){
+      v_A_ion.push_back(A);
+      v_Z_ion.push_back(Z);
+      v_pdg_ion.push_back(PDG);
+      v_volNo_ion.push_back(volNo);
+      v_copyNo_ion.push_back(copyNo);
+      v_trackid_ion.push_back(trackId);
+      v_parentid_ion.push_back(parentId);
+      v_poststepX_ion.push_back(postStepPt.x()/mm);
+      v_poststepY_ion.push_back(postStepPt.y()/mm);
+      v_poststepZ_ion.push_back(postStepPt.z()/mm);
+      v_E_ion.push_back(QuadriMomentum.e()/keV);
+      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+      v_kinE_ion.push_back(kinE);
+      }
+    }
+}
+
+
 void CYGNOAnalysis::RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID)
 {
-  if(fRegisterOn)
-    {
+  if(fRegisterOn){
+    int size = v_trackid_iso.size();
+    if (size==0 || trackID != v_trackid_iso.at(size-1)){
       v_trackid_iso.push_back(trackID);
       v_volNo_iso.push_back(volNo);
       v_copyNo_iso.push_back(copyNo);
@@ -487,6 +539,7 @@ void CYGNOAnalysis::RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, 
       v_x_iso.push_back(Position.x()/mm);
       v_y_iso.push_back(Position.y()/mm);
       v_z_iso.push_back(Position.z()/mm);
+      }
     }
 }
 
@@ -494,6 +547,8 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int volNo, G4int copyNo, G
 {
   if(fRegisterOn) 
     {
+    int size = v_trackid_flu.size();
+    if (size==0 || trackID != v_trackid_flu.at(size-1)){ //avoid double counting
       v_trackid_flu.push_back(trackID);
       v_volNo_flu.push_back(volNo);
       v_copyNo_flu.push_back(copyNo);
@@ -511,6 +566,7 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int volNo, G4int copyNo, G
       G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
       v_kinE_flu.push_back(kinE);
       v_m_flu.push_back(sqrt(QuadriMomentum.m2())/keV);
+      }
     }
 }
 
@@ -519,6 +575,8 @@ void CYGNOAnalysis::RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector
 
   if(fRegisterOn)
     {
+    int size = v_trackid_neu.size();
+    if (size==0 || TrackId != v_trackid_neu.at(size-1)){
       v_trackid_neu.push_back(TrackId);
       v_parentid_neu.push_back(ParentId);
       v_poststepX_neu.push_back(postStepPt.x()/mm);
@@ -530,6 +588,7 @@ void CYGNOAnalysis::RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector
       v_E_neu.push_back(QuadriMomentum.e()/keV);
       G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
       v_kinE_neu.push_back(kinE);
+      }
     }
 }
 

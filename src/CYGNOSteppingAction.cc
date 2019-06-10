@@ -87,7 +87,8 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
      (name=="Shield1" && nextname=="Shield2") || 
      (name=="Shield2" && nextname=="Shield3") || 
      (name=="Shield3" && nextname=="AirBox")  ||
-     (name=="cad_shell_physical" && nextname=="CYGNO_gas")) {
+     //(name=="cad_shell_physical" && nextname=="CYGNO_gas")) {
+     (name!="CYGNO_gas" && nextname=="CYGNO_gas")) {
 
      //G4cout << "trackID = " << trackID << "  vol name = " << name << "  next vol name = " << nextname << G4endl;
      analysis->RegisterParticle(trackID, nextVolNo, nextCopyNo, PDGcode, preStepPoint, postStepPoint, quadriMom);
@@ -121,6 +122,37 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
       //    //this is due to the fact that 20-MeV neutrons may enter in an infinite loop
       //  }
     }
+
+  // Check for ions in the gas
+
+  G4String particleType = fTrack->GetDefinition()->GetParticleType();
+  //ions in the gas
+  if (particleType == "nucleus")
+    {
+      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+        {
+        //if (lifetime > 1e18*second) lifetime = -1; // do not consider very long-lived isotopes > 3e10 yrs
+        //if (lifetime > 0 || excitationEnergy > 0)
+        //{
+
+          //}
+          G4Ions* ion = (G4Ions*) fTrack->GetDefinition();
+          G4double lifetime = ion->GetPDGLifeTime();
+          G4double trackID = fTrack->GetTrackID();
+          G4int pdg = fTrack->GetDefinition()->GetPDGEncoding();
+          G4int volNo = analysis->GetVolNo(fTrack);
+          G4int copyNo = analysis->GetCopyNo(fTrack);
+          G4int A = ion->GetAtomicMass();
+          G4int Z = ion->GetAtomicNumber();
+          G4double excitationEnergy = ion->GetExcitationEnergy();
+	  G4ThreeVector postStpPt = fTrack->GetPosition();
+	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+	  analysis->RegisterIon(A, Z, pdg, volNo, copyNo, trackID, fTrack->GetParentID(), postStpPt, fourMom);
+        }
+    }
+
+
+  //protons
   if (fTrack->GetDefinition() == G4Proton::Definition())
     {
       if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
@@ -128,6 +160,8 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
 	  analysis->SetProtonFlag(1);
         }
     }
+
+  //muons
   if (fTrack->GetDefinition() == G4MuonMinus::Definition() ||
       fTrack->GetDefinition() == G4MuonPlus::Definition())
     {
@@ -136,6 +170,8 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
 	  analysis->SetMuonFlag(1);
         }
     }
+  
+  //neutron capture
   if ((fTrack->GetMaterial()->GetName() == "CYGNO_gas") &&
       (fTrack->GetDefinition() == G4Gamma::Definition()))
     {
