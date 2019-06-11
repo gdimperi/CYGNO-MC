@@ -245,8 +245,8 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     analysisManager->CreateNtupleDColumn("impact_param_particle",v_impact_parameter);
     analysisManager->CreateNtupleDColumn("direc_angle_particle",v_direc_angle);
     // hits in detector
-    //if(fHitsInfo)
-      
+    if(fHitsInfo)
+    { 
       analysisManager->CreateNtupleIColumn("parentID_hits",v_parentID_hits);//It is the generator parent track ID
       analysisManager->CreateNtupleIColumn("pdgID_hits",v_pdgID_hits);
       analysisManager->CreateNtupleIColumn("trackID_hits",v_trackID_hits);//It is the generator track ID
@@ -263,7 +263,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
       analysisManager->CreateNtupleDColumn("tracklen_hits",v_len_hits);
       analysisManager->CreateNtupleDColumn("energyDep_hits",v_energyDep_hits);
       
-      
+     }  
     if(fRegisterOn){
       
       //ions
@@ -643,9 +643,9 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_y_hits.push_back(tempvec.getY());
                     v_z_hits.push_back(tempvec.getZ());
                     v_len_hits.push_back((*CYGNOHC)[i]->GetLength());
+	            v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());
 	    }
 
-	    v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());
 	    
 	    // sum total energy deposited in hits
 	    energyDep += (*CYGNOHC)[i]->GetEdep();
