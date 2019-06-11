@@ -6,6 +6,8 @@
 #include "G4Ions.hh"
 #include "G4Neutron.hh"
 #include "G4Proton.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
 #include "G4MuonMinus.hh"
 #include "G4MuonPlus.hh"
 #include "G4Gamma.hh"
@@ -87,7 +89,6 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
      (name=="Shield1" && nextname=="Shield2") || 
      (name=="Shield2" && nextname=="Shield3") || 
      (name=="Shield3" && nextname=="AirBox")  ||
-     //(name=="cad_shell_physical" && nextname=="CYGNO_gas")) {
      (name!="CYGNO_gas" && nextname=="CYGNO_gas")) {
 
      //G4cout << "trackID = " << trackID << "  vol name = " << name << "  next vol name = " << nextname << G4endl;
@@ -123,6 +124,7 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
       //  }
     }
 
+  // register ionizing particles
   // Check for ions in the gas
 
   G4String particleType = fTrack->GetDefinition()->GetParticleType();
@@ -151,27 +153,54 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
         }
     }
 
+  // electrons
+  if (fTrack->GetDefinition() == G4Electron::Definition())
+    {
+      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+        {
+	  G4ThreeVector postStpPt = fTrack->GetPosition();
+	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+	  analysis->RegisterElectron(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
+        }
+    }
 
-  //protons
+  // positrons
+   if(fTrack->GetDefinition() == G4Positron::Definition()) 
+   {
+      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+        {
+	  G4ThreeVector postStpPt = fTrack->GetPosition();
+	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+	  analysis->RegisterPositron(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
+        }
+   }
+
+  
+  // protons
   if (fTrack->GetDefinition() == G4Proton::Definition())
     {
       if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
         {
-	  analysis->SetProtonFlag(1);
+	  G4ThreeVector postStpPt = fTrack->GetPosition();
+	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+	  analysis->RegisterProton(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
         }
     }
 
-  //muons
+  // muons
   if (fTrack->GetDefinition() == G4MuonMinus::Definition() ||
       fTrack->GetDefinition() == G4MuonPlus::Definition())
     {
       if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
         {
+	  G4ThreeVector postStpPt = fTrack->GetPosition();
+	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+	  analysis->RegisterProton(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
 	  analysis->SetMuonFlag(1);
         }
     }
   
-  //neutron capture
+  //neutron capture flag
   if ((fTrack->GetMaterial()->GetName() == "CYGNO_gas") &&
       (fTrack->GetDefinition() == G4Gamma::Definition()))
     {

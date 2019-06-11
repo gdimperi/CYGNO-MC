@@ -75,6 +75,9 @@ public:
   void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID);
   void RegisterParticle(G4int trackID, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
+  void RegisterProton(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
+  void RegisterElectron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
+  void RegisterPositron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   
   
   std::vector<std::pair <G4String,G4double> > *vol_name_mass;  
@@ -134,7 +137,14 @@ private:
   std::vector<double> v_direc_angle;
 
   // hits in CYGNO detector
-  G4int    numhits;
+  G4int    numhits=0;
+  //size of vectors for partcles
+  G4int    numflu=0;
+  G4int    numneu=0;
+  G4int    numion=0;
+  G4int    numpro=0;
+  G4int    numele=0;
+  G4int    numpos=0;
   
   std::vector<int>    v_pdgID_hits;
   std::vector<G4String>    v_processIni_hits;
@@ -209,6 +219,42 @@ private:
   std::vector<G4double>      v_pz_neu;
   std::vector<G4double>      v_E_neu;
   std::vector<G4double>      v_kinE_neu;
+  
+  // proton info 
+  std::vector<G4int>         v_trackid_pro;
+  std::vector<G4int>         v_parentid_pro;
+  std::vector<G4double>      v_poststepX_pro;
+  std::vector<G4double>      v_poststepY_pro;
+  std::vector<G4double>      v_poststepZ_pro;
+  std::vector<G4double>      v_px_pro;
+  std::vector<G4double>      v_py_pro;
+  std::vector<G4double>      v_pz_pro;
+  std::vector<G4double>      v_E_pro;
+  std::vector<G4double>      v_kinE_pro;
+  
+  // electron info 
+  std::vector<G4int>         v_trackid_ele;
+  std::vector<G4int>         v_parentid_ele;
+  std::vector<G4double>      v_poststepX_ele;
+  std::vector<G4double>      v_poststepY_ele;
+  std::vector<G4double>      v_poststepZ_ele;
+  std::vector<G4double>      v_px_ele;
+  std::vector<G4double>      v_py_ele;
+  std::vector<G4double>      v_pz_ele;
+  std::vector<G4double>      v_E_ele;
+  std::vector<G4double>      v_kinE_ele;
+  
+  // positron info 
+  std::vector<G4int>         v_trackid_pos;
+  std::vector<G4int>         v_parentid_pos;
+  std::vector<G4double>      v_poststepX_pos;
+  std::vector<G4double>      v_poststepY_pos;
+  std::vector<G4double>      v_poststepZ_pos;
+  std::vector<G4double>      v_px_pos;
+  std::vector<G4double>      v_py_pos;
+  std::vector<G4double>      v_pz_pos;
+  std::vector<G4double>      v_E_pos;
+  std::vector<G4double>      v_kinE_pos;
   
   // neutrons
   G4int neutronflag;
