@@ -15,14 +15,19 @@ Setup ROOT, GEANT4 and CADMesh
 Setup all the environment variables of ROOT and GEANT4.
 In `farm-login.roma1.infn.it` you can do
 ```
-## root and other libraries
-source /chirone/soft/brew/set.sh
-### geant 4
-source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh
-alias g4cmake='cmake -DGeant4_DIR=/ua9/soft/geant4.10.05.p01-install/lib64/Geant4-10.5.1/'
-## cadmesh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
+###for ROOT
+alias cmake="/ua9/soft/cmake-3.14.4-install/bin/cmake"
+source /ua9/soft/root-v6-12-06-install/bin/thisroot.sh
+## for pyROOT
+export LD_LIBRARY_PATH=$PYTHONDIR/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+## for geant4
+source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh 
+alias g4cmake="cmake -DGeant4_DIR=/ua9/soft/geant4.10.05.p01-install/lib64/Geant4-10.5.1/ -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/"
 
+## CADMesh
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install-geant10.4.2/lib
 ```
 
 In general:
