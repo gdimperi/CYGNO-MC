@@ -287,6 +287,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
       
       // particle flux info (former ".flu" file)
       analysisManager->CreateNtupleIColumn("trackid_flu",v_trackid_flu);
+      analysisManager->CreateNtupleIColumn("prestepVolNo_flu",v_prestepVolNo_flu); // number of the volume in which the particle is entering
       analysisManager->CreateNtupleIColumn("volNo_flu",v_volNo_flu); // number of the volume in which the particle is entering
       analysisManager->CreateNtupleIColumn("copyNo_flu",v_copyNo_flu); // copy number of the volume in which the particle is entering
       analysisManager->CreateNtupleIColumn("pdg_flu",v_pdg_flu);
@@ -462,6 +463,7 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     v_copyNo_iso.clear();
     v_trackid_iso.clear();
     
+    v_prestepVolNo_flu.clear();
     v_volNo_flu.clear();
     v_copyNo_flu.clear();
     v_pdg_flu.clear();
@@ -604,13 +606,14 @@ void CYGNOAnalysis::RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, 
     }
 }
 
-void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int volNo, G4int copyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
+void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int volNo, G4int copyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
 {
   if(fRegisterOn) 
     {
     numflu = v_trackid_flu.size();
-    if (numflu==0 || trackID != v_trackid_flu.at(numflu-1)){ //avoid double counting
+    if (numflu==0 || (trackID != v_trackid_flu.at(numflu-1) && volNo != v_volNo_flu.at(numflu-1))){ //avoid double counting
       v_trackid_flu.push_back(trackID);
+      v_prestepVolNo_flu.push_back(prestepVolNo);
       v_volNo_flu.push_back(volNo);
       v_copyNo_flu.push_back(copyNo);
       v_pdg_flu.push_back(PDG);
@@ -853,7 +856,30 @@ G4int CYGNOAnalysis::GetVolNo(const G4Track* track)
 
     if(PVname=="WorldVolume") volNo = WORLD;
     else if(PVname=="externalRock") volNo = ROCK;
-    else if(PVname=="expHall") volNo = HALLB;
+    else if(PVname=="expHall") volNo = EXPHALL;
+    else if(PVname=="InnerAirSphere") volNo = EXPHALL;
+    else if(PVname=="Shield0") volNo = SHIELD0;
+    else if(PVname=="Shield1") volNo = SHIELD1;
+    else if(PVname=="Shield2") volNo = SHIELD2;
+    else if(PVname=="Shield3") volNo = SHIELD3;
+    else if(PVname=="AirBox") volNo = AIRBOX;
+    else if(PVname=="cad_shell_physical") volNo = ACRYLICSHELL;
+    else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
+
+    return volNo;
+}
+
+G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
+{
+    G4int volNo = UNKNOWN;
+    G4String PVname;
+    if(track->GetVolume())
+        PVname = track->GetVolume()->GetName();
+
+    if(PVname=="WorldVolume") volNo = WORLD;
+    else if(PVname=="externalRock") volNo = ROCK;
+    else if(PVname=="expHall") volNo = EXPHALL;
+    else if(PVname=="InnerAirSphere") volNo = EXPHALL;
     else if(PVname=="Shield0") volNo = SHIELD0;
     else if(PVname=="Shield1") volNo = SHIELD1;
     else if(PVname=="Shield2") volNo = SHIELD2;

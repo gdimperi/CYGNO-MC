@@ -1,6 +1,6 @@
 #define WORLD (0)
 #define ROCK (1)
-#define HALLB (2)
+#define EXPHALL (2)
 #define SHIELD0 (3)
 #define SHIELD1 (4)
 #define SHIELD2 (5)

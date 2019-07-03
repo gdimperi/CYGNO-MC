@@ -69,11 +69,12 @@ public:
   void SetInelasticFlag(G4int inelastic) { inelasticflag = inelastic; }
   G4int GetCopyNo(const G4Track*);
   G4int GetVolNo(const G4Track*);
+  G4int GetPreVolNo(const G4Track*);
 
 
   void RegisterIon(G4int A, G4int Z, G4int pdg, G4int volNo, G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStpPt, G4LorentzVector fourMom);
   void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID);
-  void RegisterParticle(G4int trackID, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
+  void RegisterParticle(G4int trackID, G4int preVolNo, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterProton(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterElectron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
@@ -192,6 +193,7 @@ private:
 
   // particle flux info (former ".flu" file)
   std::vector<G4int>         v_trackid_flu;
+  std::vector<G4int>         v_prestepVolNo_flu;
   std::vector<G4int>         v_volNo_flu;
   std::vector<G4int>         v_copyNo_flu;
   std::vector<G4int>         v_pdg_flu;
