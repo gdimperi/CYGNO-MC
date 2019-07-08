@@ -6,7 +6,7 @@
 #define SHIELD2 (5)
 #define SHIELD3 (6)
 #define AIRBOX (7)
-#define ACRYLICSHELL (8)
+#define TPCGAS (8)
 #define CYGNOGAS (9)
 #define UNKNOWN (-1)
 #define SPHERE (-11)
