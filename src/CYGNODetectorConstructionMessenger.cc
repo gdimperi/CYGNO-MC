@@ -18,6 +18,15 @@
 CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
 (CYGNODetectorConstruction *detector):fDetectorPrimary(detector)
 {
+    fGeomPathDirectory = new G4UIdirectory("/CYGNO/pathtocad/");
+    fGeomPathDirectory->SetGuidance("Control commands to set the geometry path to CAD files");
+    
+    fCYGNOCADPathCmd = new G4UIcmdWithAString("/CYGNO/pathtocad",this);
+    fCYGNOCADPathCmd->SetGuidance("Set the path to CYGNO CAD *.stl files.");
+    fCYGNOCADPathCmd->SetDefaultValue("../geometry/v2/");
+    fCYGNOCADPathCmd->SetParameterName("choice",false);
+    fCYGNOCADPathCmd->AvailableForStates(G4State_Init,G4State_Idle);
+    
     fLabDirectory = new G4UIdirectory("/CYGNO/lab/");
     fLabDirectory->SetGuidance("Control commands for lab:");
 
@@ -150,6 +159,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
 
 CYGNODetectorConstructionMessenger::~CYGNODetectorConstructionMessenger()
 {
+    delete fCYGNOCADPathCmd;
     delete fCYGNOLabCmd;
     delete fCYGNOShieldingCmd;
 
@@ -192,6 +202,10 @@ void CYGNODetectorConstructionMessenger::SetNewValue(G4UIcommand *command,
   else if (command == finternalrockthickCmd )
     {
 	  fDetectorPrimary->SetInternalRockThickness(finternalrockthickCmd->GetNewDoubleValue(newValue));
+    }
+  else if (command == fCYGNOCADPathCmd )
+    {
+	  fDetectorPrimary->SetGeomPath(newValue);
     }
   else if (command == fCYGNOShieldingCmd )
     {

@@ -40,7 +40,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
 
     void SetCYGNOShielding(G4String shield) {CYGNOShielding = shield;}
     G4String GetCYGNOShielding() {return CYGNOShielding;}
-    
+
+    void SetGeomPath(G4String path) {CYGNOGeomPath = path;}
+
     void SetShieldThick0(G4double thick) {thick0 = thick;}
     void SetShieldThick1(G4double thick) {thick1 = thick;}
     void SetShieldThick2(G4double thick) {thick2 = thick;}
@@ -66,7 +68,8 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4double rockThicknessOuter;
     G4double rockThicknessInner;
     G4double productionLayerThickness;
-    
+   
+    G4String CYGNOGeomPath; 
     G4String CYGNOLab;
     G4String CYGNOShielding;
     G4double thick0;

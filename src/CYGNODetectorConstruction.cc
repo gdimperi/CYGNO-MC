@@ -1,3 +1,5 @@
+#include <iostream>
+#include <string.h> 
 
 // CADMESH //
 #include "CADMesh.hh"
@@ -41,6 +43,7 @@
 #include "CYGNOVolumes.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
+   CYGNOGeomPath("../geometry/v2/"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    CYGNOLab("NoCave"),
@@ -351,17 +354,49 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
-    CADMesh * mesh_shell = new CADMesh("../geometry/v2/shell.stl");    
-    CADMesh * mesh_camera_carter = new CADMesh("../geometry/v2/camera_carter.stl");    
-    CADMesh * mesh_camera = new CADMesh("../geometry/v2/cameras.stl");    
-    //CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");    
-    CADMesh * mesh_fc_support = new CADMesh("../geometry/v2/FC_support.stl");    
-    CADMesh * mesh_turns_support = new CADMesh("../geometry/v2/turns_support.stl");    
-    CADMesh * mesh_field_cage = new CADMesh("../geometry/v2/field_cage.stl");    
-    CADMesh * mesh_gem_support = new CADMesh("../geometry/v2/gem_frame.stl");    
-    CADMesh * mesh_gem = new CADMesh("../geometry/v2/gem.stl");    
-    CADMesh * mesh_cathode_frame = new CADMesh("../geometry/v2/cathode_frame.stl");   
-    CADMesh * mesh_cathode = new CADMesh("../geometry/v2/cathode.stl");   
+    
+    char namestl[50];
+    sprintf(namestl,"%s/shell.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    //CADMesh * mesh_shell = new CADMesh("../geometry/v2/shell.stl");    
+    CADMesh * mesh_shell = new CADMesh(namestl);    
+    //namestl = "camera_carter.stl";
+    sprintf(namestl,"%s/camera_carter.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_camera_carter = new CADMesh(namestl);
+    //namestl = "cameras.stl";    
+    sprintf(namestl,"%s/cameras.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_camera = new CADMesh(namestl);    
+    //CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");  
+    //namestl = "FC_support.stl";  
+    sprintf(namestl,"%s/FC_support.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_fc_support = new CADMesh(namestl);
+    //namestl = "turns_support.stl";    
+    sprintf(namestl,"%s/turns_support.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_turns_support = new CADMesh(namestl);
+    //namestl = "field_cage.stl";    
+    sprintf(namestl,"%s/field_cage.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_field_cage = new CADMesh(namestl);
+    //namestl = "gem_frame.stl";    
+    sprintf(namestl,"%s/gem_frame.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_gem_support = new CADMesh(namestl);    
+    //namestl = "gem.stl";
+    sprintf(namestl,"%s/gem.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_gem = new CADMesh(namestl);
+    //namstl = "cathode_frame.stl";    
+    sprintf(namestl,"%s/cathode_frame.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_cathode_frame = new CADMesh(namestl);
+    //namestl = "cathode.stl";   
+    sprintf(namestl,"%s/cathode.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_cathode = new CADMesh(namestl);   
 
     mesh_shell->SetScale(mm);
     mesh_camera_carter->SetScale(mm);
