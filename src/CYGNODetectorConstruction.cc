@@ -1,3 +1,5 @@
+#include <iostream>
+#include <string.h> 
 
 // CADMESH //
 #include "CADMesh.hh"
@@ -41,6 +43,7 @@
 #include "CYGNOVolumes.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
+   CYGNOGeomPath("../geometry/v2/"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    CYGNOLab("NoCave"),
@@ -245,9 +248,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         G4double AirBox_y;
         G4double AirBox_z;
         G4Box* AirBox;
-        AirBox_x = 3.0*m;
-        AirBox_y = 2.0*m;
-        AirBox_z = 2.0*m;        
+        AirBox_x = 2.45*m;
+        AirBox_y = 1.45*m;
+        AirBox_z = 1.45*m;        
         tr_InsideVolume = G4ThreeVector(0.,0.,0.);
         rot_InsideVolume = G4RotationMatrix();		
         size_InsideVolume = G4ThreeVector(AirBox_x/2.,
@@ -324,9 +327,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  G4double AirBox_y;
 	  G4double AirBox_z;
 	  G4Box* AirBox;
-	  AirBox_x = 5.0*m;
-	  AirBox_y = 5.0*m;
-	  AirBox_z = 5.0*m;
+          AirBox_x = 2.45*m;
+          AirBox_y = 1.45*m;
+          AirBox_z = 1.45*m;        
 	  name_phys="AirBox";
 	  name_log=name_phys+"_log";
 	  name_solid=name_phys+"_solid";
@@ -351,17 +354,49 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
-    CADMesh * mesh_shell = new CADMesh("../geometry/v2/shell.stl");    
-    CADMesh * mesh_camera_carter = new CADMesh("../geometry/v2/camera_carter.stl");    
-    CADMesh * mesh_camera = new CADMesh("../geometry/v2/cameras.stl");    
-    //CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");    
-    CADMesh * mesh_fc_support = new CADMesh("../geometry/v2/FC_support.stl");    
-    CADMesh * mesh_turns_support = new CADMesh("../geometry/v2/turns_support.stl");    
-    CADMesh * mesh_field_cage = new CADMesh("../geometry/v2/field_cage.stl");    
-    CADMesh * mesh_gem_support = new CADMesh("../geometry/v2/gem_frame.stl");    
-    CADMesh * mesh_gem = new CADMesh("../geometry/v2/gem.stl");    
-    CADMesh * mesh_cathode_frame = new CADMesh("../geometry/v2/cathode_frame.stl");   
-    CADMesh * mesh_cathode = new CADMesh("../geometry/v2/cathode.stl");   
+    
+    char namestl[50];
+    sprintf(namestl,"%s/shell.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    //CADMesh * mesh_shell = new CADMesh("../geometry/v2/shell.stl");    
+    CADMesh * mesh_shell = new CADMesh(namestl);    
+    //namestl = "camera_carter.stl";
+    sprintf(namestl,"%s/camera_carter.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_camera_carter = new CADMesh(namestl);
+    //namestl = "cameras.stl";    
+    sprintf(namestl,"%s/cameras.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_camera = new CADMesh(namestl);    
+    //CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");  
+    //namestl = "FC_support.stl";  
+    sprintf(namestl,"%s/FC_support.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_fc_support = new CADMesh(namestl);
+    //namestl = "turns_support.stl";    
+    sprintf(namestl,"%s/turns_support.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_turns_support = new CADMesh(namestl);
+    //namestl = "field_cage.stl";    
+    sprintf(namestl,"%s/field_cage.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_field_cage = new CADMesh(namestl);
+    //namestl = "gem_frame.stl";    
+    sprintf(namestl,"%s/gem_frame.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_gem_support = new CADMesh(namestl);    
+    //namestl = "gem.stl";
+    sprintf(namestl,"%s/gem.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_gem = new CADMesh(namestl);
+    //namstl = "cathode_frame.stl";    
+    sprintf(namestl,"%s/cathode_frame.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_cathode_frame = new CADMesh(namestl);
+    //namestl = "cathode.stl";   
+    sprintf(namestl,"%s/cathode.stl",CYGNOGeomPath.c_str());
+    //G4cout << namestl << G4endl;
+    CADMesh * mesh_cathode = new CADMesh(namestl);   
 
     mesh_shell->SetScale(mm);
     mesh_camera_carter->SetScale(mm);
@@ -397,10 +432,21 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //cad_window_solid = mesh_window->TessellatedMesh();
     //cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
     
-    //CYGNO gas
-    G4double CYGNO_x = 1250.*mm;
-    G4double CYGNO_y = 1258.*mm;
-    G4double CYGNO_z = 1310.*mm;
+    //TPC gas
+    G4double TPC_x = 1250.*mm;
+    G4double TPC_y = 1258.*mm;
+    G4double TPC_z = 1310.*mm;
+      
+    name_phys="TPC";
+    name_log=name_phys+"_log";
+    name_solid=name_phys+"_solid";
+    G4Box* TPC_box = new G4Box(name_solid,0.5*TPC_x,0.5*TPC_y,0.5*TPC_z);
+    TPC_log = new G4LogicalVolume(TPC_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
+    
+    //CYGNO fiducial gas
+    G4double CYGNO_x = 510.*mm;
+    G4double CYGNO_y = 1020.*mm;
+    G4double CYGNO_z = 1020.*mm;
       
     name_phys="CYGNO";
     name_log=name_phys+"_log";
@@ -452,7 +498,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     cad_cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
 
 
-    tr_CYGNO_gas+=G4ThreeVector(0.,0., 0.);	  
+    tr_CYGNO_gas_1+=G4ThreeVector(0.5*CYGNO_x+1.*mm,0.,0.);	  
+    tr_CYGNO_gas_2+=G4ThreeVector(-0.5*CYGNO_x-1.*mm,0.,0.);	  
 
     if (CYGNOLab == "LNGS"){
 	tr+=G4ThreeVector(0.,-1*size_Laboratory.y()+size_Shielding.y(),size_Laboratory.z()-10*m);
@@ -520,26 +567,30 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
 //    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
 ////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
-    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr),
-		    CYGNO_log,"CYGNO_gas", AirBox_log, false, 0, true);
+    TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
+		    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
+		    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2),
+		    CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
 	
     tr=G4ThreeVector(0.,0.,0.);
     tr_cad+=G4ThreeVector(0.,0.,0.);
     rot = G4RotationMatrix();
     cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_fc_support_logical,"cad_fc_support_physical", CYGNO_log, false, 0, true);
+		    cad_fc_support_logical,"cad_fc_support_physical", TPC_log, false, 0, true);
     cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_turns_support_logical,"cad_turns_support_physical", CYGNO_log, false, 0, true);
+		    cad_turns_support_logical,"cad_turns_support_physical", TPC_log, false, 0, true);
     cad_field_cage_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_field_cage_logical,"cad_field_cage_physical", CYGNO_log, false, 0, true);
+		    cad_field_cage_logical,"cad_field_cage_physical", TPC_log, false, 0, true);
     cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_gem_support_logical,"cad_gem_support_physical", CYGNO_log, false, 0, true);
+		    cad_gem_support_logical,"cad_gem_support_physical", TPC_log, false, 0, true);
     cad_gem_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_gem_logical,"cad_gem_physical", CYGNO_log, false, 0, true);
+		    cad_gem_logical,"cad_gem_physical", TPC_log, false, 0, true);
     cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_cathode_frame_logical,"cad_cathode_frame_physical", CYGNO_log, false, 0, true);
+		    cad_cathode_frame_logical,"cad_cathode_frame_physical", TPC_log, false, 0, true);
     cad_cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_cathode_logical,"cad_cathode_physical", CYGNO_log, false, 0, true);
+		    cad_cathode_logical,"cad_cathode_physical", TPC_log, false, 0, true);
 
     //
     //**********************************************************************

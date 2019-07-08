@@ -40,7 +40,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
 
     void SetCYGNOShielding(G4String shield) {CYGNOShielding = shield;}
     G4String GetCYGNOShielding() {return CYGNOShielding;}
-    
+
+    void SetGeomPath(G4String path) {CYGNOGeomPath = path;}
+
     void SetShieldThick0(G4double thick) {thick0 = thick;}
     void SetShieldThick1(G4double thick) {thick1 = thick;}
     void SetShieldThick2(G4double thick) {thick2 = thick;}
@@ -66,7 +68,8 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4double rockThicknessOuter;
     G4double rockThicknessInner;
     G4double productionLayerThickness;
-    
+   
+    G4String CYGNOGeomPath; 
     G4String CYGNOLab;
     G4String CYGNOShielding;
     G4double thick0;
@@ -103,7 +106,8 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4ThreeVector tr_cad;
     G4RotationMatrix rot_cad;
     G4RotationMatrix absrot_cad;
-    G4ThreeVector tr_CYGNO_gas;
+    G4ThreeVector tr_CYGNO_gas_1;
+    G4ThreeVector tr_CYGNO_gas_2;
     G4RotationMatrix rot_CYGNO_gas;
     G4RotationMatrix absrot_CYGNO_gas;
     G4ThreeVector tr_cad_internal;
@@ -135,6 +139,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * cad_camera_carter_logical;
     G4LogicalVolume * cad_cameras_all_logical;
     //G4LogicalVolume * cad_window_logical;
+    G4LogicalVolume * TPC_log;
     G4LogicalVolume * CYGNO_log;
     G4LogicalVolume * cad_fc_support_logical;
     G4LogicalVolume * cad_turns_support_logical;
@@ -159,6 +164,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * cad_camera_carter_physical;
     G4VPhysicalVolume * cad_cameras_all_physical;
     //G4VPhysicalVolume * cad_window_physical;
+    G4VPhysicalVolume * TPC_phys;
     G4VPhysicalVolume * CYGNO_phys;
     G4VPhysicalVolume * cad_fc_support_physical;
     G4VPhysicalVolume * cad_turns_support_physical;

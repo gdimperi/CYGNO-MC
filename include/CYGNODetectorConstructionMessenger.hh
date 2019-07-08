@@ -44,7 +44,10 @@ protected:
     //private  members
 private:
     CYGNODetectorConstruction   *fDetectorPrimary;
-    
+
+    G4UIdirectory               *fGeomPathDirectory;
+    G4UIcmdWithAString          *fCYGNOCADPathCmd;
+
     G4UIdirectory               *fLabDirectory;
     G4UIcmdWithAString          *fCYGNOLabCmd;
     G4UIcmdWithADoubleAndUnit   *fexternalrockthickCmd;

@@ -863,7 +863,7 @@ G4int CYGNOAnalysis::GetVolNo(const G4Track* track)
     else if(PVname=="Shield2") volNo = SHIELD2;
     else if(PVname=="Shield3") volNo = SHIELD3;
     else if(PVname=="AirBox") volNo = AIRBOX;
-    else if(PVname=="cad_shell_physical") volNo = ACRYLICSHELL;
+    else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
 
     return volNo;
@@ -885,7 +885,7 @@ G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
     else if(PVname=="Shield2") volNo = SHIELD2;
     else if(PVname=="Shield3") volNo = SHIELD3;
     else if(PVname=="AirBox") volNo = AIRBOX;
-    else if(PVname=="cad_shell_physical") volNo = ACRYLICSHELL;
+    else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
 
     return volNo;
