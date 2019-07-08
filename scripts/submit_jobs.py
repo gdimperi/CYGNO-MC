@@ -40,7 +40,10 @@ source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh
 ## CADMesh
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
 
-
+## need to cd in /ua9 to mount the disk...
+cd /ua9/data
+cd /ua9/user
+## enter workdir
 cd ${WORKDIR}
 #/ua9/soft/cmake-3.14.4-install/bin/cmake -DGeant4_DIR=%(GEANT4CONFIG)slib64/Geant4-%(GEANT4VERSION)s -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/ ${CODEDIR}
 #make
@@ -156,12 +159,14 @@ def GetGeometry(NGeo='1'):
     #return a list containing the thickness and the material for each part of the shielding
     geos={
         '1':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'   ,'mat3':'Cu',}, # 50 cm water + 5 cm Cu
-        '2':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'PE'      ,'mat3':'Cu',}, # 50 cm PE + 5 cm Cu
-        '3':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 10 cm Cu
-        '4':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 5 cm Cu
-        '5':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'20.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 20 cm Pb
-        '6':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 10 cm Pb
-        '7':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'20.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu',}, # 20 cm Pb + 5 cm Cu
+        #'2':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'PE'      ,'mat3':'Cu',}, # 50 cm PE + 5 cm Cu
+        #'3':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 10 cm Cu
+        #'4':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 5 cm Cu
+        #'5':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'20.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 20 cm Pb
+        #'6':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 10 cm Pb
+        #'7':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'20.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu',}, # 20 cm Pb + 5 cm Cu
+        '2':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'0.5'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'      ,'mat3':'Cu',}, # 50 cm water + 5 mm Cu
+        '3':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Water',}, # 50 cm water
     }
     if NGeo not in geos.keys():
         print 'The geometry specified ( %s ) is not defined'%(NGeo)
