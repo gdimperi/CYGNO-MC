@@ -187,7 +187,11 @@ CYGNODetectorConstructionMessenger::~CYGNODetectorConstructionMessenger()
 void CYGNODetectorConstructionMessenger::SetNewValue(G4UIcommand *command,
                                                      G4String newValue)
 {
-  if (command == fCYGNOLabCmd )
+  if (command == fCYGNOCADPathCmd )
+    {
+	  fDetectorPrimary->SetGeomPath(newValue);
+    }
+  else if (command == fCYGNOLabCmd )
     {
 	  fDetectorPrimary->SetCYGNOLab(newValue);
     }
@@ -202,10 +206,6 @@ void CYGNODetectorConstructionMessenger::SetNewValue(G4UIcommand *command,
   else if (command == finternalrockthickCmd )
     {
 	  fDetectorPrimary->SetInternalRockThickness(finternalrockthickCmd->GetNewDoubleValue(newValue));
-    }
-  else if (command == fCYGNOCADPathCmd )
-    {
-	  fDetectorPrimary->SetGeomPath(newValue);
     }
   else if (command == fCYGNOShieldingCmd )
     {

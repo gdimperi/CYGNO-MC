@@ -1,8 +1,6 @@
 #include <iostream>
-#include <string.h> 
-
-// CADMESH //
-#include "CADMesh.hh"
+#include <string.h>
+#include <fstream> 
 
 // GEANT4 //
 #include "globals.hh"
@@ -53,7 +51,8 @@ CYGNODetectorConstruction::CYGNODetectorConstruction() :
    thick0(0.90*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
    Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu")
 {
-	fMessenger = new CYGNODetectorConstructionMessenger(this);
+	
+     fMessenger = new CYGNODetectorConstructionMessenger(this);
 }
 
 CYGNODetectorConstruction::~CYGNODetectorConstruction()
@@ -63,7 +62,8 @@ CYGNODetectorConstruction::~CYGNODetectorConstruction()
 
 G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 {
-    
+   
+    //UpdateGeometryPath(CYGNOGeomPath); 
     //register the SD
     G4SDManager* SDmanager=G4SDManager::GetSDMpointer();
     
@@ -73,7 +73,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	
 	
     G4NistManager * nist_manager = G4NistManager::Instance();
-
+   
     //-----------------------------
     // construction of materials
     //-----------------------------
@@ -357,81 +357,94 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     
     char namestl[50];
     sprintf(namestl,"%s/shell.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
+    G4cout << namestl << G4endl;
     //CADMesh * mesh_shell = new CADMesh("../geometry/v2/shell.stl");    
-    CADMesh * mesh_shell = new CADMesh(namestl);    
+    ifstream infile(CYGNOGeomPath.c_str());
+    if (infile.good())
+    	mesh_shell = new CADMesh(namestl);    
     //namestl = "camera_carter.stl";
     sprintf(namestl,"%s/camera_carter.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_camera_carter = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+    	mesh_camera_carter = new CADMesh(namestl);
     //namestl = "cameras.stl";    
     sprintf(namestl,"%s/cameras.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_camera = new CADMesh(namestl);    
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_camera = new CADMesh(namestl);    
     //CADMesh * mesh_window = new CADMesh("../geometry/v1/glass_windows.stl");  
     //namestl = "FC_support.stl";  
     sprintf(namestl,"%s/FC_support.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_fc_support = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_fc_support = new CADMesh(namestl);
     //namestl = "turns_support.stl";    
     sprintf(namestl,"%s/turns_support.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_turns_support = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_turns_support = new CADMesh(namestl);
     //namestl = "field_cage.stl";    
     sprintf(namestl,"%s/field_cage.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_field_cage = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_field_cage = new CADMesh(namestl);
     //namestl = "gem_frame.stl";    
     sprintf(namestl,"%s/gem_frame.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_gem_support = new CADMesh(namestl);    
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_gem_support = new CADMesh(namestl);    
     //namestl = "gem.stl";
     sprintf(namestl,"%s/gem.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_gem = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_gem = new CADMesh(namestl);
     //namstl = "cathode_frame.stl";    
     sprintf(namestl,"%s/cathode_frame.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_cathode_frame = new CADMesh(namestl);
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_cathode_frame = new CADMesh(namestl);
     //namestl = "cathode.stl";   
     sprintf(namestl,"%s/cathode.stl",CYGNOGeomPath.c_str());
-    //G4cout << namestl << G4endl;
-    CADMesh * mesh_cathode = new CADMesh(namestl);   
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_cathode = new CADMesh(namestl);   
 
-    mesh_shell->SetScale(mm);
-    mesh_camera_carter->SetScale(mm);
-    mesh_camera->SetScale(mm);
-    //mesh_window->SetScale(mm);
-    mesh_fc_support->SetScale(mm);
-    mesh_field_cage->SetScale(mm);
-    mesh_gem_support->SetScale(mm);
-    mesh_gem->SetScale(mm);
-    mesh_cathode_frame->SetScale(mm);
-    mesh_cathode->SetScale(mm);
-
-
-    //shell
-    cad_shell_solid = mesh_shell->TessellatedMesh();
-    cad_shell_logical = new G4LogicalVolume(cad_shell_solid, CYGNOMaterials->Material("Perspex"), "cad_shell_logical");
-    cad_shell_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
-
-
-    //camera carter
-    cad_camera_carter_solid = mesh_camera_carter->TessellatedMesh();
-    cad_camera_carter_logical = new G4LogicalVolume(cad_camera_carter_solid, CYGNOMaterials->Material("Perspex"), "cad_camera_carter_logical", 0, 0, 0);
-    //cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_camera_carter_logical->GetMaterial()->GetName()));
-    cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
-
-    //cameras
-    cad_cameras_all_solid = mesh_camera->TessellatedMesh();
-    cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Camera"), "cad_cameras_all_logical", 0, 0, 0);
-    //cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cameras_all_logical->GetMaterial()->GetName()));
-    cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Camera"));
-
-    //window
-    //cad_window_solid = mesh_window->TessellatedMesh();
-    //cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
+    if (infile.good()){
+      mesh_shell->SetScale(mm);
+      mesh_camera_carter->SetScale(mm);
+      mesh_camera->SetScale(mm);
+      //mesh_window->SetScale(mm);
+      mesh_fc_support->SetScale(mm);
+      mesh_field_cage->SetScale(mm);
+      mesh_gem_support->SetScale(mm);
+      mesh_gem->SetScale(mm);
+      mesh_cathode_frame->SetScale(mm);
+      mesh_cathode->SetScale(mm);
     
+
+      //shell
+      cad_shell_solid = mesh_shell->TessellatedMesh();
+      cad_shell_logical = new G4LogicalVolume(cad_shell_solid, CYGNOMaterials->Material("Perspex"), "cad_shell_logical");
+      cad_shell_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
+
+      //camera carter
+      cad_camera_carter_solid = mesh_camera_carter->TessellatedMesh();
+      cad_camera_carter_logical = new G4LogicalVolume(cad_camera_carter_solid, CYGNOMaterials->Material("Perspex"), "cad_camera_carter_logical", 0, 0, 0);
+      //cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_camera_carter_logical->GetMaterial()->GetName()));
+      cad_camera_carter_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
+      //cameras
+      cad_cameras_all_solid = mesh_camera->TessellatedMesh();
+      cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Camera"), "cad_cameras_all_logical", 0, 0, 0);
+      //cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cameras_all_logical->GetMaterial()->GetName()));
+      cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Camera"));
+
+      //window
+      //cad_window_solid = mesh_window->TessellatedMesh();
+      //cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
+    }
+  
     //TPC gas
     G4double TPC_x = 1250.*mm;
     G4double TPC_y = 1258.*mm;
@@ -456,47 +469,48 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes(CYGNO_log->GetMaterial()->GetName()));
     CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes("CYGNO_gas"));
 
-    //fc support
-    cad_fc_support_solid = mesh_fc_support->TessellatedMesh();
-    cad_fc_support_logical = new G4LogicalVolume(cad_fc_support_solid, CYGNOMaterials->Material("Perspex"), "cad_fc_support_logical", 0, 0, 0);
-    //cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_fc_support_logical->GetMaterial()->GetName()));
-    cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+    if (infile.good()){
+      //fc support
+      cad_fc_support_solid = mesh_fc_support->TessellatedMesh();
+      cad_fc_support_logical = new G4LogicalVolume(cad_fc_support_solid, CYGNOMaterials->Material("Perspex"), "cad_fc_support_logical", 0, 0, 0);
+      //cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_fc_support_logical->GetMaterial()->GetName()));
+      cad_fc_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
  
-    //turns support
-    cad_turns_support_solid = mesh_turns_support->TessellatedMesh();
-    cad_turns_support_logical = new G4LogicalVolume(cad_turns_support_solid, CYGNOMaterials->Material("Perspex"), "cad_turns_support_logical", 0, 0, 0);
-    //cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_turns_support_logical->GetMaterial()->GetName()));
-    cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+      //turns support
+      cad_turns_support_solid = mesh_turns_support->TessellatedMesh();
+      cad_turns_support_logical = new G4LogicalVolume(cad_turns_support_solid, CYGNOMaterials->Material("Perspex"), "cad_turns_support_logical", 0, 0, 0);
+      //cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_turns_support_logical->GetMaterial()->GetName()));
+      cad_turns_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
 
-    //field cage  
-    cad_field_cage_solid = mesh_field_cage->TessellatedMesh();
-    cad_field_cage_logical = new G4LogicalVolume(cad_field_cage_solid, CYGNOMaterials->Material("Cu"), "cad_field_cage_logical", 0, 0, 0);
-    //cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_field_cage_logical->GetMaterial()->GetName()));
-    cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+      //field cage  
+      cad_field_cage_solid = mesh_field_cage->TessellatedMesh();
+      cad_field_cage_logical = new G4LogicalVolume(cad_field_cage_solid, CYGNOMaterials->Material("Cu"), "cad_field_cage_logical", 0, 0, 0);
+      //cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_field_cage_logical->GetMaterial()->GetName()));
+      cad_field_cage_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
 
-    //GEM support
-    cad_gem_support_solid = mesh_gem_support->TessellatedMesh();
-    cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Perspex"), "cad_gem_support_logical", 0, 0, 0);
-    //cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_support_logical->GetMaterial()->GetName()));
-    cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+      //GEM support
+      cad_gem_support_solid = mesh_gem_support->TessellatedMesh();
+      cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Perspex"), "cad_gem_support_logical", 0, 0, 0);
+      //cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_support_logical->GetMaterial()->GetName()));
+      cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
 
-    //GEM
-    cad_gem_solid = mesh_gem->TessellatedMesh();
-    cad_gem_logical = new G4LogicalVolume(cad_gem_solid, CYGNOMaterials->Material("Kapton"), "cad_gem_logical", 0, 0, 0);
-    //cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_logical->GetMaterial()->GetName()));
-    cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Kapton"));
-    
-    //cathode frame
-    cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();
-    cad_cathode_frame_logical = new G4LogicalVolume(cad_cathode_frame_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_frame_logical", 0, 0, 0);
-    //cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cathode_frame_logical->GetMaterial()->GetName()));
-    cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
-    
-    //cathode frame
-    cad_cathode_solid = mesh_cathode->TessellatedMesh();
-    cad_cathode_logical = new G4LogicalVolume(cad_cathode_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_logical", 0, 0, 0);
-    cad_cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
-
+      //GEM
+      cad_gem_solid = mesh_gem->TessellatedMesh();
+      cad_gem_logical = new G4LogicalVolume(cad_gem_solid, CYGNOMaterials->Material("Kapton"), "cad_gem_logical", 0, 0, 0);
+      //cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_logical->GetMaterial()->GetName()));
+      cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Kapton"));
+      
+      //cathode frame
+      cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();
+      cad_cathode_frame_logical = new G4LogicalVolume(cad_cathode_frame_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_frame_logical", 0, 0, 0);
+      //cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cathode_frame_logical->GetMaterial()->GetName()));
+      cad_cathode_frame_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+      
+      //cathode frame
+      cad_cathode_solid = mesh_cathode->TessellatedMesh();
+      cad_cathode_logical = new G4LogicalVolume(cad_cathode_solid, CYGNOMaterials->Material("Cu"), "cad_cathode_logical", 0, 0, 0);
+      cad_cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+    }
 
     tr_CYGNO_gas_1+=G4ThreeVector(0.5*CYGNO_x+1.*mm,0.,0.);	  
     tr_CYGNO_gas_2+=G4ThreeVector(-0.5*CYGNO_x-1.*mm,0.,0.);	  
@@ -559,39 +573,40 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
     G4ThreeVector  size;
     
-    cad_shell_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_shell_logical,"cad_shell_physical", AirBox_log, false, 0, true);
-    cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_camera_carter_logical,"cad_camera_carter_physical", AirBox_log, false, 0, true);
-    cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
-//    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
-    TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
-		    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
-    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
-		    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
-    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2),
-		    CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
-	
-    tr=G4ThreeVector(0.,0.,0.);
-    tr_cad+=G4ThreeVector(0.,0.,0.);
-    rot = G4RotationMatrix();
-    cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_fc_support_logical,"cad_fc_support_physical", TPC_log, false, 0, true);
-    cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_turns_support_logical,"cad_turns_support_physical", TPC_log, false, 0, true);
-    cad_field_cage_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_field_cage_logical,"cad_field_cage_physical", TPC_log, false, 0, true);
-    cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_gem_support_logical,"cad_gem_support_physical", TPC_log, false, 0, true);
-    cad_gem_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_gem_logical,"cad_gem_physical", TPC_log, false, 0, true);
-    cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_cathode_frame_logical,"cad_cathode_frame_physical", TPC_log, false, 0, true);
-    cad_cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-		    cad_cathode_logical,"cad_cathode_physical", TPC_log, false, 0, true);
-
+    if (infile.good()){
+      cad_shell_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_shell_logical,"cad_shell_physical", AirBox_log, false, 0, true);
+      cad_camera_carter_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_camera_carter_logical,"cad_camera_carter_physical", AirBox_log, false, 0, true);
+      cad_cameras_all_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
+  //    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+  ////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
+      TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
+  		    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
+      CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
+  		    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
+      CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2),
+  		    CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
+  	
+      tr=G4ThreeVector(0.,0.,0.);
+      tr_cad+=G4ThreeVector(0.,0.,0.);
+      rot = G4RotationMatrix();
+      cad_fc_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_fc_support_logical,"cad_fc_support_physical", TPC_log, false, 0, true);
+      cad_turns_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_turns_support_logical,"cad_turns_support_physical", TPC_log, false, 0, true);
+      cad_field_cage_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_field_cage_logical,"cad_field_cage_physical", TPC_log, false, 0, true);
+      cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_gem_support_logical,"cad_gem_support_physical", TPC_log, false, 0, true);
+      cad_gem_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_gem_logical,"cad_gem_physical", TPC_log, false, 0, true);
+      cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_cathode_frame_logical,"cad_cathode_frame_physical", TPC_log, false, 0, true);
+      cad_cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_cathode_logical,"cad_cathode_physical", TPC_log, false, 0, true);
+    }  
     //
     //**********************************************************************
     // GLOBAL TRANSLATIONS ***************************************
@@ -639,18 +654,21 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
       CYGNOProperties->AddVolumeNameMassAndDensity(Shield3_log);
   }
   CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
-  CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
-
+  ifstream infile(CYGNOGeomPath.c_str());
+  if (infile.good()) {
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_shell_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_camera_carter_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(TPC_log);
+    CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
+  }
 
 //  if ( productionRockThinTube_phys )
 //	{
@@ -714,11 +732,15 @@ void CYGNODetectorConstruction::UpdateGeometry()
   Rock_log=0;
   WorldVolume_log=0;
   productionRockThinTube_phys=0;
-
   //log->ClearDaughters();
 
   // Delete all the geometry you had defined and build everything from scratch
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
+void CYGNODetectorConstruction::UpdateGeometryPath(G4String newpath)
+{
+  G4cout << "Updating the Geometry path to "<< newpath << G4endl;
+  SetGeomPath(newpath); 
 
+}

@@ -9,6 +9,9 @@ class G4VSolid;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 
+// CADMESH //
+#include "CADMesh.hh"
+
 // USER //
 class CYGNOSensitiveDetector;
 
@@ -30,6 +33,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* Construct();
     void SaveMassAndDensity();
     void UpdateGeometry();
+    void UpdateGeometryPath(G4String newpath);
 
     void SetExternalRockThickness(G4double rockthick) {rockThicknessOuter = rockthick;}
     void SetProductionRockThickness(G4double rockthick) {productionLayerThickness = rockthick;}
@@ -81,7 +85,19 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4String Mat2;
     G4String Mat3;
 
-  
+
+    //CADMesh
+    CADMesh * mesh_shell;
+    CADMesh * mesh_camera_carter;
+    CADMesh * mesh_camera;
+    CADMesh * mesh_fc_support;
+    CADMesh * mesh_turns_support;
+    CADMesh * mesh_field_cage;
+    CADMesh * mesh_gem_support;
+    CADMesh * mesh_gem;
+    CADMesh * mesh_cathode_frame;
+    CADMesh * mesh_cathode; 
+    
     //Building blocks: logic volumes, sizes and positions
     G4ThreeVector  tr_Tot;
     G4LogicalVolume* Rock_log;
