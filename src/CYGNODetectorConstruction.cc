@@ -512,8 +512,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
     }
 
-    tr_CYGNO_gas_1+=G4ThreeVector(0.5*CYGNO_x+1.*mm,0.,0.);	  
-    tr_CYGNO_gas_2+=G4ThreeVector(-0.5*CYGNO_x-1.*mm,0.,0.);	  
+    tr_CYGNO_gas_1=G4ThreeVector(0.5*CYGNO_x+1.*mm,0.,0.);	  
+    tr_CYGNO_gas_2=G4ThreeVector(-0.5*CYGNO_x-1.*mm,0.,0.);	  
 
     if (CYGNOLab == "LNGS"){
 	tr+=G4ThreeVector(0.,-1*size_Laboratory.y()+size_Shielding.y(),size_Laboratory.z()-10*m);
@@ -573,6 +573,13 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
     G4ThreeVector  size;
     
+    TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
+      	    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
+      	    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
+    CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2),
+  		    CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
+    
     if (infile.good()){
       cad_shell_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
   		    cad_shell_logical,"cad_shell_physical", AirBox_log, false, 0, true);
@@ -582,12 +589,6 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
   		    cad_cameras_all_logical,"cad_cameras_all_physical", AirBox_log, false, 0, true);
   //    //cad_window_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
   ////		    cad_window_logical,"cad_window_physical", Laboratory_log, false, 0, true);
-      TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
-  		    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
-      CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
-  		    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
-      CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2),
-  		    CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
   	
       tr=G4ThreeVector(0.,0.,0.);
       tr_cad+=G4ThreeVector(0.,0.,0.);
@@ -716,6 +717,7 @@ void CYGNODetectorConstruction::UpdateGeometry()
   cad_shell_logical=0;
   cad_camera_carter_logical=0;
   cad_cameras_all_logical=0;
+  TPC_log=0;
   CYGNO_log=0;
   cad_fc_support_logical=0;
   cad_turns_support_logical=0;
