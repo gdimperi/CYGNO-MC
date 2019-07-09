@@ -158,15 +158,15 @@ def ModifyMacro(name=CODEDIR+'/macro/RadioactiveDecayTEMPLATE.mac', newname=CODE
 def GetGeometry(NGeo='1'):
     #return a list containing the thickness and the material for each part of the shielding
     geos={
-        '1':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'   ,'mat3':'Cu',}, # 50 cm water + 5 cm Cu
+        'drift':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'   ,'mat3':'Cu',}, # 50 cm water + 5 cm Cu
         #'2':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'PE'      ,'mat3':'Cu',}, # 50 cm PE + 5 cm Cu
         #'3':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 10 cm Cu
         #'4':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Cu',}, # 5 cm Cu
         #'5':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'20.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 20 cm Pb
         #'6':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'10.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Pb',}, # 10 cm Pb
         #'7':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'20.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu',}, # 20 cm Pb + 5 cm Cu
-        '2':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'0.5'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'      ,'mat3':'Cu',}, # 50 cm water + 5 mm Cu
-        '3':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Water',}, # 50 cm water
+        'drift5mmCu':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'0.5'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'      ,'mat3':'Cu',}, # 50 cm water + 5 mm Cu
+        'onlyWater':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Water',}, # 50 cm water
     }
     if NGeo not in geos.keys():
         print 'The geometry specified ( %s ) is not defined'%(NGeo)
