@@ -108,32 +108,32 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fthick3Cmd->AvailableForStates(G4State_Init,G4State_Idle);
     
     fMat0Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat0",this);
-    fMat0Cmd->SetGuidance("Set material of the CYGNO shield layer #0. Possible candidates: G4_Pb, G4_POLYETHYLENE, G4_Cu, G4_AIR, G4_WATER");
-    fMat0Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as Full or South");
+    fMat0Cmd->SetGuidance("Set material of the CYGNO shield layer #0. Possible candidates: Pb, PE, Cu, Air, Water, Steel");
+    fMat0Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat0Cmd->SetParameterName("choice",true);
     fMat0Cmd->SetDefaultValue("Air");
     fMat0Cmd->SetCandidates("Pb PE Cu Air Water");
     fMat0Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat1Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat1",this);
-    fMat1Cmd->SetGuidance("Set material of the CYGNO shield layer #1. Possible candidates: G4_Pb, G4_POLYETHYLENE, G4_Cu, G4_AIR, G4_WATER");
-    fMat1Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as Full or South");
+    fMat1Cmd->SetGuidance("Set material of the CYGNO shield layer #1. Possible candidates: Pb, PE, Cu, Air, Water, Steel");
+    fMat1Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat1Cmd->SetParameterName("choice",true);
     fMat1Cmd->SetDefaultValue("Air");
     fMat1Cmd->SetCandidates("Pb PE Cu Air Water");
     fMat1Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat2Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat2",this);
-    fMat2Cmd->SetGuidance("Set material of the CYGNO shield layer #2. Possible candidates: G4_Pb, G4_POLYETHYLENE, G4_Cu, G4_AIR, G4_WATER");
-    fMat2Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as Full or South");
+    fMat2Cmd->SetGuidance("Set material of the CYGNO shield layer #2. Possible candidates: Pb, PE, Cu, Air, Water, Steel");
+    fMat2Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat2Cmd->SetParameterName("choice",true);
     fMat2Cmd->SetDefaultValue("Pb");
     fMat2Cmd->SetCandidates("Pb PE Cu Air Water");
     fMat2Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat3Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat3",this);
-    fMat3Cmd->SetGuidance("Set material of the CYGNO shield layer #3. Possible candidates: G4_Pb, G4_POLYETHYLENE, G4_Cu, G4_AIR, G4_WATER");
-    fMat3Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as Full or South");
+    fMat3Cmd->SetGuidance("Set material of the CYGNO shield layer #3. Possible candidates: Pb, PE, Cu, Air, Water, Steel");
+    fMat3Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat3Cmd->SetParameterName("choice",true);
     fMat3Cmd->SetDefaultValue("Cu");
     fMat3Cmd->SetCandidates("Pb PE Cu Air Water");
