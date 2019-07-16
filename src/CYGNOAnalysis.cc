@@ -94,6 +94,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     
     CYGNODetectorProperty* CYGNOProperties = CYGNODetectorProperty::GetInstance();
 
+
     //-------------------------------------------------------------------------------------------
     // Book histograms, ntuple
     //-------------------------------------------------------------------------------------------
@@ -167,10 +168,21 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
 
 
     //Filling the run info histograms
-    for(unsigned int h=0; h<hrun_list.size(); h++)
+    for(unsigned int h=0; h<hrun_list.size(); h++){
         analysisManager->FillH1(h+hi_list.size()+hd_list.size(), 0., hrun_list.at(h).second);
-    
-    
+    }
+    G4cout << "number of histograms filled : " << hrun_list.size()+hi_list.size()+hd_list.size() << G4endl;
+    //Filling the external shielding thickness histogams 
+    G4cout<<"Filling histogram of shielding thickness  in cm" << G4endl;
+    analysisManager->CreateH1("ThickShield0","", 1, 0, 1);
+    analysisManager->CreateH1("ThickShield1","", 1, 0, 1);
+    analysisManager->CreateH1("ThickShield2","", 1, 0, 1);
+    analysisManager->CreateH1("ThickShield3","", 1, 0, 1);
+    analysisManager->FillH1(hrun_list.size()+hi_list.size()+hd_list.size(), 0., Detector->GetShieldThick0()/cm);
+    analysisManager->FillH1(1+hrun_list.size()+hi_list.size()+hd_list.size(), 0., Detector->GetShieldThick1()/cm);
+    analysisManager->FillH1(2+hrun_list.size()+hi_list.size()+hd_list.size(), 0., Detector->GetShieldThick2()/cm);
+    analysisManager->FillH1(3+hrun_list.size()+hi_list.size()+hd_list.size(), 0., Detector->GetShieldThick3()/cm);
+
     ////-------------------------------------------------------------------------------------------
     //
     ////Ntuple always filled, no matter filter applied

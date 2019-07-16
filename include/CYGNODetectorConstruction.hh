@@ -58,6 +58,10 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     void SetInsideVolumeRadius(G4double r) {InsideVolume_OR = r;}
     void SetInsideVolumeHeight(G4double h) {InsideVolume_Z = h;}
 
+    G4double GetShieldThick0() {return thick0;}
+    G4double GetShieldThick1() {return thick1;}
+    G4double GetShieldThick2() {return thick2;}
+    G4double GetShieldThick3() {return thick3;}    
   private:
     
     CYGNODetectorConstructionMessenger* fMessenger;

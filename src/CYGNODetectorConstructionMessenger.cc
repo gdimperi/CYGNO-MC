@@ -112,7 +112,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fMat0Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat0Cmd->SetParameterName("choice",true);
     fMat0Cmd->SetDefaultValue("Air");
-    fMat0Cmd->SetCandidates("Pb PE Cu Air Water");
+    fMat0Cmd->SetCandidates("Pb PE Cu Air Water Steel");
     fMat0Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat1Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat1",this);
@@ -120,7 +120,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fMat1Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat1Cmd->SetParameterName("choice",true);
     fMat1Cmd->SetDefaultValue("Air");
-    fMat1Cmd->SetCandidates("Pb PE Cu Air Water");
+    fMat1Cmd->SetCandidates("Pb PE Cu Air Water Steel");
     fMat1Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat2Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat2",this);
@@ -128,7 +128,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fMat2Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat2Cmd->SetParameterName("choice",true);
     fMat2Cmd->SetDefaultValue("Pb");
-    fMat2Cmd->SetCandidates("Pb PE Cu Air Water");
+    fMat2Cmd->SetCandidates("Pb PE Cu Air Water Steel");
     fMat2Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat3Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat3",this);
@@ -136,7 +136,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fMat3Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat3Cmd->SetParameterName("choice",true);
     fMat3Cmd->SetDefaultValue("Cu");
-    fMat3Cmd->SetCandidates("Pb PE Cu Air Water");
+    fMat3Cmd->SetCandidates("Pb PE Cu Air Water Steel");
     fMat3Cmd->AvailableForStates(G4State_Init,G4State_Idle);
     
     fInsideVolumeRadiusCmd = new G4UIcmdWithADoubleAndUnit("/CYGNO/shield/inner_radius",this);
