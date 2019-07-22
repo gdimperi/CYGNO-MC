@@ -85,12 +85,11 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   G4LorentzVector quadriMom = fTrack->GetDynamicParticle()->Get4Momentum();
 
 
-  if((name=="InnerAirSphere" && nextname=="Shield0") || 
-     (name=="expHall" && nextname=="Shield0") || 
-     (name=="Shield0" && nextname=="Shield1") || 
-     (name=="Shield1" && nextname=="Shield2") || 
-     (name=="Shield2" && nextname=="Shield3") || 
-     (name=="Shield3" && nextname=="AirBox")  ||
+  if((name!="Shield0" && nextname=="Shield0") || 
+     (name!="Shield1" && nextname=="Shield1") || 
+     (name!="Shield2" && nextname=="Shield2") || 
+     (name!="Shield3" && nextname=="Shield3") || 
+     (name!="AirBox" && nextname=="AirBox") || 
      (name!="CYGNO_gas" && nextname=="CYGNO_gas")) {
 
      //G4cout << "trackID = " << trackID << "  vol name = " << name << "  next vol name = " << nextname << G4endl;
