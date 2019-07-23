@@ -20,7 +20,7 @@ GEANT4VERSION='10.5.1'
 #ROOTCONFIG='/chirone/soft/brew/manually_installed_packages/root-6.16.00-install-py3/'
 GEANT4CONFIG='/ua9/soft/geant4.10.05.p01-install/'
 ROOTCONFIG='/ua9/soft/root-v6-12-06-install/'
-QUEUE='normal64'
+QUEUE='cmslong'
 
 #Directory paths
 CODEDIR='/ua9/user/'+username+'/CYGNO/CYGNO-MC/' # this folder contains the code of the simulation and the background information (subdir backgrounds/)
@@ -28,7 +28,8 @@ OUTDIR='/ua9/data/CYGNO/CYGNO-MC-data/' # this is the folder where results of th
 BSUBOUTDIR='bsub_outputs/' #For hist_maker.py this is the folder where the simulation root files are loaded from. The output of hist_maker.py is saved in subfolders of this directory: output/ (root files with histograms), bsub/ (script submitted and logs)
 TMPDIR='/ua9/user/'+username+'/CYGNO/bsub-tmp/' #this is a temporary directory where the simulation is compiled per each job. It is then cleaned up at the end of each job
 ANADIR='/ua9/user/'+username+'/CYGNO/CYGNO-MC-Analysis/' # this folder contains the code to make histograms
-BUILDDIR='/ua9/user/'+username+'/CYGNO/CYGNO-MC-build/' 
+#BUILDDIR='/ua9/user/'+username+'/CYGNO/CYGNO-MC-build/' 
+BUILDDIR='/cmshome/gdimperi/CYGNO/CYGNO-MC-build/' 
 
 
 ISOTOPES={'K40':['K40'],'Co60':['Co60'],'Cs137':['Cs137'],'U238':['Pb214','Bi214','Pb210','Bi210','U238','Th234','Pa234','Pa234m','U234','Th230','Ra226','Rn222','Po218','Po218','Po214','Tl210','Po210','Tl206'],'Th232':['Ac228','Pb212','Bi212','Tl208','Th232','Ra228','Th228','Ra224','Rn220','Po216','Po212'],'U235':['Pb211','Tl207'],'C14':['C14'],'Be7':['Be7'],'Ar39':['Ar39'],'Kr85':['Kr85'],'H3':['H3'],'Sn113':['Sn113']} # List of isotopes that are checked for by the CYGNOAnalysis code. They are grouped under the name of the key
