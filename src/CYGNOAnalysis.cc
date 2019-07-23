@@ -215,6 +215,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     i_list.push_back(std::make_pair("numvertex",&numvertex));
     i_list.push_back(std::make_pair("numparticles",&numparticles));
     i_list.push_back(std::make_pair("numhits",&numhits));
+    i_list.push_back(std::make_pair("numflu0",&numflu0));
     i_list.push_back(std::make_pair("numflu",&numflu));
     i_list.push_back(std::make_pair("numneu",&numneu));
     i_list.push_back(std::make_pair("numion",&numion));
@@ -416,6 +417,7 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     numion=0;
     numneu=0;
     numflu=0;
+    numflu0=0;
 
     //cleaning vectors
     vol_name_mass->clear();
@@ -620,29 +622,31 @@ void CYGNOAnalysis::RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, 
 
 void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int volNo, G4int copyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
 {
-  if(fRegisterOn) 
-    {
     numflu = v_trackid_flu.size();
-    if (numflu==0 || (trackID != v_trackid_flu.at(numflu-1) && volNo != v_volNo_flu.at(numflu-1))){ //avoid double counting
-      v_trackid_flu.push_back(trackID);
-      v_prestepVolNo_flu.push_back(prestepVolNo);
-      v_volNo_flu.push_back(volNo);
-      v_copyNo_flu.push_back(copyNo);
-      v_pdg_flu.push_back(PDG);
-      v_prestepX_flu.push_back(preStepPt.x()/mm);
-      v_prestepY_flu.push_back(preStepPt.y()/mm);
-      v_prestepZ_flu.push_back(preStepPt.z()/mm);
-      v_poststepX_flu.push_back(postStepPt.x()/mm);
-      v_poststepY_flu.push_back(postStepPt.y()/mm);
-      v_poststepZ_flu.push_back(postStepPt.z()/mm);
-      v_px_flu.push_back(QuadriMomentum.px()/keV);
-      v_py_flu.push_back(QuadriMomentum.py()/keV);
-      v_pz_flu.push_back(QuadriMomentum.pz()/keV);
-      v_E_flu.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
-      v_kinE_flu.push_back(kinE);
-      v_m_flu.push_back(sqrt(QuadriMomentum.m2())/keV);
+    if (numflu==0 || !(trackID == v_trackid_flu.at(numflu-1) && volNo == v_volNo_flu.at(numflu-1))){ //avoid double counting
+      if(fRegisterOn) 
+      {
+        v_trackid_flu.push_back(trackID);
+        v_prestepVolNo_flu.push_back(prestepVolNo);
+        v_volNo_flu.push_back(volNo);
+        v_copyNo_flu.push_back(copyNo);
+        v_pdg_flu.push_back(PDG);
+        v_prestepX_flu.push_back(preStepPt.x()/mm);
+        v_prestepY_flu.push_back(preStepPt.y()/mm);
+        v_prestepZ_flu.push_back(preStepPt.z()/mm);
+        v_poststepX_flu.push_back(postStepPt.x()/mm);
+        v_poststepY_flu.push_back(postStepPt.y()/mm);
+        v_poststepZ_flu.push_back(postStepPt.z()/mm);
+        v_px_flu.push_back(QuadriMomentum.px()/keV);
+        v_py_flu.push_back(QuadriMomentum.py()/keV);
+        v_pz_flu.push_back(QuadriMomentum.pz()/keV);
+        v_E_flu.push_back(QuadriMomentum.e()/keV);
+        G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+        v_kinE_flu.push_back(kinE);
+        v_m_flu.push_back(sqrt(QuadriMomentum.m2())/keV);
       }
+    if (prestepVolNo==2 && volNo==3 && trackID==1) numflu0 += 1; //count primary particles entering shield0 from outside
+    numflu += 1;
     }
 }
 

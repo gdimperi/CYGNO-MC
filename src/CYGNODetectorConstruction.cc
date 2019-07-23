@@ -446,7 +446,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
   
     //TPC gas
-    G4double TPC_x = 1250.*mm;
+    G4double TPC_x = 1248.*mm;
     G4double TPC_y = 1258.*mm;
     G4double TPC_z = 1310.*mm;
       
