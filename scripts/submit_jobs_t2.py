@@ -460,6 +460,9 @@ def main():
             MACRO='Geo'+options.geo+'_'+MacrosList[i]
             #mode 1,2
             changes={}
+            for g in geometry:
+                changes[g]=geometry[g]
+                print changes[g] 
             SubmitJob(MACRO, TEMPLATEMACRO, NEvts[i],changes)
     else:
         if len(MacrosList)!=len(NEvts):

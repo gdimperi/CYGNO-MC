@@ -361,6 +361,7 @@ def main():
     geometry={}
     if options.geo:
         geometry=GetGeometry(options.geo)
+        print geometry
     #Getting the source, the number of events, the activity from the file
     sources={}
     if options.file:
@@ -433,6 +434,7 @@ def main():
                 changes['SourcePos']=p
                 for g in geometry:
                     changes[g]=geometry[g]
+                    print changes[g] 
                 SubmitJob(MACRO, MacrosList[0], sources['NEvents'][i],changes)
     elif options.file and options.macro and len(MacrosList)==1:
         print 'Executing the simulation using the template: ',MacrosList[0]
@@ -459,6 +461,9 @@ def main():
             MACRO='Geo'+options.geo+'_'+MacrosList[i]
             #mode 1,2
             changes={}
+            for g in geometry:
+                changes[g]=geometry[g]
+                print changes[g] 
             SubmitJob(MACRO, TEMPLATEMACRO, NEvts[i],changes)
     else:
         if len(MacrosList)!=len(NEvts):
