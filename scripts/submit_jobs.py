@@ -167,7 +167,7 @@ def GetGeometry(NGeo='1'):
         #'7':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'20.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu',}, # 20 cm Pb + 5 cm Cu
         'drift5mmCu':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'0.5'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'      ,'mat3':'Cu',}, # 50 cm water + 5 mm Cu
         'onlyWater':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Water',}, # 50 cm water
-        'onlyWater':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'PE',}, # 50 cm water
+        'onlyPE':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'PE',}, # 50 cm water
         '50Water5Cu2Steel':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Cu'     ,'mat3':'Steel',}, 
         '50Water5Pb5Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
         '50Water10Pb2Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'10.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
