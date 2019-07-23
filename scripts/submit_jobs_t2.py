@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.curdir))
 
 import BackgroundReader
 
-from config import MacrosList, NEvts, MaxNJobs, TAG, GEANT4VERSION, GEANT4CONFIG, ROOTCONFIG, QUEUE, CODEDIR, OUTDIR, BSUBOUTDIR, TMPDIR, MATERIALS, BUILDDIR
+from config_t2 import MacrosList, NEvts, MaxNJobs, TAG, GEANT4VERSION, GEANT4CONFIG, ROOTCONFIG, QUEUE, CODEDIR, OUTDIR, BSUBOUTDIR, TMPDIR, MATERIALS, BUILDDIR
 
 #############################################################################################
 ## THE CODE BELOW SHOULD NOT BE TOUCHED. IF YOU FIND BUGS PLEASE EMAIL THE SIMULATION GROUP##
@@ -24,37 +24,34 @@ OUTDIR=%(OUTDIR)s
 BUILDDIR=%(BUILDDIR)s
 BSUBOUTDIR=%(BSUBOUTDIR)s
 MACRONAME=%(MACRO)s
+TMPDIR=%(TMPDIR)s
 
 mkdir -p ${WORKDIR}
 rm -rf ${WORKDIR}/*
 
-alias cmake="/ua9/soft/cmake-3.14.4-install/bin/cmake"
 ###for ROOT
-source /ua9/soft/root-v6-12-06-install/bin/thisroot.sh
+source /cmshome/gdimperi/software/root-v6-12-06-install/bin/thisroot.sh
 # for pyROOT
 export LD_LIBRARY_PATH=$PYTHONDIR/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 ## for geant4
-source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh 
+source /cmshome/gdimperi/software/geant4.10.05.p01-install/bin/geant4.sh 
 
 ## CADMesh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/cmshome/gdimperi/software/CADMesh-install/lib
 
-## need to cd in /ua9 to mount the disk...
-cd /ua9/data
-cd /ua9/user
-## enter workdir
 cd ${WORKDIR}
-#/ua9/soft/cmake-3.14.4-install/bin/cmake -DGeant4_DIR=%(GEANT4CONFIG)slib64/Geant4-%(GEANT4VERSION)s -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/ ${CODEDIR}
-#make
 #the macro is copied from the place where it has been modified for the test
-rsync -ra ${BUILDDIR}CYGNO ./
-rsync -ra ${OUTDIR}bsub_workdir/${TAG}/${MACRONAME}.mac ./
+dccp ${BUILDDIR}CYGNO ./
+dccp ${TMPDIR}/${MACRONAME}.mac ./
 mkdir -p ${OUTDIR}${BSUBOUTDIR}${TAG}
 mkdir -p ${OUTDIR}bsub_logs/${TAG}
 #./CYGNO ${MACRONAME}.mac &> ${OUTDIR}bsub_logs/${TAG}/${MACRONAME}.log
 ./CYGNO ${MACRONAME}.mac 
-mv ${WORKDIR}/${MACRONAME}.root ${OUTDIR}${BSUBOUTDIR}${TAG}/
+dccp ${TMPDIR}/${MACRONAME}.log ${OUTDIR}bsub_logs/${TAG}/
+dccp ${TMPDIR}/${MACRONAME}.sh ${OUTDIR}bsub_workdir/${TAG}/
+dccp ${TMPDIR}/${MACRONAME}.mac ${OUTDIR}bsub_workdir/${TAG}/
+dccp ${WORKDIR}/${MACRONAME}.root ${OUTDIR}${BSUBOUTDIR}${TAG}/
 cd ${OUTDIR}
 rm -rf ${WORKDIR}/
 """
@@ -167,6 +164,9 @@ def GetGeometry(NGeo='1'):
         #'7':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'20.'  ,'thick3':'5.'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu',}, # 20 cm Pb + 5 cm Cu
         'drift5mmCu':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'50.'  ,'thick3':'0.5'   ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Water'      ,'mat3':'Cu',}, # 50 cm water + 5 mm Cu
         'onlyWater':{'thick0':'1.'  ,'thick1':'1.'  ,'thick2':'1.'   ,'thick3':'50.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Air'     ,'mat3':'Water',}, # 50 cm water
+        '50Water5Cu2Steel':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Cu'     ,'mat3':'Steel',}, 
+        '50Water5Pb5Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
+        '50Water10Pb2Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'10.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
     }
     if NGeo not in geos.keys():
         print 'The geometry specified ( %s ) is not defined'%(NGeo)
@@ -261,7 +261,7 @@ def SubmitJob(MACRO='RadioactiveDecayTEMPLATEOUT', TEMPLATE='RadioactiveDecayTEM
     changes['Outname']=MACRO+Part
     changes['NEvs']=NEvs
     #print changes
-    ModifyMacro(CODEDIR+'/macro/'+TEMPLATE+'.mac', OUTDIR+'/bsub_workdir/'+TAG+'/'+MACRO+Part+'.mac', changes)
+    #ModifyMacro(CODEDIR+'/macro/'+TEMPLATE+'.mac', OUTDIR+'/bsub_workdir/'+TAG+'/'+MACRO+Part+'.mac', changes)
 
     kw = {}
     #WORKDIR has to be an unique name per job
@@ -277,9 +277,13 @@ def SubmitJob(MACRO='RadioactiveDecayTEMPLATEOUT', TEMPLATE='RadioactiveDecayTEM
     kw['GEANT4CONFIG']=GEANT4CONFIG
     kw['ROOTCONFIG']=ROOTCONFIG
     kw['BUILDDIR']=BUILDDIR
+    kw['TMPDIR']=TMPDIR
 
-    script_filename = OUTDIR+'bsub_workdir/'+TAG+'/'+MACRO+Part+'.sh'
-    log_filename = OUTDIR+'/bsub_logs/'+TAG+'/'+MACRO+Part+'.log'
+    #script_filename = OUTDIR+'bsub_workdir/'+TAG+'/'+MACRO+Part+'.sh'
+    #log_filename = OUTDIR+'/bsub_logs/'+TAG+'/'+MACRO+Part+'.log'
+    ModifyMacro(CODEDIR+'/macro/'+TEMPLATE+'.mac', TMPDIR+'/'+MACRO+Part+'.mac', changes)
+    script_filename = TMPDIR+'/'+MACRO+Part+'.sh'
+    log_filename = TMPDIR+'/'+MACRO+Part+'.log'
     hostname = socket.gethostname()
     open(script_filename, 'w').write(script_template % kw)
     subprocess.call(['chmod', '+x',script_filename])
