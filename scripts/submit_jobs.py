@@ -25,6 +25,9 @@ BUILDDIR=%(BUILDDIR)s
 BSUBOUTDIR=%(BSUBOUTDIR)s
 MACRONAME=%(MACRO)s
 
+## need to cd in /ua9 to mount the disk...
+cd /ua9/data
+cd /ua9/user
 mkdir -p ${WORKDIR}
 rm -rf ${WORKDIR}/*
 
@@ -40,16 +43,15 @@ source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh
 ## CADMesh
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
 
-## need to cd in /ua9 to mount the disk...
-cd /ua9/data
-cd /ua9/user
 ## enter workdir
 cd ${WORKDIR}
 #/ua9/soft/cmake-3.14.4-install/bin/cmake -DGeant4_DIR=%(GEANT4CONFIG)slib64/Geant4-%(GEANT4VERSION)s -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/ ${CODEDIR}
 #make
 #the macro is copied from the place where it has been modified for the test
-rsync -ra ${BUILDDIR}CYGNO ./
-rsync -ra ${OUTDIR}bsub_workdir/${TAG}/${MACRONAME}.mac ./
+#rsync -ra ${BUILDDIR}CYGNO ./
+#rsync -ra ${OUTDIR}bsub_workdir/${TAG}/${MACRONAME}.mac ./
+cp ${BUILDDIR}CYGNO ./
+cp ${OUTDIR}bsub_workdir/${TAG}/${MACRONAME}.mac ./
 mkdir -p ${OUTDIR}${BSUBOUTDIR}${TAG}
 mkdir -p ${OUTDIR}bsub_logs/${TAG}
 #./CYGNO ${MACRONAME}.mac &> ${OUTDIR}bsub_logs/${TAG}/${MACRONAME}.log
@@ -171,6 +173,7 @@ def GetGeometry(NGeo='1'):
         '50Water5Cu2Steel':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Cu'     ,'mat3':'Steel',}, 
         '50Water5Pb5Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'5.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
         '50Water10Pb2Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'10.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
+        '50Water20Pb5Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'20.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu',}, 
     }
     if NGeo not in geos.keys():
         print 'The geometry specified ( %s ) is not defined'%(NGeo)
