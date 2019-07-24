@@ -111,8 +111,10 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
     analysisManager->CreateH1("NTot","", 1, 0, 1);
+    analysisManager->CreateH1("numFlu0","", 5, 0, 5);
     hi_list.push_back(std::make_pair("NTot",&NTot));
-    NAlwaysFilledHistI++;
+    hi_list.push_back(std::make_pair("numFlu0",&numflu0));
+    NAlwaysFilledHistI+=2;
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
     
