@@ -101,7 +101,8 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     G4cout << "===============================" << G4endl;
 
     //
-    Camera = FindOrBuildMaterial("G4_Pyrex_Glass");
+    //Camera = FindOrBuildMaterial("G4_Pyrex_Glass");
+    Camera = FindOrBuildMaterial("G4_GLASS_PLATE");
 
 
     
