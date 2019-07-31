@@ -123,11 +123,7 @@ G4bool CYGNOExceptionHandler::Notify(const char* originOfException,
     abortionForCoreDump = false;
     break;
    default:
-    if(exceptionCode!=std::string("GeomNav1002")) {
-            G4cout << ws_banner << message.str() << "*** This is just a warning message. ***"
-           << we_banner << G4endl;
-    }
-    if(exceptionCode!=std::string("Analysis_W002")) {
+    if(exceptionCode!=std::string("GeomNav1002") && exceptionCode!=std::string("Analysis_W002")) {
             G4cout << ws_banner << message.str() << "*** This is just a warning message. ***"
            << we_banner << G4endl;
     }
