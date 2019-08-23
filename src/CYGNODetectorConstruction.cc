@@ -403,8 +403,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole7);
     camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole8);
     //FIXME set to Air for external simulations for consistency with old simulation
-    //camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Cu"),"camera_shield_log",0,0,0) ;
-    camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Air"),"camera_shield_log",0,0,0) ;
+    camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Cu"),"camera_shield_log",0,0,0) ;
+    //camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Air"),"camera_shield_log",0,0,0) ;
 
 
     //**********************************************************************
