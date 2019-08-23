@@ -402,7 +402,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole6);
     camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole7);
     camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole8);
-    camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Cu"),"camera_shield_log",0,0,0) ;
+    //FIXME set to Air for external simulations for consistency with old simulation
+    //camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Cu"),"camera_shield_log",0,0,0) ;
+    camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Air"),"camera_shield_log",0,0,0) ;
 
 
     //**********************************************************************
@@ -447,6 +449,10 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4cout << namestl << G4endl;
     if (infile.good())
       mesh_gem_support = new CADMesh(namestl);    
+    sprintf(namestl,"%s/gem_structure.stl",CYGNOGeomPath.c_str());
+    G4cout << namestl << G4endl;
+    if (infile.good())
+      mesh_gem_structure = new CADMesh(namestl);    
     //namestl = "gem.stl";
     sprintf(namestl,"%s/gem.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
@@ -471,6 +477,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       mesh_fc_support->SetScale(mm);
       mesh_field_cage->SetScale(mm);
       mesh_gem_support->SetScale(mm);
+      mesh_gem_structure->SetScale(mm);
       mesh_gem->SetScale(mm);
       mesh_cathode_frame->SetScale(mm);
       mesh_cathode->SetScale(mm);
@@ -549,6 +556,12 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_gem_support_logical = new G4LogicalVolume(cad_gem_support_solid, CYGNOMaterials->Material("Perspex"), "cad_gem_support_logical", 0, 0, 0);
       //cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_support_logical->GetMaterial()->GetName()));
       cad_gem_support_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+      
+      //GEM structure support
+      cad_gem_structure_solid = mesh_gem_structure->TessellatedMesh();
+      cad_gem_structure_logical = new G4LogicalVolume(cad_gem_structure_solid, CYGNOMaterials->Material("Perspex"), "cad_gem_structure_logical", 0, 0, 0);
+      cad_gem_structure_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
+
 
       //GEM
       cad_gem_solid = mesh_gem->TessellatedMesh();
@@ -655,6 +668,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
   		    cad_field_cage_logical,"cad_field_cage_physical", TPC_log, false, 0, true);
       cad_gem_support_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
   		    cad_gem_support_logical,"cad_gem_support_physical", TPC_log, false, 0, true);
+      cad_gem_structure_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
+  		    cad_gem_structure_logical,"cad_gem_structure_physical", TPC_log, false, 0, true);
       cad_gem_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
   		    cad_gem_logical,"cad_gem_physical", TPC_log, false, 0, true);
       cad_cathode_frame_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
@@ -817,6 +832,7 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_fc_support_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_support_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_structure_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_gem_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
