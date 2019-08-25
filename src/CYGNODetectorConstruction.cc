@@ -565,9 +565,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
       //GEM
       cad_gem_solid = mesh_gem->TessellatedMesh();
-      cad_gem_logical = new G4LogicalVolume(cad_gem_solid, CYGNOMaterials->Material("Kapton"), "cad_gem_logical", 0, 0, 0);
+      cad_gem_logical = new G4LogicalVolume(cad_gem_solid, CYGNOMaterials->Material("GEM"), "cad_gem_logical", 0, 0, 0); //GEM material is an effective material of kapton + copper 
       //cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_gem_logical->GetMaterial()->GetName()));
-      cad_gem_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Kapton"));
       
       //cathode frame
       cad_cathode_frame_solid = mesh_cathode_frame->TessellatedMesh();

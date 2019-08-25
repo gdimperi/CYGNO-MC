@@ -50,6 +50,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     G4Element* elSi = man->FindOrBuildElement("Si");
     G4Element* elCa = man->FindOrBuildElement("Ca");
     G4Element* elB = man->FindOrBuildElement("B");
+    G4Element* elCu = man->FindOrBuildElement("Cu");
     
     O = man->FindOrBuildMaterial("G4_O");
     Na = man->FindOrBuildMaterial("G4_Na");
@@ -178,7 +179,17 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     Kapton->AddElement(elN, natoms=2);
     Kapton->AddElement(elO, natoms=5);
     //---------
-    
+   
+    // GEM effective material of 5 um copper + 50 um kapton + 5 um copper
+    density = 2.67*g/cm3; 
+    GEM = new G4Material("GEM", density, ncomponents=5);
+    GEM->AddElement(elC, natoms=22);
+    GEM->AddElement(elH, natoms=10);
+    GEM->AddElement(elN, natoms=2);
+    GEM->AddElement(elO, natoms=5);
+    GEM->AddElement(elCu, natoms=1);
+
+
     
     Vacuum = new G4Material("Vacuum",1.,massOfMole, density= 1.e-25*g/cm3,kStateGas,temperature, pressure);
     Water  = man->FindOrBuildMaterial("G4_WATER");
@@ -254,6 +265,7 @@ G4Material* CYGNODetectorMaterial::Material(G4String what)
   if(what == "Perspex")           material = Perspex;
   if(what == "Camera")            material = Camera;
   if(what == "Kapton")            material = Kapton;
+  if(what == "GEM")               material = GEM;
  
   return material;
 }
