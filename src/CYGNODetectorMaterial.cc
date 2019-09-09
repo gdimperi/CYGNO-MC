@@ -94,7 +94,12 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     BSglass->AddElement(elNa, natoms = 4*2);
     BSglass->AddElement(elK, natoms = 4*2);
 
-    
+
+    Quartz = new G4Material ("Quartz", 2.200 * g/cm3, ncomponents = 2);
+    Quartz->AddElement (elSi, natoms = 1);
+    Quartz->AddElement (elO, natoms = 2);
+
+
     //Cameras --> effective material, at the moment pyrex glass
     //FIXME
     G4cout << "========== Warning ============" << G4endl;
