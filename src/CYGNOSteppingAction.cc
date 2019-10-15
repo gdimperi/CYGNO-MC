@@ -83,6 +83,7 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   G4ThreeVector preStepPoint = fStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector postStepPoint = fStep->GetPostStepPoint()->GetPosition();
   G4LorentzVector quadriMom = fTrack->GetDynamicParticle()->Get4Momentum();
+  G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 
 
   if((name!="Shield0" && nextname=="Shield0") || 
@@ -109,10 +110,12 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   // Check for neutrons in the gas
   if (fTrack->GetDefinition() == G4Neutron::NeutronDefinition())
     {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterNeutron(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
 	  analysis->SetNeutronFlag(1);
         }
@@ -132,7 +135,8 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   //ions in the gas
   if (particleType == "nucleus")
     {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
         //if (lifetime > 1e18*second) lifetime = -1; // do not consider very long-lived isotopes > 3e10 yrs
         //if (lifetime > 0 || excitationEnergy > 0)
@@ -150,17 +154,20 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
           G4double excitationEnergy = ion->GetExcitationEnergy();
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
-	  analysis->RegisterIon(A, Z, pdg, volNo, copyNo, trackID, fTrack->GetParentID(), postStpPt, fourMom);
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
+	  analysis->RegisterIon(A, Z, pdg, volNo, copyNo, trackID, fTrack->GetParentID(), postStpPt, fourMom, kinE_prestep);
         }
     }
 
   // electrons
   if (fTrack->GetDefinition() == G4Electron::Definition())
     {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterElectron(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
         }
     }
@@ -168,10 +175,12 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   // positrons
    if(fTrack->GetDefinition() == G4Positron::Definition()) 
    {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterPositron(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
         }
    }
@@ -180,10 +189,12 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   // protons
   if (fTrack->GetDefinition() == G4Proton::Definition())
     {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterProton(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
         }
     }
@@ -192,17 +203,20 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   if (fTrack->GetDefinition() == G4MuonMinus::Definition() ||
       fTrack->GetDefinition() == G4MuonPlus::Definition())
     {
-      if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      //if (fTrack->GetMaterial()->GetName() == "CYGNO_gas")
+      if (name=="CYGNO_gas")
         {
 	  G4ThreeVector postStpPt = fTrack->GetPosition();
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
+          G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterProton(fTrack->GetTrackID(), fTrack->GetParentID(), postStpPt, fourMom);
 	  analysis->SetMuonFlag(1);
         }
     }
   
   //neutron capture flag
-  if ((fTrack->GetMaterial()->GetName() == "CYGNO_gas") &&
+  //if ((fTrack->GetMaterial()->GetName() == "CYGNO_gas") &&
+  if (name=="CYGNO_gas" &&
       (fTrack->GetDefinition() == G4Gamma::Definition()))
     {
       if (fTrack->GetParentID()>0)
