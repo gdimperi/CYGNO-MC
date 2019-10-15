@@ -72,7 +72,7 @@ public:
   G4int GetPreVolNo(const G4Track*);
 
 
-  void RegisterIon(G4int A, G4int Z, G4int pdg, G4int volNo, G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStpPt, G4LorentzVector fourMom);
+  void RegisterIon(G4int A, G4int Z, G4int pdg, G4int volNo, G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStpPt, G4LorentzVector fourMom, G4double kinE_prestep);
   void RegisterIsotope(G4int A, G4int Z, G4int PDG, G4double kinE, G4ThreeVector Position, G4int volNo, G4int copyNo, G4int trackID);
   void RegisterParticle(G4int trackID, G4int preVolNo, G4int nextVolNo, G4int nextCopyNo, G4int PDG, G4ThreeVector preStepPt,  G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
   void RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum);
@@ -164,7 +164,8 @@ private:
   std::vector<double>  v_z_vertex_hits;
 
   std::vector<double>  v_energyDep_hits;
-  G4double  energyDep;
+  G4double  energyDep=0;
+  G4double  energyDep_NR=0;
     
   //ions
   std::vector<G4int>         v_A_ion;
