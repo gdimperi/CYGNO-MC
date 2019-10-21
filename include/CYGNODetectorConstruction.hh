@@ -174,6 +174,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * camera_log; 
     G4LogicalVolume * camera_lens_log; 
     G4LogicalVolume * camera_shield_log;
+    G4LogicalVolume * window_log;
 
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
@@ -203,6 +204,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* camera_phys; 
     G4VPhysicalVolume* camera_lens_phys; 
     G4VPhysicalVolume* camera_shield_phys;
+    G4VPhysicalVolume* window_phys;
    
     //CYGNO sensitive detector
     CYGNOSensitiveDetector * CYGNOSD;

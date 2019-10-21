@@ -252,7 +252,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         G4double AirBox_y;
         G4double AirBox_z;
         G4Box* AirBox;
-        AirBox_x = 2.55*m;
+        AirBox_x = 2.65*m;
         AirBox_y = 1.45*m;
         AirBox_z = 1.45*m;        
         tr_InsideVolume = G4ThreeVector(0.,0.,0.);
@@ -331,7 +331,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  G4double AirBox_y;
 	  G4double AirBox_z;
 	  G4Box* AirBox;
-          AirBox_x = 2.55*m;
+          AirBox_x = 2.65*m;
           AirBox_y = 1.45*m;
           AirBox_z = 1.45*m;        
 	  name_phys="AirBox";
@@ -371,6 +371,16 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //G4UnionSolid* camera = new G4UnionSolid("camera_solid", camera_body, camera_lens,  rotlens, translens);
     camera_log = new G4LogicalVolume(camera_body,CYGNOMaterials->Material("Camera"),"camera_log",0,0,0) ;
     camera_lens_log = new G4LogicalVolume(camera_lens,CYGNOMaterials->Material("Camera"),"camera_lens_log",0,0,0) ;
+
+
+    ////Fused silica window
+    //box
+    G4double x_window_box = 50.*mm;
+    G4double y_window_box = 1020*mm;
+    G4double z_window_box = 1020*mm;
+    G4Box* window_box = new G4Box("window_box_solid",0.5*x_window_box,0.5*y_window_box,0.5*z_window_box);
+    window_log = new G4LogicalVolume(window_box,CYGNOMaterials->Material("Quartz"),"window_log",0,0,0) ;
+
 
 
     ////Camera shielding
@@ -677,9 +687,13 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
   		    cad_cathode_logical,"cad_cathode_physical", TPC_log, false, 0, true);
     }  
    
+    G4double ztr_window = 1110*mm; 
+    G4double zmintr_window = -1110*mm; 
+    window_phys = new G4PVPlacement(0,G4ThreeVector(ztr_window,0,0),window_log,"window",AirBox_log, false, 0, true);	
+    window_phys = new G4PVPlacement(0,G4ThreeVector(zmintr_window,0,0),window_log,"window",AirBox_log, false, 1, true);	
 
-    G4double ztr_cam = 1200.*mm; 
-    G4double zmintr_cam = -1200.*mm; 
+    G4double ztr_cam = 1250.*mm; 
+    G4double zmintr_cam = -1250*mm; 
     G4ThreeVector trcam0(zmintr_cam,0.,0.);
     G4ThreeVector trcam1(zmintr_cam,0.,-354*mm);
     G4ThreeVector trcam2(zmintr_cam,0.,354*mm);
@@ -836,6 +850,7 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_frame_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_cathode_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_field_cage_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(window_log);
   }
 
 //  if ( productionRockThinTube_phys )

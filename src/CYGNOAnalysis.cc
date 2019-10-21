@@ -241,6 +241,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     i_list.push_back(std::make_pair("inelasticflag",&inelasticflag));
     d_list.clear();
     d_list.push_back(std::make_pair("energyDep",&energyDep));
+    d_list.push_back(std::make_pair("energyDep_NR",&energyDep_NR));
 
 
     f_list.clear();
@@ -659,9 +660,9 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int vo
         v_py_flu.push_back(QuadriMomentum.py()/keV);
         v_pz_flu.push_back(QuadriMomentum.pz()/keV);
         v_E_flu.push_back(QuadriMomentum.e()/keV);
-        G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+        G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
         v_kinE_flu.push_back(kinE);
-        v_m_flu.push_back(sqrt(QuadriMomentum.m2())/keV);
+        v_m_flu.push_back(QuadriMomentum.m()/keV);
       }
     if (prestepVolNo==2 && volNo==3 && trackID==1) numflu0 += 1; //count primary particles entering shield0 from outside
     if (prestepVolNo==3 && volNo==4 && PDG==22) numflugamma1 += 1; //count gammas entering shield1 from shield0
@@ -688,34 +689,40 @@ void CYGNOAnalysis::RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector
       v_py_neu.push_back(QuadriMomentum.py()/keV);
       v_pz_neu.push_back(QuadriMomentum.pz()/keV);
       v_E_neu.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+      G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
       v_kinE_neu.push_back(kinE);
       }
     }
 }
 
 
-void CYGNOAnalysis::RegisterIon(G4int A, G4int Z, G4int PDG, G4int volNo,G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
+void CYGNOAnalysis::RegisterIon(G4int A, G4int Z, G4int PDG, G4int volNo,G4int copyNo, G4int trackId, G4int parentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum, G4double kinE_prestep)
 {
-  if(fRegisterOn){
-    numion = v_trackid_ion.size();
-    if (numion==0 || trackId != v_trackid_ion.at(numion-1)){
-      v_A_ion.push_back(A);
-      v_Z_ion.push_back(Z);
-      v_pdg_ion.push_back(PDG);
-      v_volNo_ion.push_back(volNo);
-      v_copyNo_ion.push_back(copyNo);
-      v_trackid_ion.push_back(trackId);
-      v_parentid_ion.push_back(parentId);
-      v_poststepX_ion.push_back(postStepPt.x()/mm);
-      v_poststepY_ion.push_back(postStepPt.y()/mm);
-      v_poststepZ_ion.push_back(postStepPt.z()/mm);
-      v_E_ion.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
-      v_kinE_ion.push_back(kinE);
+  numion = v_trackid_ion.size();
+  if (numion==0 || trackId != v_trackid_ion.at(numion-1)){
+    //G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
+    G4double kinE = kinE_prestep/keV;
+    energyDep_NR = kinE;
+  
+    if(fRegisterOn){
+      //numion = v_trackid_ion.size();
+      //if (numion==0 || trackId != v_trackid_ion.at(numion-1)){
+        v_A_ion.push_back(A);
+        v_Z_ion.push_back(Z);
+        v_pdg_ion.push_back(PDG);
+        v_volNo_ion.push_back(volNo);
+        v_copyNo_ion.push_back(copyNo);
+        v_trackid_ion.push_back(trackId);
+        v_parentid_ion.push_back(parentId);
+        v_poststepX_ion.push_back(postStepPt.x()/mm);
+        v_poststepY_ion.push_back(postStepPt.y()/mm);
+        v_poststepZ_ion.push_back(postStepPt.z()/mm);
+        v_E_ion.push_back(QuadriMomentum.e()/keV);
+        v_kinE_ion.push_back(kinE);
       }
     }
 }
+    
 
 void CYGNOAnalysis::RegisterProton(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
 {
@@ -733,7 +740,7 @@ void CYGNOAnalysis::RegisterProton(G4int TrackId, G4int ParentId, G4ThreeVector 
       v_py_pro.push_back(QuadriMomentum.py()/keV);
       v_pz_pro.push_back(QuadriMomentum.pz()/keV);
       v_E_pro.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+      G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
       v_kinE_pro.push_back(kinE);
       }
     }
@@ -756,7 +763,7 @@ void CYGNOAnalysis::RegisterElectron(G4int TrackId, G4int ParentId, G4ThreeVecto
       v_py_ele.push_back(QuadriMomentum.py()/keV);
       v_pz_ele.push_back(QuadriMomentum.pz()/keV);
       v_E_ele.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+      G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
       v_kinE_ele.push_back(kinE);
       }
     }
@@ -778,7 +785,7 @@ void CYGNOAnalysis::RegisterPositron(G4int TrackId, G4int ParentId, G4ThreeVecto
       v_py_pos.push_back(QuadriMomentum.py()/keV);
       v_pz_pos.push_back(QuadriMomentum.pz()/keV);
       v_E_pos.push_back(QuadriMomentum.e()/keV);
-      G4double kinE = (QuadriMomentum.e()/keV - sqrt(QuadriMomentum.m2())/keV);
+      G4double kinE = (QuadriMomentum.e()/keV - QuadriMomentum.m()/keV);
       v_kinE_pos.push_back(kinE);
       }
     }
@@ -872,6 +879,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
         
         analysisManager->AddNtupleRow(0);
     }  
+    energyDep_NR=0.;
 }
 
 
