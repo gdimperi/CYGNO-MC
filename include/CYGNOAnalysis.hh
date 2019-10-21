@@ -141,6 +141,10 @@ private:
   G4int    numhits=0;
   //size of vectors for partcles
   G4int    numflu0=0;
+  G4int    numflugamma1=0;
+  G4int    numflugamma2=0;
+  G4int    numflugamma3=0;
+  G4int    numflugamma_airbox=0;
   G4int    numflu=0;
   G4int    numneu=0;
   G4int    numion=0;
