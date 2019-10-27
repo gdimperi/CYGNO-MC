@@ -145,6 +145,10 @@ private:
   G4int    numflugamma2=0;
   G4int    numflugamma3=0;
   G4int    numflugamma_airbox=0;
+  G4int    numfluneu1=0;
+  G4int    numfluneu2=0;
+  G4int    numfluneu3=0;
+  G4int    numfluneu_airbox=0;
   G4int    numflu=0;
   G4int    numneu=0;
   G4int    numion=0;
