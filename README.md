@@ -82,7 +82,7 @@ mkdir CYGNO-MC-build
 and compile CYGNO-MC code
 ```
 cd CYGNO-MC-build
-g4cmake -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/ ../CYGNOMC
+g4cmake ../CYGNOMC
 make -j`nproc`
 ```
 
