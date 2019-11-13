@@ -1,21 +1,23 @@
+/CYGNO/pathtocad /storage/DATA-03/cygnorm3/geometry/v2/
+
 #CYGNO SHIELD
 #define the experiment location:
 /CYGNO/lab/select NoCave
 
 #define if the geometry of the shielding is Full or NoShield
-/CYGNO/shield/select NoShield
-#/CYGNO/shield/thick0 10 cm
-#/CYGNO/shield/thick1 10 cm
-#/CYGNO/shield/thick2 10 cm
-#/CYGNO/shield/thick3 5 cm
-#/CYGNO/shield/mat0 Air
-#/CYGNO/shield/mat1 Air
-#/CYGNO/shield/mat2 Pb
-#/CYGNO/shield/mat3 Cu
+#/CYGNO/shield/select NoShield
+/CYGNO/shield/thick0 10 cm
+/CYGNO/shield/thick1 10 cm
+/CYGNO/shield/thick2 10 cm
+/CYGNO/shield/thick3 5 cm
+/CYGNO/shield/mat0 Air
+/CYGNO/shield/mat1 Air
+/CYGNO/shield/mat2 Pb
+/CYGNO/shield/mat3 Cu
 
 #define fraction of He and CF4 in the sensitive gas
-/CYGNO/gas/frac_He 0.7
-/CYGNO/gas/frac_CF4 0.3
+/CYGNO/gas/frac_He 0.6
+/CYGNO/gas/frac_CF4 0.4
 
 # FINALLY ISSUE THE GEOMETRY UPDATE
 /CYGNO/updateGeo
@@ -26,7 +28,7 @@
 /gps/pos/type Surface
 /gps/pos/shape Sphere
 /gps/pos/centre 0. 0. 0. m
-/gps/pos/radius 1.0 m
+/gps/pos/radius 3.3 m
 /gps/ang/type iso
 
 # set the focusing point, default is (0, 0, 0)
@@ -178,16 +180,16 @@
 /gps/hist/point 2.836289132   0.000638594111615
 
 #Save only events that pass that have hits in the sensitive gas
-#/CYGNO/cutoutfile 1
-/CYGNO/save_hits_branches 1
-#/CYGNO/registeron 1
+/CYGNO/cutoutfile 0
+/CYGNO/save_hits_branches 0
+/CYGNO/registeron 1
 #
 /run/initialize
 #change these for debug
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
-/CYGNO/reportingfrequency 1000
+/CYGNO/reportingfrequency 100000
 #Output file name
 /CYGNO/outfile gamma_test
 /random/setSeeds 575841909 838392975

@@ -1,13 +1,25 @@
+/CYGNO/pathtocad /storage/DATA-03/cygnorm3/geometry/v2/
+
 #CYGNO SHIELD
 #define the experiment location:
 /CYGNO/lab/select NoCave
 
 #define if the geometry of the shielding is Full or NoShield
-/CYGNO/shield/select NoShield
+#/CYGNO/shield/select NoShield
+/CYGNO/shield/select FullShield
+/CYGNO/shield/thick0 1 
+/CYGNO/shield/thick1 1
+/CYGNO/shield/thick2 1
+/CYGNO/shield/thick3 1
+/CYGNO/shield/mat0 Air 
+/CYGNO/shield/mat1 Air
+/CYGNO/shield/mat2 Air
+/CYGNO/shield/mat3 Air
+
 
 #define fraction of He and CF4 in the sensitive gas
-/CYGNO/gas/frac_He 0.7
-/CYGNO/gas/frac_CF4 0.3
+/CYGNO/gas/frac_He 0.6
+/CYGNO/gas/frac_CF4 0.4
 
 # FINALLY ISSUE THE GEOMETRY UPDATE
 /CYGNO/updateGeo
@@ -18,7 +30,7 @@
 /gps/pos/type Surface
 /gps/pos/shape Sphere
 /gps/pos/centre 0. 0. 0. m
-/gps/pos/radius 1.0 m
+/gps/pos/radius 2.0 m
 /gps/ang/type iso
 
 # set the focusing point, default is (0, 0, 0)
@@ -52,9 +64,9 @@
 /gps/hist/point  2000.  0.000000000004
 
 #Save only events that pass that have hits in the sensitive gas
-#/CYGNO/cutoutfile 1
-/CYGNO/save_hits_branches 1
-#/CYGNO/registeron 1
+/CYGNO/cutoutfile 0
+/CYGNO/save_hits_branches 0
+/CYGNO/registeron 1
 #
 /run/initialize
 #change these for debug
@@ -68,4 +80,4 @@
 #/process/em/deexcitationIgnoreCut true
 
 # define number of events to be generated
-/run/beamOn 10000
+/run/beamOn 100000
