@@ -33,7 +33,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install-geant10.4.2/li
 
 ## Instructions for Roma 3 cluster
 
-In `farm-login.roma1.infn.it` you can do
+In `ui7-01.roma3.infn.it` you can do
 ```
 #####for ROOT
 alias cmake="/storage/local/exp_soft/cygnorm3/cmake-3.14.6-install/bin/cmake"
