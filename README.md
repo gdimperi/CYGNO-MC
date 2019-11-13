@@ -60,8 +60,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:path-to-CADmesh-install/lib
 
 You can put these commands in your `.bashrc` to execute them automatically every time you open a bash shell.
 
-Download CYGNO-MC repository
----------------------------
+# Download CYGNO-MC repository
 
 Run 
 ```
@@ -74,8 +73,7 @@ git clone https://github.com/CYGNUS-RD/CYGNO-MC.git
 
 Now you have downloaded the code in `CYGNO-MC/` directory
 
-Setup CYGNO-MC code
-------------------
+# Setup CYGNO-MC code
 
 Create a build directory 
 ```
