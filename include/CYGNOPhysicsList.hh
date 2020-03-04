@@ -14,6 +14,7 @@ class G4OpRayleigh;
 class G4OpWLS;
 class G4OpBoundaryProcess;
 //class MyOpBoundaryProcess;
+class CYGNOStepMax;
 
 class CYGNOPhysicsList: public G4VModularPhysicsList
 {
@@ -29,6 +30,8 @@ public:
   // Set user cuts
   virtual void SetCuts();
   void ConstructOp();
+  void AddStepMax();
+
 
 private:
   G4double cutForGamma;
@@ -43,6 +46,7 @@ private:
   static G4ThreadLocal G4OpWLS* fWLSProcess;
   static G4ThreadLocal G4OpBoundaryProcess* fBoundaryProcess;
 //  static G4ThreadLocal MyOpBoundaryProcess* fMyBoundaryProcess;
+  static G4ThreadLocal CYGNOStepMax* fStepMaxProcess;
 
 };
 

@@ -52,7 +52,6 @@
 #include "G4HadronElasticPhysicsHP.hh"
 #include "G4HadronElasticPhysicsLEND.hh"
 
-//#include "CYGNOStepMax.hh"
 #include "G4ProcessManager.hh"
 #include "G4LossTableManager.hh"
 #include "G4ParticleDefinition.hh"
@@ -76,6 +75,9 @@
 #include "MyOpWLS.hh"
 */
 
+#include "CYGNOStepMax.hh"
+
+
 G4ThreadLocal G4Cerenkov* CYGNOPhysicsList::fCerenkovProcess = 0;
 G4ThreadLocal G4Scintillation* CYGNOPhysicsList::fScintillationProcess = 0;
 G4ThreadLocal G4OpAbsorption* CYGNOPhysicsList::fAbsorptionProcess = 0;
@@ -84,6 +86,9 @@ G4ThreadLocal G4OpRayleigh* CYGNOPhysicsList::fRayleighScatteringProcess = 0;
 G4ThreadLocal G4OpWLS* CYGNOPhysicsList::fWLSProcess = 0;
 G4ThreadLocal G4OpBoundaryProcess* CYGNOPhysicsList::fBoundaryProcess = 0;
 //G4ThreadLocal MyOpBoundaryProcess* CYGNOPhysicsList::fMyBoundaryProcess = 0;
+
+//G4ThreadLocal CYGNOStepMax* CYGNOPhysicsList::fStepMaxProcess = 0;
+G4ThreadLocal CYGNOStepMax* CYGNOPhysicsList::fStepMaxProcess = nullptr;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -96,6 +101,7 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   
   SetVerboseLevel(verbose);
   G4LossTableManager::Instance()->SetVerbose(verbose);  
+  
   
   // Default Decay Physics
   RegisterPhysics(new G4DecayPhysics());
@@ -186,8 +192,6 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   RegisterPhysics(new G4EmExtraPhysics());
 
 
-  //AddStepMax();
-
   // Em options  
   G4EmProcessOptions emOptions;
   emOptions.SetBuildCSDARange(true);//not really fundamental
@@ -205,6 +209,8 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   cutForElectron  = defaultCutValue;
   cutForPositron  = defaultCutValue;
 
+
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -228,9 +234,9 @@ void CYGNOPhysicsList::ConstructProcess()
 /*  AddTransportation();
   emPhysicsList->ConstructProcess();
   AddDecay();  
-  AddStepMax();
 */
   G4VModularPhysicsList::ConstructProcess();
+  AddStepMax();
   //ConstructOp();
 }
 
@@ -366,21 +372,23 @@ void CYGNOPhysicsList::AddDecay()
 */
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//void CYGNOPhysicsList::AddStepMax()
-//{
-//  // Step limitation seen as a process
-//  CYGNOStepMax* stepMaxProcess = new CYGNOStepMax();
-//
-//  auto theParticleIterator=GetParticleIterator();
-//  theParticleIterator->reset();
-//  while ((*theParticleIterator)()){
-//      G4ParticleDefinition* particle = theParticleIterator->value();
-//      G4ProcessManager* pmanager = particle->GetProcessManager();
-//
-//      if (stepMaxProcess->IsApplicable(*particle) && !particle->IsShortLived())
-//        {
-//	  pmanager ->AddDiscreteProcess(stepMaxProcess);
-//        }
-//  }
-//}
-//
+void CYGNOPhysicsList::AddStepMax()
+{
+  // Step limitation seen as a process
+  CYGNOStepMax* stepMaxProcess = new CYGNOStepMax();
+
+  G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
+  auto theParticleIterator=GetParticleIterator();
+  theParticleIterator->reset();
+  while ((*theParticleIterator)()){
+      G4ParticleDefinition* particle = theParticleIterator->value();
+      G4ProcessManager* pmanager = particle->GetProcessManager();
+
+      if (stepMaxProcess->IsApplicable(*particle) && !particle->IsShortLived())
+        {
+	  pmanager ->AddDiscreteProcess(stepMaxProcess);
+          //ph->RegisterProcess(stepMaxProcess, particle);
+	}
+  }
+}
+
