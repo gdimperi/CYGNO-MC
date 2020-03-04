@@ -8,7 +8,7 @@ import socket, getpass
 MacrosList = ['CYGNOtest.mac'] #This is the list of configuration macros to be submitted. They must have extension .mac and must be located inside the CODEDIR+'macro/' directory
 NEvts = ['20000'] #This list has to be the same lenght of MacrosList and specifies the number of events to be simulated for each macro
 NEvtsPerJob = '10000' #The maximum number of events per job. If NEvtsPerJob<NEvts, the simulation will be splitted in  NEvts/NEvtsPerJob jobs
-MaxNJobs=400 #This depends on the machine cluster used. Some of these system have a maximum limit on the number of jobs that can be submitted
+MaxNJobs=500 #This depends on the machine cluster used. Some of these system have a maximum limit on the number of jobs that can be submitted
 TAG='test1' #this is the reference name of the simulation that you have submitted. The output of the simulation will be contained in a folder with this name
 
 hostname = socket.gethostname()

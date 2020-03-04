@@ -110,11 +110,27 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     hi_list.clear();//list of TH1I
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
-    analysisManager->CreateH1("NTot","", 1, 0, 1);
+    analysisManager->CreateH1("NTot","", 5, 0, 5);
     analysisManager->CreateH1("numFlu0","", 5, 0, 5);
+    analysisManager->CreateH1("numFluGamma1","", 5, 0, 5);
+    analysisManager->CreateH1("numFluGamma2","", 5, 0, 5);
+    analysisManager->CreateH1("numFluGamma3","", 5, 0, 5);
+    analysisManager->CreateH1("numFluGammaAirBox","", 5, 0, 5);
+    analysisManager->CreateH1("numFluNeutron1","", 5, 0, 5);
+    analysisManager->CreateH1("numFluNeutron2","", 5, 0, 5);
+    analysisManager->CreateH1("numFluNeutron3","", 5, 0, 5);
+    analysisManager->CreateH1("numFluNeutronAirBox","", 5, 0, 5);
     hi_list.push_back(std::make_pair("NTot",&NTot));
     hi_list.push_back(std::make_pair("numFlu0",&numflu0));
-    NAlwaysFilledHistI+=2;
+    hi_list.push_back(std::make_pair("numFluGamma1",&numflugamma1));
+    hi_list.push_back(std::make_pair("numFluGamma2",&numflugamma2));
+    hi_list.push_back(std::make_pair("numFluGamma3",&numflugamma3));
+    hi_list.push_back(std::make_pair("numFluGammaAirBox",&numflugamma_airbox));
+    hi_list.push_back(std::make_pair("numFluNeutron1",&numfluneu1));
+    hi_list.push_back(std::make_pair("numFluNeutron2",&numfluneu2));
+    hi_list.push_back(std::make_pair("numFluNeutron3",&numfluneu3));
+    hi_list.push_back(std::make_pair("numFluNeutronAirBox",&numfluneu_airbox));
+    NAlwaysFilledHistI+=6;
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
     
@@ -218,6 +234,14 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     i_list.push_back(std::make_pair("numparticles",&numparticles));
     i_list.push_back(std::make_pair("numhits",&numhits));
     i_list.push_back(std::make_pair("numflu0",&numflu0));
+    i_list.push_back(std::make_pair("numflugamma1",&numflugamma1));
+    i_list.push_back(std::make_pair("numflugamma2",&numflugamma2));
+    i_list.push_back(std::make_pair("numflugamma3",&numflugamma3));
+    i_list.push_back(std::make_pair("numflugamma_airbox",&numflugamma_airbox));
+    i_list.push_back(std::make_pair("numfluneutron1",&numfluneu1));
+    i_list.push_back(std::make_pair("numfluneutron2",&numfluneu2));
+    i_list.push_back(std::make_pair("numfluneutron3",&numfluneu3));
+    i_list.push_back(std::make_pair("numfluneutron_airbox",&numfluneu_airbox));
     i_list.push_back(std::make_pair("numflu",&numflu));
     i_list.push_back(std::make_pair("numneu",&numneu));
     i_list.push_back(std::make_pair("numion",&numion));
@@ -421,6 +445,14 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     numneu=0;
     numflu=0;
     numflu0=0;
+    numflugamma1=0;
+    numflugamma2=0;
+    numflugamma3=0;
+    numflugamma_airbox=0;
+    numfluneu1=0;
+    numfluneu2=0;
+    numfluneu3=0;
+    numfluneu_airbox=0;
 
     //cleaning vectors
     vol_name_mass->clear();
@@ -648,8 +680,16 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int vo
         v_kinE_flu.push_back(kinE);
         v_m_flu.push_back(QuadriMomentum.m()/keV);
       }
-    if (prestepVolNo==2 && volNo==3 && trackID==1) numflu0 += 1; //count primary particles entering shield0 from outside
-    numflu += 1;
+      if (prestepVolNo==2 && volNo==3 && trackID==1) numflu0 += 1; //count primary particles entering shield0 from outside
+      if (prestepVolNo==3 && volNo==4 && PDG==22) numflugamma1 += 1; //count gammas entering shield1 from shield0
+      if (prestepVolNo==4 && volNo==5 && PDG==22) numflugamma2 += 1; //count gammas entering shield2 from shield1
+      if (prestepVolNo==5 && volNo==6 && PDG==22) numflugamma3 += 1; //count gammas entering shield3 from shield2
+      if (prestepVolNo==6 && volNo==7 && PDG==22) numflugamma_airbox += 1; //count gammas entering airbox from shield3
+      if (prestepVolNo==3 && volNo==4 && PDG==2112) numfluneu1 += 1; //count neutrons entering shield1 from shield0
+      if (prestepVolNo==4 && volNo==5 && PDG==2112) numfluneu2 += 1; //count neutrons entering shield2 from shield1
+      if (prestepVolNo==5 && volNo==6 && PDG==2112) numfluneu3 += 1; //count neutrons entering shield3 from shield2
+      if (prestepVolNo==6 && volNo==7 && PDG==2112) numfluneu_airbox += 1; //count neutrons entering airbox from shield3
+      numflu += 1;
     }
 }
 

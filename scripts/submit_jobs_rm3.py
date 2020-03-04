@@ -26,6 +26,7 @@ OUTDIR=%(OUTDIR)s
 BUILDDIR=%(BUILDDIR)s
 PBSOUTDIR=%(PBSOUTDIR)s
 MACRONAME=%(MACRO)s
+TMPDIR=%(TMPDIR)s
 
 mkdir -p ${WORKDIR}
 rm -rf ${WORKDIR}/*
@@ -45,11 +46,11 @@ cp ${OUTDIR}pbs_workdir/${TAG}/${MACRONAME}.mac ./
 mkdir -p ${OUTDIR}${PBSOUTDIR}${TAG}
 mkdir -p ${OUTDIR}pbs_logs/${TAG}
 ./CYGNO ${MACRONAME}.mac &> ${OUTDIR}/pbs_logs/${TAG}/${MACRONAME}.log
-mv ${WORKDIR}/${MACRONAME}.root ${OUTDIR}/${PBSOUTDIR}${TAG}/
-mv %(TMPDIR)s/%(MACRO)s.log ${OUTDIR}/pbs_logs/${TAG}/
+cp ${WORKDIR}/${MACRONAME}.root ${OUTDIR}/${PBSOUTDIR}${TAG}/
+cp ${TMPDIR}/pbslog_${MACRONAME}.log ${OUTDIR}/pbs_logs/${TAG}/
 cd ${OUTDIR}
 rm -rf ${WORKDIR}/
-rm -f ${TMPDIR}/*
+#rm -f ${TMPDIR}/*
 """
 EOFmessage='The simulation took:' #This must be one of the last messages in output in the log file. It is used to check if the log file is complete or not
 
@@ -167,7 +168,9 @@ def GetGeometry(NGeo='1'):
         '50Water20Pb5Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'20.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu'}, 
         '50Water8Pb2Cu':{'thick0':'1.'  ,'thick1':'50.'  ,'thick2':'8.'   ,'thick3':'2.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Pb'     ,'mat3':'Cu'}, 
         '5Pb5Cu':{'thick0':'1.'  ,'thick1':'1'  ,'thick2':'5.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu'},
-        '20Pb5Cu':{'thick0':'1.'  ,'thick1':'1'  ,'thick2':'20.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu'}
+        '20Pb5Cu':{'thick0':'1.'  ,'thick1':'1'  ,'thick2':'20.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu'},
+        '15Pb5Cu':{'thick0':'1.'  ,'thick1':'1'  ,'thick2':'15.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Air'  ,'mat2':'Pb'     ,'mat3':'Cu'},
+        '250Water2SS5Cu':{'thick0':'1.'  ,'thick1':'250'  ,'thick2':'2.'   ,'thick3':'5.'  ,'mat0':'Air'  ,'mat1':'Water'  ,'mat2':'Steel'     ,'mat3':'Cu'}
     }
     if NGeo not in geos.keys():
         print 'The geometry specified ( %s ) is not defined'%(NGeo)
@@ -239,14 +242,18 @@ def SubmitJob(MACRO='RadioactiveDecayTEMPLATEOUT', TEMPLATE='RadioactiveDecayTEM
         if os.path.isfile(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log') and not os.path.isfile(OUTDIR+PBSOUTDIR+TAG+'/'+MACRO+Part+'.root'):
             log_file = open(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log')
             iscomplete=False
+            iserror=False
             for line in log_file:
                 if line.startswith(EOFmessage):
                     iscomplete=True
                     break
+                if "error" in line or "No such file or directory" in line:
+                    iserror=True
+                    break
             if iscomplete:
-                print 'Log file %s is complete: waiting 20s to see if an output appears' %(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log') 
+                print 'Log file %s is complete: waiting 5s to see if an output appears' %(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log') 
                 wait=0
-                while not os.path.isfile(OUTDIR+PBSOUTDIR+TAG+'/'+MACRO+Part+'.root') and wait<20:
+                while not os.path.isfile(OUTDIR+PBSOUTDIR+TAG+'/'+MACRO+Part+'.root') and wait<5:
                     time.sleep(1)
                     wait+=1
                 if os.path.isfile(OUTDIR+PBSOUTDIR+TAG+'/'+MACRO+Part+'.root'):
@@ -254,10 +261,12 @@ def SubmitJob(MACRO='RadioactiveDecayTEMPLATEOUT', TEMPLATE='RadioactiveDecayTEM
                     continue
                 else:
                     print 'Resubmitting the job because no output has been found'
+            elif iserror:
+                print 'Found error in logfile. Resubmitting the job because no output has been found'
             else:
-                #print 'The log file %s seems incomplete. The jobs is probably still running and will not be resubmitted.' %(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log')
-                #continue
-                print 'Resubmitting the job because no output has been found'
+                print 'The log file %s seems incomplete. The jobs is probably still running and will not be resubmitted.' %(OUTDIR+'pbs_logs/'+TAG+'/'+MACRO+Part+'.log')
+                continue
+                #print 'Resubmitting the job because no output has been found'
 
     changes['Outname']=MACRO+Part
     changes['NEvs']=NEvs
@@ -283,7 +292,7 @@ def SubmitJob(MACRO='RadioactiveDecayTEMPLATEOUT', TEMPLATE='RadioactiveDecayTEM
     script_filename = OUTDIR+'pbs_workdir/'+TAG+'/'+MACRO+Part+'.sh'
     log_filename = OUTDIR+'/pbs_logs/'+TAG+'/'+MACRO+Part+'.log'
     #pbslog_filename = OUTDIR+'/pbs_logs/'+TAG+'/pbslog_'+MACRO+Part+'.log'
-    pbslog_filename = TMPDIR+'/pbslog_'+MACRO+Part+'.log'
+    pbslog_filename = TMPDIR+'/'+TAG+'/pbslog_'+MACRO+Part+'.log'
     hostname = socket.gethostname()
     open(script_filename, 'w').write(script_template % kw)
     subprocess.call(['chmod', '+x',script_filename])
@@ -422,21 +431,24 @@ def main():
     #mode 3 and 3.1: 1 activity file, 1 geometry and one template. This can work even without geometry (3.1). Soemtimes you have a geometry defined in your macro that you don't want to change, but still run the configuration from the file. And you also don't want to change the position of the source. What you want to change is just the isotope and the number of events per isotope generated.
     if options.geo and options.file and options.macro and len(MacrosList)==1:
         print 'Executing the simulation using the template: ',MacrosList[0]
-        for p in pos:
-            for i in range(0,len(sources['Name'])):
-                MACRO='Geo'+options.geo+'_'+mat+'_'+p+'_'+sources['Name'][i]
-                changes={}
-                changes['A']=sources['A'][i]
-                changes['Z']=sources['Z'][i]
-                if 'IonicCharge' in sources.keys():
-                    changes['IonicCharge']=sources['IonicCharge'][i]
-                if 'ExcitationEnergy[keV]' in sources.keys():
-                    changes['ExcitationEnergy[keV]']=sources['ExcitationEnergy[keV]'][i]
-                changes['SourcePos']=p
-                for g in geometry:
-                    changes[g]=geometry[g]
-                    print changes[g] 
-                SubmitJob(MACRO, MacrosList[0], sources['NEvents'][i],changes)
+        print ("Option geo + bkg file + macro")
+        #for p in pos:
+        #    print p
+        for i in range(0,len(sources['Name'])):
+            #MACRO='Geo'+options.geo+'_'+mat+'_'+p+'_'+sources['Name'][i]
+            MACRO='Geo'+options.geo+'_'+mat+'_'+sources['Name'][i]
+            changes={}
+            changes['A']=sources['A'][i]
+            changes['Z']=sources['Z'][i]
+            if 'IonicCharge' in sources.keys():
+                changes['IonicCharge']=sources['IonicCharge'][i]
+            if 'ExcitationEnergy[keV]' in sources.keys():
+                changes['ExcitationEnergy[keV]']=sources['ExcitationEnergy[keV]'][i]
+            #changes['SourcePos']=p
+            for g in geometry:
+                changes[g]=geometry[g]
+                print changes[g] 
+            SubmitJob(MACRO, MacrosList[0], sources['NEvents'][i],changes)
     elif options.file and options.macro and len(MacrosList)==1:
         print 'Executing the simulation using the template: ',MacrosList[0]
         for i in range(0,len(sources['Name'])):
