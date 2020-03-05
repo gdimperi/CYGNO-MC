@@ -40,6 +40,10 @@
 #include "G4EmLowEPPhysics.hh"
 #include "G4EmExtraPhysics.hh"
 #include "G4EmProcessOptions.hh"
+#include "G4EmStandardPhysicsSS.hh"
+#include "G4EmDNAPhysics_option2.hh"
+#include "G4EmDNAPhysics_option4.hh"
+#include "G4EmDNAPhysics_option6.hh"
 
 //Hadronic lists
 #include "G4HadronPhysicsShielding.hh"
@@ -48,9 +52,12 @@
 #include "G4IonPhysics.hh"//Not very precised. There is a better simulation based on QMD
 #include "G4IonQMDPhysics.hh"
 #include "G4IonElasticPhysics.hh"
+#include "G4IonParametrisedLossModel.hh"
 #include "G4StoppingPhysics.hh"
 #include "G4HadronElasticPhysicsHP.hh"
 #include "G4HadronElasticPhysicsLEND.hh"
+#include "G4hMultipleScattering.hh"
+#include "G4ionIonisation.hh"
 
 #include "G4ProcessManager.hh"
 #include "G4LossTableManager.hh"
@@ -111,7 +118,9 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
 
   //EM Physics
   //RegisterPhysics(new G4EmStandardPhysics());
-  RegisterPhysics(new G4EmStandardPhysics_option4());//recommended option
+  RegisterPhysics(new G4EmStandardPhysics_option4(verbose));//recommended option
+  //RegisterPhysics(new G4EmDNAPhysics_option2(verbose));//GEANT4-DNA 
+  //RegisterPhysics(new G4EmStandardPhysicsSS(verbose));//single scattering
   //RegisterPhysics(new G4EmPenelopePhysics());
   //RegisterPhysics(new G4EmLivermorePhysics());
   //RegisterPhysics(new G4EmLowEPPhysics());
@@ -129,7 +138,7 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   // Hadron Elastic scattering
   if ( LEN_model == "HP" ) 
   {
-     RegisterPhysics( new G4HadronElasticPhysicsHP(verbose) );
+     RegisterPhysics( new G4HadronElasticPhysicsHP(verbose) ); //this is the one used by default
   }
   else if ( LEN_model == "LEND" ) 
   {
@@ -176,13 +185,52 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   }
 
   // Stopping Physics
-  RegisterPhysics( new G4StoppingPhysics(verbose) );
+  //RegisterPhysics( new G4StoppingPhysics(verbose) );
 
   // Ion Physics
-  //RegisterPhysics( new G4IonPhysics(verbose));//Less accurate
-  RegisterPhysics( new G4IonQMDPhysics(verbose));  
-  RegisterPhysics( new G4IonElasticPhysics(verbose));
+  ////RegisterPhysics( new G4IonPhysics(verbose));//Less accurate
+  //RegisterPhysics( new G4IonQMDPhysics(verbose));  
+  //RegisterPhysics( new G4IonElasticPhysics(verbose));
 
+  //Low energy ion
+  auto particleIterator=GetParticleIterator();
+  particleIterator->reset();
+  while( (*particleIterator)() ){
+    G4ParticleDefinition* particle = particleIterator->value();
+    G4ProcessManager* pmanager = particle->GetProcessManager();
+    G4String particleName = particle->GetParticleName();
+    G4String particleType = particle->GetParticleType();
+    G4double charge = particle->GetPDGCharge();
+
+    if(particleName == "alpha"      ||
+             particleName == "deuteron"   ||
+             particleName == "triton"     ||
+             particleName == "He3")
+      {
+        //multiple scattering
+        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+
+        //ionisation
+        G4ionIonisation* ionIoni = new G4ionIonisation();
+        ionIoni->SetStepFunction(0.01, 0.1*um);
+        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+      }
+    else if (particleName == "GenericIon")
+      {
+        // OBJECT may be dynamically created as either a GenericIon or nucleus
+        // G4Nucleus exists and therefore has particle type nucleus
+        // genericIon:
+
+        //multiple scattering
+        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+
+        //ionisation
+        G4ionIonisation* ionIoni = new G4ionIonisation();
+        ionIoni->SetEmModel(new G4IonParametrisedLossModel());
+        ionIoni->SetStepFunction(0.01, 0.1*um);
+        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+      }
+  }
   // Neutron tracking cut --> not by default
   // RegisterPhysics( new G4NeutronTrackingCut(verbose));
 
@@ -387,7 +435,6 @@ void CYGNOPhysicsList::AddStepMax()
       if (stepMaxProcess->IsApplicable(*particle) && !particle->IsShortLived())
         {
 	  pmanager ->AddDiscreteProcess(stepMaxProcess);
-          //ph->RegisterProcess(stepMaxProcess, particle);
 	}
   }
 }
