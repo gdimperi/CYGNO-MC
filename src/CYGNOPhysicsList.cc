@@ -58,6 +58,7 @@
 #include "G4HadronElasticPhysicsLEND.hh"
 #include "G4hMultipleScattering.hh"
 #include "G4ionIonisation.hh"
+#include "G4BetheBlochModel.hh"
 
 #include "G4ProcessManager.hh"
 #include "G4LossTableManager.hh"
@@ -212,7 +213,8 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
 
         //ionisation
         G4ionIonisation* ionIoni = new G4ionIonisation();
-        ionIoni->SetStepFunction(0.01, 0.1*um);
+        ionIoni->SetEmModel(new G4BetheBlochModel());
+        ionIoni->SetStepFunction(1e-5, 0.1*um);
         pmanager->AddProcess(ionIoni,                   -1, 2, 2);
       }
     else if (particleName == "GenericIon")
@@ -227,7 +229,7 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
         //ionisation
         G4ionIonisation* ionIoni = new G4ionIonisation();
         ionIoni->SetEmModel(new G4IonParametrisedLossModel());
-        ionIoni->SetStepFunction(0.01, 0.1*um);
+        ionIoni->SetStepFunction(1e-5, 0.1*um);
         pmanager->AddProcess(ionIoni,                   -1, 2, 2);
       }
   }
