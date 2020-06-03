@@ -355,67 +355,30 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
      
     /// Cameras
-//    G4double x_camera_body = 125*mm;
-//    G4double y_camera_body = 85*mm;
-//    G4double z_camera_body = 85*mm;
-//    G4Box* camera_body = new G4Box("camera_body_solid",0.5*x_camera_body,0.5*y_camera_body,0.5*z_camera_body);
+    G4double x_camera_body = 125*mm;
+    G4double y_camera_body = 85*mm;
+    G4double z_camera_body = 85*mm;
+    G4Box* camera_body = new G4Box("camera_body_solid",0.5*x_camera_body,0.5*y_camera_body,0.5*z_camera_body);
 
-//    G4double z_camera_lens = 44.9*mm;
-//    G4double diam_camera_lens = 48*mm;
-//    G4Tubs* camera_lens = new G4Tubs("camera_lens_solid",0.,0.5*diam_camera_lens,0.5*z_camera_lens,0.*deg,360.*deg);
-//    G4RotationMatrix* rotlens = new G4RotationMatrix();
-//    rotlens->rotateY(90.*deg);
-//    G4ThreeVector translens(0.5*z_camera_lens+0.5*x_camera_body,0.,0.);
+    G4double z_camera_lens = 44.9*mm;
+    G4double diam_camera_lens = 48*mm;
+    G4Tubs* camera_lens = new G4Tubs("camera_lens_solid",0.,0.5*diam_camera_lens,0.5*z_camera_lens,0.*deg,360.*deg);
+    
+  //keep camera and lens separated
+    camera_log = new G4LogicalVolume(camera_body,CYGNOMaterials->Material("Camera"),"camera_log",0,0,0) ;
+    camera_lens_log = new G4LogicalVolume(camera_lens,CYGNOMaterials->Material("Camera"),"camera_lens_log",0,0,0) ;
 
-    //keep camera and lens separated
-    //G4UnionSolid* camera = new G4UnionSolid("camera_solid", camera_body, camera_lens,  rotlens, translens);
-//    camera_log = new G4LogicalVolume(camera_body,CYGNOMaterials->Material("Camera"),"camera_log",0,0,0) ;
-//    camera_lens_log = new G4LogicalVolume(camera_lens,CYGNOMaterials->Material("Camera"),"camera_lens_log",0,0,0) ;
+    G4double ztr_cam = 785.*mm + z_camera_lens+0.5*x_camera_body + 1*mm;
+    G4ThreeVector trcam0(ztr_cam,-15.*mm,0.);
+    G4RotationMatrix* rotcam0 = new G4RotationMatrix();
+    
+    G4ThreeVector trlens0(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-15.*mm,0.);
+    G4RotationMatrix* rotlens0 = new G4RotationMatrix();
+    rotlens0->rotateY(90*deg);
 
-
-    ////Fused silica window
-    //box
-    G4double x_window_box = 50.*mm;
-    G4double y_window_box = 1020*mm;
-    G4double z_window_box = 1020*mm;
-    G4Box* window_box = new G4Box("window_box_solid",0.5*x_window_box,0.5*y_window_box,0.5*z_window_box);
-    window_log = new G4LogicalVolume(window_box,CYGNOMaterials->Material("Quartz"),"window_log",0,0,0) ;
-
-
-
-    ////Camera shielding
-    //box
-//    G4double x_camera_shield_box = 44.9*mm;
-//    G4double y_camera_shield_box = 1020*mm;
-//    G4double z_camera_shield_box = 1020*mm;
-//    G4Box* camera_shield_box = new G4Box("camera_shield_box_solid",0.5*x_camera_shield_box,0.5*y_camera_shield_box,0.5*z_camera_shield_box);
+    camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);
+    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",AirBox_log, false, 0, true);
     G4double tolerance = 1*mm;
-    //holes
-//    G4Tubs* camera_shield_hole = new G4Tubs("camera_shield_hole_solid",0.,0.5*diam_camera_lens+tolerance,0.5*z_camera_lens,0.*deg,360.*deg); 
-//    G4RotationMatrix* rotholes = rotlens;
-//    G4ThreeVector trhole0(0.,0.,0.);
-//    G4ThreeVector trhole1(0.,0.,-354*mm);
-//    G4ThreeVector trhole2(0.,0.,354*mm);
-//    G4ThreeVector trhole3(0.,-354*mm,0.);
-//    G4ThreeVector trhole4(0.,-354*mm,-354*mm);
-//    G4ThreeVector trhole5(0.,-354*mm,354*mm);
-//    G4ThreeVector trhole6(0.,354*mm,0.);
-//    G4ThreeVector trhole7(0.,354*mm,-354*mm);
-//    G4ThreeVector trhole8(0.,354*mm,354*mm);
-    //subtraction of holes
-//    G4SubtractionSolid* camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield_box, camera_shield_hole, rotholes, trhole0);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole1);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole2);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole3);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole4);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole5);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole6);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole7);
-//    camera_shield = new G4SubtractionSolid("camera_shield_solid", camera_shield, camera_shield_hole, rotholes, trhole8);
-    //FIXME set to Air for external simulations for consistency with old simulation
-//    camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Cu"),"camera_shield_log",0,0,0) ;
-    //camera_shield_log = new G4LogicalVolume(camera_shield,CYGNOMaterials->Material("Air"),"camera_shield_log",0,0,0) ;
-
 
     //**********************************************************************
     // ********* CYGNO volumes form CADMesh *****************************
@@ -510,24 +473,12 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_LIMEinternalStructure_logical = new G4LogicalVolume(cad_LIMEinternalStructure_solid, CYGNOMaterials->Material("Perspex"), "cad_LIMEinternalStructure_logical", 0, 0, 0);
       //cad_LIMEinternalStructure_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_LIMEinternalStructure_logical->GetMaterial()->GetName()));
       cad_LIMEinternalStructure_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
-
-      //------- NOT PLACED, used cameras with simple geant volumes ---------
-      //cameras
-//      cad_cameras_all_solid = mesh_camera->TessellatedMesh();
-//      cad_cameras_all_logical = new G4LogicalVolume(cad_cameras_all_solid, CYGNOMaterials->Material("Camera"), "cad_cameras_all_logical", 0, 0, 0);
-      //cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_cameras_all_logical->GetMaterial()->GetName()));
-//      cad_cameras_all_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Camera"));
-      //----------------------------------------------------------------------
-
-      //window
-      //cad_window_solid = mesh_window->TessellatedMesh();
-      //cad_window_logical = new G4LogicalVolume(cad_window_solid, CYGNOMaterials->Material("Silica"), "cad_window_logical", 0, 0, 0);
     }
   
     //TPC gas
     G4double TPC_x = 640.*mm;//640.*mm;
-    G4double TPC_y = 500.*mm;
-    G4double TPC_z = 470.*mm; //450.*mm;
+    G4double TPC_y = 500.*mm; //500
+    G4double TPC_z = 460.*mm; //470.*mm;
       
     name_phys="TPC";
     name_log=name_phys+"_log";
@@ -686,104 +637,6 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
   		    cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
     }  
    
-    G4double ztr_window = 1110*mm; 
-    G4double zmintr_window = -1110*mm; 
-    //window_phys = new G4PVPlacement(0,G4ThreeVector(ztr_window,0,0),window_log,"window",AirBox_log, false, 0, true);	
-    //window_phys = new G4PVPlacement(0,G4ThreeVector(zmintr_window,0,0),window_log,"window",AirBox_log, false, 1, true);	
-
-//    G4double ztr_cam = 1250.*mm; 
-//    G4double zmintr_cam = -1250*mm; 
-//    G4ThreeVector trcam0(zmintr_cam,0.,0.);
-//    G4ThreeVector trcam1(zmintr_cam,0.,-354*mm);
-//    G4ThreeVector trcam2(zmintr_cam,0.,354*mm);
-//    G4ThreeVector trcam3(zmintr_cam,-354*mm,0.);
-//    G4ThreeVector trcam4(zmintr_cam,-354*mm,-354*mm);
-//    G4ThreeVector trcam5(zmintr_cam,-354*mm,354*mm);
-//    G4ThreeVector trcam6(zmintr_cam,354*mm,0.);
-//    G4ThreeVector trcam7(zmintr_cam,354*mm,-354*mm);
-//    G4ThreeVector trcam8(zmintr_cam,354*mm,354*mm);
-
-//    G4ThreeVector trlens0(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,0.,0.);
-//    G4ThreeVector trlens1(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,0.,-354*mm);
-//    G4ThreeVector trlens2(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,0.,354*mm);
-//    G4ThreeVector trlens3(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,-354*mm,0.);
-//    G4ThreeVector trlens4(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,-354*mm,-354*mm);
-//    G4ThreeVector trlens5(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,-354*mm,354*mm);
-//    G4ThreeVector trlens6(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,354*mm,0.);
-//    G4ThreeVector trlens7(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,354*mm,-354*mm);
-//    G4ThreeVector trlens8(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,354*mm,354*mm);
-    
-//    G4RotationMatrix* rotcam0 = new G4RotationMatrix();
-//    G4RotationMatrix* rotlens0 = new G4RotationMatrix();
-//    rotlens0->rotateY(90*deg);
-//    camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam1,camera_log,"camera",AirBox_log, false, 1, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam2,camera_log,"camera",AirBox_log, false, 2, true);	
-//   camera_phys = new G4PVPlacement(rotcam0,trcam3,camera_log,"camera",AirBox_log, false, 3, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam4,camera_log,"camera",AirBox_log, false, 4, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam5,camera_log,"camera",AirBox_log, false, 5, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam6,camera_log,"camera",AirBox_log, false, 6, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam7,camera_log,"camera",AirBox_log, false, 7, true);	
-//    camera_phys = new G4PVPlacement(rotcam0,trcam8,camera_log,"camera",AirBox_log, false, 8, true);	
-    
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",AirBox_log, false, 0, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens1,camera_lens_log,"camera_lens",AirBox_log, false, 1, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens2,camera_lens_log,"camera_lens",AirBox_log, false, 2, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens3,camera_lens_log,"camera_lens",AirBox_log, false, 3, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens4,camera_lens_log,"camera_lens",AirBox_log, false, 4, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens5,camera_lens_log,"camera_lens",AirBox_log, false, 5, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens6,camera_lens_log,"camera_lens",AirBox_log, false, 6, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens7,camera_lens_log,"camera_lens",AirBox_log, false, 7, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens0,trlens8,camera_lens_log,"camera_lens",AirBox_log, false, 8, true);	
-    
-//    G4ThreeVector  trcam9(ztr_cam,0.,0.);
-//    G4ThreeVector trcam10(ztr_cam,0.,-354*mm);
-//    G4ThreeVector trcam11(ztr_cam,0.,354*mm);
-//    G4ThreeVector trcam12(ztr_cam,-354*mm,0.);
-//    G4ThreeVector trcam13(ztr_cam,-354*mm,-354*mm);
-//   G4ThreeVector trcam14(ztr_cam,-354*mm,354*mm);
-//    G4ThreeVector trcam15(ztr_cam,354*mm,0.);
-//    G4ThreeVector trcam16(ztr_cam,354*mm,-354*mm);
-//    G4ThreeVector trcam17(ztr_cam,354*mm,354*mm);
-
-//    G4ThreeVector trlens9(ztr_cam -0.5*x_camera_body-0.5*z_camera_lens,0.,0.);
-//    G4ThreeVector trlens10(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,0.,-354*mm);
-//    G4ThreeVector trlens11(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,0.,354*mm);
-//    G4ThreeVector trlens12(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-354*mm,0.);
-//    G4ThreeVector trlens13(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-354*mm,-354*mm);
-//    G4ThreeVector trlens14(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-354*mm,354*mm);
-//    G4ThreeVector trlens15(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,354*mm,0.);
-//    G4ThreeVector trlens16(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,354*mm,-354*mm);
-//    G4ThreeVector trlens17(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,354*mm,354*mm);
-   
-//    G4RotationMatrix* rotcam1 = new G4RotationMatrix();
-    //rotcam1->rotateY(180*deg);
-//    G4RotationMatrix* rotlens1 = new G4RotationMatrix();
-//    rotlens1->rotateY(90.*deg);
-//    camera_phys = new G4PVPlacement(rotcam1,trcam9,camera_log,"camera", AirBox_log, false, 9, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam10,camera_log,"camera",AirBox_log, false, 10, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam11,camera_log,"camera",AirBox_log, false, 11, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam12,camera_log,"camera",AirBox_log, false, 12, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam13,camera_log,"camera",AirBox_log, false, 13, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam14,camera_log,"camera",AirBox_log, false, 14, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam15,camera_log,"camera",AirBox_log, false, 15, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam16,camera_log,"camera",AirBox_log, false, 16, true);	
-//    camera_phys = new G4PVPlacement(rotcam1,trcam17,camera_log,"camera",AirBox_log, false, 17, true);	
-    
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens9,camera_lens_log,"camera_lens",AirBox_log, false, 9, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens10,camera_lens_log,"camera_lens",AirBox_log, false, 10, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens11,camera_lens_log,"camera_lens",AirBox_log, false, 11, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens12,camera_lens_log,"camera_lens",AirBox_log, false, 12, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens13,camera_lens_log,"camera_lens",AirBox_log, false, 13, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens14,camera_lens_log,"camera_lens",AirBox_log, false, 14, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens15,camera_lens_log,"camera_lens",AirBox_log, false, 15, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens16,camera_lens_log,"camera_lens",AirBox_log, false, 16, true);	
-//    camera_lens_phys = new G4PVPlacement(rotlens1,trlens17,camera_lens_log,"camera_lens",AirBox_log, false, 17, true);	
-    
-//    camera_shield_phys = new G4PVPlacement(0,G4ThreeVector(zmintr_cam+0.5*x_camera_body+0.5*z_camera_lens,0.,0.),camera_shield_log,"camera_shield",AirBox_log,false, 0, true) ;
-//    camera_shield_phys = new G4PVPlacement(0,G4ThreeVector(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,0.,0.),camera_shield_log,"camera_shield",AirBox_log,false, 1, true) ;
-
-    
     //
     //**********************************************************************
     // GLOBAL TRANSLATIONS ***************************************
@@ -833,23 +686,18 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
   CYGNOProperties->AddVolumeNameMassAndDensity(AirBox_log);
   ifstream infile(CYGNOGeomPath.c_str());
   if (infile.good()) {
-   CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEDetectorBody_logical);
-   CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEinternalStructure_logical);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(cad_cameras_all_logical);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(camera_log);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(camera_lens_log);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(camera_shield_log);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEDetectorBody_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEinternalStructure_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(camera_log);
+    CYGNOProperties->AddVolumeNameMassAndDensity(camera_lens_log);
     CYGNOProperties->AddVolumeNameMassAndDensity(TPC_log);
     CYGNOProperties->AddVolumeNameMassAndDensity(CYGNO_log);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEendPMT_logical);
-  //CYGNOProperties->AddVolumeNameMassAndDensity(cad_turns_support_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMstretchers_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMsupportStructure_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMfoils_logical);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(cad_SupportBenchLime_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_Cathode_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_FieldRings_logical);
-    //CYGNOProperties->AddVolumeNameMassAndDensity(window_log);
   }
 
 //  if ( productionRockThinTube_phys )
