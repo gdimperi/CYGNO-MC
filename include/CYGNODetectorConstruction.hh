@@ -102,6 +102,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     CADMesh * mesh_GEMfoils;
     CADMesh * mesh_SupportBenchLime;
     CADMesh * mesh_Cathode; 
+    CADMesh * mesh_LIMEResistors;
+    CADMesh * mesh_CopperShielding;
+    CADMesh * mesh_WaterShielding;
     
     //Building blocks: logic volumes, sizes and positions
     G4ThreeVector  tr_Tot;
@@ -133,6 +136,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4RotationMatrix absrot_CYGNO_gas;
     G4ThreeVector tr_cad_internal;
     
+    G4RotationMatrix rot_cad_shield;
+    G4ThreeVector tr_cad_shield;
+    
     
     //Solids and meshes
     G4VSolid * cad_LIMEDetectorBody_solid;
@@ -147,6 +153,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VSolid * cad_SupportBenchLime_solid;
     G4VSolid * cad_Cathode_solid;
     G4VSolid * cad_FieldRings_solid;
+    G4VSolid * cad_LIMEResistors_solid;
+    G4VSolid * cad_CopperShielding_solid;
+    G4VSolid * cad_WaterShielding_solid;
    
     
     // Logical volumes
@@ -171,6 +180,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * cad_SupportBenchLime_logical;
     G4LogicalVolume * cad_Cathode_logical;
     G4LogicalVolume * cad_FieldRings_logical;
+    G4LogicalVolume * cad_LIMEResistors_logical; 
+    G4LogicalVolume * cad_CopperShielding_logical; 
+    G4LogicalVolume * cad_WaterShielding_logical; 
     G4LogicalVolume * camera_log; 
     G4LogicalVolume * camera_lens_log; 
     G4LogicalVolume * camera_shield_log;
@@ -201,6 +213,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * cad_SupportBenchLime_physical;
     G4VPhysicalVolume * cad_Cathode_physical;
     G4VPhysicalVolume * cad_FieldRings_physical;
+    G4VPhysicalVolume* cad_LIMEResistors_physical;
+    G4VPhysicalVolume* cad_CopperShielding_physical;
+    G4VPhysicalVolume* cad_WaterShielding_physical;
     G4VPhysicalVolume* camera_phys; 
     G4VPhysicalVolume* camera_lens_phys; 
     G4VPhysicalVolume* camera_shield_phys;

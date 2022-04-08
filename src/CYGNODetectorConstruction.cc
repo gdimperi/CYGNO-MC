@@ -252,9 +252,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         G4double AirBox_y;
         G4double AirBox_z;
         G4Box* AirBox;
-        AirBox_x = 2.0*m; //2.65*m;
-        AirBox_y = 0.8*m; //1.45*m;
-        AirBox_z = 0.8*m; //1.45*m;        
+        AirBox_x = 1.2*m; //cygno 2.65*m; lime 2.0*m; inner cu shield 1.2*m; inner water shield 1.8*m;
+        AirBox_y = 0.7*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.7*m; inner water shield 1.0*m;
+        AirBox_z = 0.6*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.6*m; inner water shield 1.0*m;
         tr_InsideVolume = G4ThreeVector(0.,0.,0.);
         rot_InsideVolume = G4RotationMatrix();		
         size_InsideVolume = G4ThreeVector(AirBox_x/2.,
@@ -333,7 +333,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  G4Box* AirBox;
           AirBox_x = 5.*m;
           AirBox_y = 3.*m;
-          AirBox_z = 3.*m;        
+          AirBox_z = 3.*m;       
 	  name_phys="AirBox";
 	  name_log=name_phys+"_log";
 	  name_solid=name_phys+"_solid";
@@ -368,7 +368,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     camera_log = new G4LogicalVolume(camera_body,CYGNOMaterials->Material("Camera"),"camera_log",0,0,0) ;
     camera_lens_log = new G4LogicalVolume(camera_lens,CYGNOMaterials->Material("Camera"),"camera_lens_log",0,0,0) ;
 
-    G4double ztr_cam = 785.*mm + z_camera_lens+0.5*x_camera_body + 1*mm;
+    G4double ztr_cam = 785.*mm + z_camera_lens+0.5*x_camera_body + 1*mm; //893.4mm
     G4ThreeVector trcam0(ztr_cam,-15.*mm,0.);
     G4RotationMatrix* rotcam0 = new G4RotationMatrix();
     
@@ -376,8 +376,10 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4RotationMatrix* rotlens0 = new G4RotationMatrix();
     rotlens0->rotateY(90*deg);
 
-    camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);
-    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",AirBox_log, false, 0, true);
+    //camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);
+    //camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",AirBox_log, false, 0, true);
+    camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",Shield2_log, false, 0, true);
+    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",Shield2_log, false, 0, true);
     G4double tolerance = 1*mm;
 
     //**********************************************************************
@@ -385,7 +387,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     
     char namestl[50];
-    sprintf(namestl,"%s/LIMEDetectorBody.stl",CYGNOGeomPath.c_str());
+    sprintf(namestl,"%s/LIMEDetectorBody_short.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     //CADMesh * mesh_LIMEDetectorBody = new CADMesh("../geometry/v2/LIMEDetectorBody.stl");    
     ifstream infile(CYGNOGeomPath.c_str());
@@ -413,7 +415,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //if (infile.good())
     // mesh_turns_support = new CADMesh(namestl);
     //namestl = "FieldRings.stl";    
-    sprintf(namestl,"%s/FieldRings.stl",CYGNOGeomPath.c_str());
+    sprintf(namestl,"%s/FieldRings_new.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     if (infile.good())
       mesh_FieldRings = new CADMesh(namestl);
@@ -443,10 +445,28 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 //      mesh_SupportBenchLime = new CADMesh(namestl);
 
     //namestl = "Cathode.stl";   
-    sprintf(namestl,"%s/Cathode.stl",CYGNOGeomPath.c_str());
+    sprintf(namestl,"%s/Cathode_new.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     if (infile.good())
-      mesh_Cathode = new CADMesh(namestl);   
+      mesh_Cathode = new CADMesh(namestl); 
+    
+    sprintf(namestl,"%s/LIME_Resistors.stl",CYGNOGeomPath.c_str());
+    G4cout << namestl << G4endl; 
+    if (infile.good())
+        mesh_LIMEResistors = new CADMesh(namestl);
+    
+    //Shielding from CAD
+    //Copper
+    sprintf(namestl,"%s/CopperBox100mm.stl",CYGNOGeomPath.c_str()); //change to CopperShielding60mm or CopperShielding100mm
+    G4cout << namestl << G4endl; 
+    if (infile.good())
+        mesh_CopperShielding = new CADMesh(namestl);
+    //Water
+    sprintf(namestl,"%s/WaterShielding.stl",CYGNOGeomPath.c_str()); 
+    G4cout << namestl << G4endl; 
+    if (infile.good())
+        mesh_WaterShielding = new CADMesh(namestl);
+        
 
     if (infile.good()){
       mesh_LIMEDetectorBody->SetScale(mm);
@@ -460,6 +480,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       mesh_GEMfoils->SetScale(mm);
 //      mesh_SupportBenchLime->SetScale(mm);
       mesh_Cathode->SetScale(mm);
+      mesh_LIMEResistors->SetScale(mm);
+      mesh_CopperShielding->SetScale(mm);
+      mesh_WaterShielding->SetScale(mm);
     
 
       //LIME Detector Body
@@ -545,6 +568,22 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_Cathode_solid = mesh_Cathode->TessellatedMesh();
       cad_Cathode_logical = new G4LogicalVolume(cad_Cathode_solid, CYGNOMaterials->Material("Cu"), "cad_Cathode_logical", 0, 0, 0);
       cad_Cathode_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+        
+      //resistors
+      cad_LIMEResistors_solid = mesh_LIMEResistors->TessellatedMesh();
+      cad_LIMEResistors_logical = new G4LogicalVolume(cad_LIMEResistors_solid, CYGNOMaterials->Material("Ceramic"), "cad_LIMEResistors_logical", 0, 0, 0);
+      cad_LIMEResistors_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Ceramic"));
+        
+      //copper shielding
+      cad_CopperShielding_solid = mesh_CopperShielding->TessellatedMesh();
+      cad_CopperShielding_logical = new G4LogicalVolume(cad_CopperShielding_solid, CYGNOMaterials->Material("Cu"), "cad_CopperShielding_logical", 0, 0, 0);
+      cad_CopperShielding_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Cu"));
+        
+      //water shielding
+      cad_WaterShielding_solid = mesh_WaterShielding->TessellatedMesh();
+      cad_WaterShielding_logical = new G4LogicalVolume(cad_WaterShielding_solid, CYGNOMaterials->Material("Water"), "cad_WaterShielding_logical", 0, 0, 0);
+      cad_WaterShielding_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Water"));
+        
     }
 
 
@@ -605,6 +644,10 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4ThreeVector  size;
 
     tr_cad=G4ThreeVector(-3847*mm+295*mm,-3847*mm,230.*mm);
+    
+    tr_cad_shield=G4ThreeVector(660*mm,90*mm,0);
+    rot_cad_shield.rotateX(-90.*deg);
+    
     if (infile.good()){
       cad_LIMEDetectorBody_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
   		    cad_LIMEDetectorBody_logical,"cad_LIMEDetectorBody_physical", AirBox_log, false, 0, true);
@@ -635,6 +678,13 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
   		    cad_GEMfoils_logical,"cad_GEMfoils_physical", TPC_log, false, 0, true);
       cad_Cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
   		    cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
+      cad_LIMEResistors_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+        	    cad_LIMEResistors_logical,"cad_LIMEResistors_physical", TPC_log, false, 0, true); 
+      cad_CopperShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad_shield), 
+        	    cad_CopperShielding_logical,"cad_CopperShielding_physical", Shield3_log, false, 0, true); 
+      cad_WaterShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad_shield), 
+        	    cad_WaterShielding_logical,"cad_WaterShielding_physical", Shield2_log, false, 0, true); 
+
     }  
    
     //
@@ -698,6 +748,9 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMfoils_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_Cathode_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_FieldRings_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEResistors_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_CopperShielding_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_WaterShielding_logical);
   }
 
 //  if ( productionRockThinTube_phys )
@@ -755,6 +808,9 @@ void CYGNODetectorConstruction::UpdateGeometry()
 //  cad_SupportBenchLime_logical=0;
   cad_Cathode_logical=0;
   cad_FieldRings_logical=0;
+  cad_LIMEResistors_logical=0;
+  cad_CopperShielding_logical=0;
+  cad_WaterShielding_logical=0;
  // camera_log=0;
  // camera_lens_log=0;
  // camera_shield_log=0;

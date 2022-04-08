@@ -131,6 +131,11 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     Perspex->AddElement(elC, natoms=5);
     Perspex->AddElement(elO, natoms=2);
 
+   //Ceramic (for resistors)
+    density = 3.7 * g/cm3;
+    Ceramic = new G4Material (name="Ceramic", density, ncomponents = 2);
+    Ceramic->AddElement (elAl, natoms = 2);
+    Ceramic->AddElement (elO, natoms = 3);
 
     // SF6_gas 
 
