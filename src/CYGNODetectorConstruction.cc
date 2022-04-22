@@ -45,12 +45,12 @@
 #include "CYGNOVolumes.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
-   CYGNOGeomPath("../geometry/lime/"),
+   CYGNOGeomPath("../geometry/lime_new/"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    CYGNOLab("NoCave"),
    //CYGNOLab("LNGS"),
-   CYGNOShielding("FullShield"),
+   CYGNOShielding("LIMEShield"),
    //CYGNOShielding("NoShield"),
    thick0(0.90*m), thick1(0.40*m), thick2(0.20*m), thick3(0.05*m), 
    Mat0("Water"), Mat1("PE"), Mat2("Pb"), Mat3("Cu")
@@ -252,9 +252,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         G4double AirBox_y;
         G4double AirBox_z;
         G4Box* AirBox;
-        AirBox_x = 1.2*m; //cygno 2.65*m; lime 2.0*m; inner cu shield 1.2*m; inner water shield 1.8*m;
-        AirBox_y = 0.7*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.7*m; inner water shield 1.0*m;
-        AirBox_z = 0.6*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.6*m; inner water shield 1.0*m;
+        AirBox_x = 3.*m;  //1.2*m; //cygno 2.65*m; lime 2.0*m; inner cu shield 1.2*m; inner water shield 1.8*m;
+        AirBox_y = 3.*m;  //0.7*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.7*m; inner water shield 1.0*m;
+        AirBox_z = 3.*m;  //0.6*m; //cygno 1.45*m; lime 0.8*m; inner cu shield 0.6*m; inner water shield 1.0*m;
         tr_InsideVolume = G4ThreeVector(0.,0.,0.);
         rot_InsideVolume = G4RotationMatrix();		
         size_InsideVolume = G4ThreeVector(AirBox_x/2.,
@@ -347,6 +347,80 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 	  tr_InsideVolume=G4ThreeVector(0.,0.,0.);
 	  rot_InsideVolume=G4RotationMatrix();
     }
+    else if (CYGNOShielding == "LIMEShield") 
+    {
+        // ----------------------------------- Inner room dimensions
+        G4double AirBox_x;
+        G4double AirBox_y;
+        G4double AirBox_z;
+        G4Box* AirBox;
+        AirBox_x = 1.1*m;
+        AirBox_y = 0.6*m;
+        AirBox_z = 0.55*m;
+
+        tr_InsideVolume = G4ThreeVector(0.,0.,0.);
+        rot_InsideVolume = G4RotationMatrix();		
+        absrot_Shielding = G4RotationMatrix();
+
+        // ----------------------------------- Shield 0
+        G4double Shield0_x = 2.84*m ;
+        G4double Shield0_y = 2.04*m ;
+        G4double Shield0_z = 2.14*m ;        
+        G4Material* Shield0Mat = CYGNOMaterials->Material(Mat0);
+        name_phys="Shield0";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield0 = new G4Box(name_solid,0.5*Shield0_x,0.5*Shield0_y,0.5*Shield0_z);
+        Shield0_log = new G4LogicalVolume(Shield0,Shield0Mat,name_log);
+        Shielding_log = Shield0_log;
+        Shield0_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat0));
+
+        // ----------------------------------- Shield 1
+        G4double Shield1_x = 2.82*m ;
+        G4double Shield1_y = 2.02*m ;
+        G4double Shield1_z = 2.12*m ;
+        G4Material* Shield1Mat = CYGNOMaterials->Material(Mat1);
+        name_phys="Shield1";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield1 = new G4Box(name_solid,0.5*Shield1_x,0.5*Shield1_y,0.5*Shield1_z);
+        Shield1_log = new G4LogicalVolume(Shield1,Shield1Mat,name_log);
+        Shield1_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat1));
+        
+        // ----------------------------------- Shield 2        
+        G4double Shield2_x = 2.8*m;
+        G4double Shield2_y = 2.0*m;
+        G4double Shield2_z = 2.1*m;
+        G4Material* Shield2Mat = CYGNOMaterials->Material(Mat2);
+        name_phys="Shield2";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield2 = new G4Box(name_solid,0.5*Shield2_x,0.5*Shield2_y,0.5*Shield2_z);
+        Shield2_log = new G4LogicalVolume(Shield2,Shield2Mat,name_log);
+        Shield2_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat2));
+        
+        // ----------------------------------- Shield 3        
+        G4double Shield3_x =  1.7*m;
+        G4double Shield3_y =  0.95*m;
+        G4double Shield3_z =  0.95*m;
+        G4Material* Shield3Mat = CYGNOMaterials->Material(Mat3);
+        name_phys="Shield3";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        G4Box* Shield3 = new G4Box(name_solid,0.5*Shield3_x,0.5*Shield3_y,0.5*Shield3_z);
+        Shield3_log = new G4LogicalVolume(Shield3,Shield3Mat,name_log);
+        Shield3_log->SetVisAttributes(CYGNOMaterials->VisAttributes(Mat3));
+        
+        // ----------------------------------- Airbox
+        name_phys="AirBox";
+        name_log=name_phys+"_log";
+        name_solid=name_phys+"_solid";
+        AirBox = new G4Box(name_solid,0.5*AirBox_x,0.5*AirBox_y,0.5*AirBox_z);
+        AirBox_log = new G4LogicalVolume(AirBox,CYGNOMaterials->Material("Air"),name_log);
+        AirBox_log->SetVisAttributes(CYGNOMaterials->VisAttributes("Air"));
+	InsideVolume_log = AirBox_log;
+
+    }
     else
     {
       G4cout << "ERROR: Something went wrong with the definition of the variable CYGNOShielding" << G4endl;
@@ -368,18 +442,6 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     camera_log = new G4LogicalVolume(camera_body,CYGNOMaterials->Material("Camera"),"camera_log",0,0,0) ;
     camera_lens_log = new G4LogicalVolume(camera_lens,CYGNOMaterials->Material("Camera"),"camera_lens_log",0,0,0) ;
 
-    G4double ztr_cam = 785.*mm + z_camera_lens+0.5*x_camera_body + 1*mm; //893.4mm
-    G4ThreeVector trcam0(ztr_cam,-15.*mm,0.);
-    G4RotationMatrix* rotcam0 = new G4RotationMatrix();
-    
-    G4ThreeVector trlens0(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-15.*mm,0.);
-    G4RotationMatrix* rotlens0 = new G4RotationMatrix();
-    rotlens0->rotateY(90*deg);
-
-    //camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);
-    //camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",AirBox_log, false, 0, true);
-    camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",Shield2_log, false, 0, true);
-    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0,camera_lens_log,"camera_lens",Shield2_log, false, 0, true);
     G4double tolerance = 1*mm;
 
     //**********************************************************************
@@ -387,7 +449,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     //**********************************************************************
     
     char namestl[50];
-    sprintf(namestl,"%s/LIMEDetectorBody_short.stl",CYGNOGeomPath.c_str());
+    sprintf(namestl,"%s/LIMEbody-ShortCone.stl",CYGNOGeomPath.c_str());
+    //sprintf(namestl,"%s/LIMEDetectorBody_short.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     //CADMesh * mesh_LIMEDetectorBody = new CADMesh("../geometry/v2/LIMEDetectorBody.stl");    
     ifstream infile(CYGNOGeomPath.c_str());
@@ -499,9 +562,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
   
     //TPC gas
-    G4double TPC_x = 640.*mm;//640.*mm;
-    G4double TPC_y = 500.*mm; //500
-    G4double TPC_z = 460.*mm; //470.*mm;
+    G4double TPC_x = 635.*mm;//640.*mm;
+    G4double TPC_y = 495.*mm; //500
+    G4double TPC_z = 450.*mm; //470.*mm;
       
     name_phys="TPC";
     name_log=name_phys+"_log";
@@ -510,7 +573,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     TPC_log = new G4LogicalVolume(TPC_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
     
     //CYGNO fiducial gas
-    G4double CYGNO_x = 500.*mm;
+    G4double CYGNO_x = 480.*mm;
     G4double CYGNO_y = 300.*mm;
     G4double CYGNO_z = 300.*mm;//300.*mm;
       
@@ -585,6 +648,39 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_WaterShielding_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Water"));
         
     }
+    
+    //FIXME
+    //G4ThreeVector tr_fix_shield3;
+    //tr_fix_shield3 = G4ThreeVector(-10*cm,0,0);
+    //tr_fix_shield3 = G4ThreeVector(0,0,0);
+    G4ThreeVector tr_airbox;
+    tr_airbox = G4ThreeVector(8*cm,5*cm,0);
+    //tr_airbox = G4ThreeVector(0,0,0);
+    G4ThreeVector tr_tpc;
+    tr_tpc=G4ThreeVector(-(TPC_x/2.-CYGNO_x/2.-60.*mm),1.5*cm,0.);
+    //tr_tpc = G4ThreeVector(0.,0.,0.);
+    G4ThreeVector tr_shield3;
+    tr_shield3 = G4ThreeVector(20*cm,10*cm,0);
+    G4ThreeVector tr_shield_ext;
+    tr_shield_ext = G4ThreeVector(20*cm,10*cm,0);
+    //tr_shield_ext = G4ThreeVector(0,0,0);
+
+    //tr_cad=G4ThreeVector(-3554*mm,-3845*mm,230.*mm);
+    tr_cad=G4ThreeVector(-35.5*cm,-25.8*cm,-26*cm);
+   
+    G4double ztr_cam = 785.*mm + z_camera_lens+0.5*x_camera_body +6*cm; //893.4mm
+    G4ThreeVector trcam0(ztr_cam,-20.*mm,0.);
+    G4RotationMatrix* rotcam0 = new G4RotationMatrix();
+   
+    G4ThreeVector trlens0(ztr_cam-0.5*x_camera_body-0.5*z_camera_lens,-20.*mm,0.);
+    G4RotationMatrix* rotlens0 = new G4RotationMatrix();
+    rotlens0->rotateY(90*deg);
+
+
+    //FIXME
+    tr_cad = tr_cad+tr_tpc;
+    trcam0 = trcam0+tr_tpc;
+    trlens0 = trlens0+tr_tpc;
 
 
     if (CYGNOLab == "LNGS"){
@@ -602,7 +698,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
     }
 
-    Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shielding_log,"Shield0",Laboratory_log,false,0,true);
+    if (CYGNOShielding != "LIMEShield") {
+	    Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr),Shielding_log,"Shield0",Laboratory_log,false,0,true);
+    }
     if (CYGNOShielding == "NoShield")
     {
         tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
@@ -641,51 +739,82 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
     
     }
-    G4ThreeVector  size;
+    
+    else if (CYGNOShielding == "LIMEShield") 
+    {
+    	Shield0_phys = new G4PVPlacement(G4Transform3D(rot,tr+tr_shield_ext),Shielding_log,"Shield0",Laboratory_log,false,0,true);
+        
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield1_phys = new G4PVPlacement(G4Transform3D(rot,tr+tr_shield_ext-tr_shield_ext),Shield1_log,"Shield1",Shielding_log,false,0,true);
 
-    tr_cad=G4ThreeVector(-3847*mm+295*mm,-3847*mm,230.*mm);
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield2_phys = new G4PVPlacement(G4Transform3D(rot,tr+tr_shield_ext-tr_shield_ext),Shield2_log,"Shield2",Shield1_log,false,0,true);
+
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        Shield3_phys = new G4PVPlacement(G4Transform3D(rot,tr+tr_shield3-tr_shield_ext),Shield3_log,"Shield3",Shield2_log,false,0,true);
+
+        tr = G4ThreeVector(0.,0.,0.);//translation in mother frame
+        tr_InsideVolume+=(rot_InsideVolume*tr);
+        rot = G4RotationMatrix();// rotation of daughter volume
+        rot_InsideVolume*=rot; //equivalent to rot_InsideVolume=rot_InsideVolume*rot
+        AirBox_phys = new G4PVPlacement(G4Transform3D(rot,tr+tr_airbox-tr_shield3 ), AirBox_log, "AirBox", Shield3_log, false, 0,true); 
+	    
+	    
+    }
+    G4ThreeVector  size;
     
-    tr_cad_shield=G4ThreeVector(660*mm,90*mm,0);
-    rot_cad_shield.rotateX(-90.*deg);
-    
+
     if (infile.good()){
-      cad_LIMEDetectorBody_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_WaterShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad-tr_shield_ext), 
+        	    cad_WaterShielding_logical,"cad_WaterShielding_physical", Shield2_log, false, 0, true); 
+      cad_CopperShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad-tr_shield3), 
+        	    cad_CopperShielding_logical,"cad_CopperShielding_physical", Shield3_log, false, 0, true); 
+
+      cad_LIMEDetectorBody_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad-tr_airbox), 
   		    cad_LIMEDetectorBody_logical,"cad_LIMEDetectorBody_physical", AirBox_log, false, 0, true);
-      cad_LIMEendPMT_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_LIMEendPMT_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_airbox), 
         	    cad_LIMEendPMT_logical,"cad_LIMEendPMT_physical", AirBox_log, false, 0, true);
-//      cad_SupportBenchLime_physical = new G4PVPlacement(G4Transform3D(rot,tr), 
-//  		    cad_SupportBenchLime_logical,"cad_SupportBenchLime_physical", AirBox_log, false, 0, true);
     }
     tr=G4ThreeVector(0.,0.,0.);
-    TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr),
+    //FIXME
+    TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr_tpc-tr_airbox),
       	    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
-    tr_CYGNO_gas_1=G4ThreeVector(TPC_x/2.-CYGNO_x/2.-50.*mm,-20*mm,0.);
+    
+    tr_CYGNO_gas_1= -1.*tr_tpc;
+    //tr_CYGNO_gas_1=G4ThreeVector(TPC_x/2.-CYGNO_x/2.-50.*mm,-20.*mm,0.);
     CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
       	    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
           
     tr=G4ThreeVector(0.,0.,0.);
     rot = G4RotationMatrix();
     if (infile.good()){
-      cad_LIMEinternalStructure_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_LIMEinternalStructure_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_LIMEinternalStructure_logical,"cad_LIMEinternalStructure_physical", TPC_log, false, 0, true);
-      cad_FieldRings_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_FieldRings_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_FieldRings_logical,"cad_FieldRings_physical", TPC_log, false, 0, true);
-      cad_GEMstretchers_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_GEMstretchers_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_GEMstretchers_logical,"cad_GEMstretchers_physical", TPC_log, false, 0, true);
-      cad_GEMsupportStructure_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_GEMsupportStructure_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_GEMsupportStructure_logical,"cad_GEMsupportStructure_physical", TPC_log, false, 0, true);
-      cad_GEMfoils_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
-  		    cad_GEMfoils_logical,"cad_GEMfoils_physical", TPC_log, false, 0, true);
-      cad_Cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
-  		    cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
-      cad_LIMEResistors_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad), 
+      cad_GEMfoils_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
+        	    cad_GEMfoils_logical,"cad_GEMfoils_physical", TPC_log, false, 0, true);
+      cad_Cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
+        	    cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
+      cad_LIMEResistors_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_LIMEResistors_logical,"cad_LIMEResistors_physical", TPC_log, false, 0, true); 
-      cad_CopperShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad_shield), 
-        	    cad_CopperShielding_logical,"cad_CopperShielding_physical", Shield3_log, false, 0, true); 
-      cad_WaterShielding_physical = new G4PVPlacement(G4Transform3D(rot_cad_shield,tr_cad_shield), 
-        	    cad_WaterShielding_logical,"cad_WaterShielding_physical", Shield2_log, false, 0, true); 
-
     }  
+    
+    camera_phys = new G4PVPlacement(rotcam0,trcam0-tr_shield_ext,camera_log,"camera",Shield3_log, false, 0, true);
+    camera_lens_phys = new G4PVPlacement(rotlens0,trlens0-tr_shield_ext,camera_lens_log,"camera_lens",Shield3_log, false, 0, true);
    
     //
     //**********************************************************************

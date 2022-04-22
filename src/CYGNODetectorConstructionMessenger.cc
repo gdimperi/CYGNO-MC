@@ -70,8 +70,9 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fCYGNOShieldingCmd->SetGuidance("Select the CYGNO shielding geometry. Possible choices: FullShield or NoShield");
     fCYGNOShieldingCmd->SetGuidance("FullShield: four concentric boxes of different thicknesses and materials. Shielding thickness and material to be selected by user");
     fCYGNOShieldingCmd->SetGuidance("NoShield: there is no shielding around the vessel.");
+    fCYGNOShieldingCmd->SetGuidance("LIMEShield: only virtual shieldings made of air to count fluxes (solid shields are imported from CAD).");
     fCYGNOShieldingCmd->SetDefaultValue("FullShield");
-    fCYGNOShieldingCmd->SetCandidates("FullShield NoShield");
+    fCYGNOShieldingCmd->SetCandidates("FullShield NoShield LIMEShield");
     fCYGNOShieldingCmd->SetParameterName("choice",false);
     fCYGNOShieldingCmd->AvailableForStates(G4State_Init,G4State_Idle);
     
@@ -80,7 +81,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fthick0Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as Full or South");
     fthick0Cmd->SetDefaultUnit("cm");
     fthick0Cmd->SetUnitCandidates("mm cm m");
-    fthick0Cmd->SetParameterName("choice",false);
+    fthick0Cmd->SetParameterName("choice",true);
     fthick0Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fthick1Cmd = new G4UIcmdWithADoubleAndUnit("/CYGNO/shield/thick1",this);
