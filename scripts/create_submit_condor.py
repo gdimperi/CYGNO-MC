@@ -2,9 +2,9 @@ import os, sys, random
 import BackgroundReader
 from optparse import OptionParser
 
-## python3 scripts/create_submit_condor.py -m <macroname> -n <tot_events> -j <events_per_job> -c <code_directory> -b <executable_directory> -g <geometry_path> -s <external_or_radioactivity> -f <isotopes_file> 
+## python3 scripts/create_submit_condor.py -m <macroname> -n <tot_events> -j <events_per_job> -o <output_directory> -c <code_directory> -b <executable_directory> -g <geometry_path> -s <external_or_radioactivity> -f <isotopes_file> 
 
-#example: python3 scripts/create_submit_condor.py -m macro/LIMEtest_condor -n 10000 -j 1000 -c /jupyter-workspace/private/Simulation/CYGNO-MC/ -b /jupyter-workspace/private/Simulation/CYGNO-MC-build/ -g /jupyter-workspace/private/Simulation/geometry/lime_new -s radioactivity -f test_bkg.txt
+#example: python3 scripts/create_submit_condor.py -m macro/LIMEtest_condor -n 10000 -j 1000 -o /jupyter-workspace/private/Simulation/CYGNO-MC/output/ -c /jupyter-workspace/private/Simulation/CYGNO-MC/ -b /jupyter-workspace/private/Simulation/CYGNO-MC-build/ -g /jupyter-workspace/private/Simulation/geometry/lime_new -s radioactivity -f test_bkg.txt
 
 #notice: the submit files are written in a "submit_macros" directory, parallel to the code directory
 
@@ -17,6 +17,7 @@ def parseInputArgs():
     parser.add_option('-c', '--codedir', default='/jupyter-workspace/private/CYGNO-MC', help='Path to CYGNO-MC code')
     parser.add_option('-b', '--builddir', default='/jupyter-workspace/private/CYGNO-MC-build', help='Path to CYGNO-MC build directory')
     parser.add_option('-g', '--geopath', default='/jupyter-workspace/private/geometry/lime', help='Path to geometry files')
+    parser.add_option('-o', '--output', default='/jupyter-workspace/private/CYGNO-MC', help='Path where output files are saved')
     parser.add_option('-s', '--typesim', default='external', help='Type of simulation: external or radioactivity')
     parser.add_option('-f', '--bkgfile', default=None, help='File with list of isotopes to be simulated')
     
@@ -49,6 +50,8 @@ def ModifyMacro(newpath,i_split,isotope='0',Z='0',A='0'):
 
     new_file = open(newpath+'/'+newname+'.mac','w')
     old_file = open(options.macro+'.mac')
+    
+    newgeo = options.geopath.split("/")[-1]
 
     for line in old_file:
         line.strip()
@@ -60,6 +63,8 @@ def ModifyMacro(newpath,i_split,isotope='0',Z='0',A='0'):
         #setting outname equal to macro name
         elif line.split()[0]=='/CYGNO/outfile':
             line=line.replace(elements[-1],newname)
+        elif line.split()[0]=='/CYGNO/pathtocad':
+            line=line.replace(elements[-1],newgeo)
         elif line.split()[0]=='/run/beamOn':
             #line=line.replace(elements[-1],str(int(int(elements[-1])/int(n_split))))
             line=line.replace(elements[-1],options.nperjob)
@@ -88,7 +93,9 @@ def CreateSubmitFile(newpath,njob,isotope='0'):
 
     new_file = open(newpath+'/'+newname,'w')
     
-    new_file.write('universe = vanilla\nexecutable = {build}/CYGNO\narguments = {base}_part$(ProcId).mac\nerror = {base}_part$(ProcId).error\noutput = {base}_part$(ProcId).out\nlog = {base}_part$(ProcId).log\ninitialdir = {code}\ngetenv = True\nshould_transfer_files = yes\nwhen_to_transfer_output = ON_EXIT\ntransfer_input_files = {build}/CYGNO, {macropath}/, {geopath}, /usr/local/lib/libcadmesh.so\ntransfer_output_files = {base}_part$(ProcId).root\n+OWNER = "condor"\nqueue {N}' .format(base = macrobase, build = options.builddir, code = options.codedir, macropath = newpath, geopath = options.geopath, N = njob))
+    newgeo = options.geopath.split("/")[-1]
+    
+    new_file.write('universe = vanilla\nexecutable = {build}/CYGNO\narguments = {base}_part$(ProcId).mac\nerror = {outpath}/error/{base}_part$(ProcId).error\noutput = {outpath}/log/{base}_part$(ProcId).out\nlog = {outpath}/log/{base}_part$(ProcId).log\ninitialdir = {code}\ngetenv = True\nshould_transfer_files = yes\nwhen_to_transfer_output = ON_EXIT\ntransfer_input_files = {build}/CYGNO, {macropath}/, {geopath}, /usr/local/lib/libcadmesh.so\ntransfer_output_remaps = "{base}_part$(ProcId).root = {outpath}/output/{base}_part$(ProcId).root"\n+OWNER = "condor"\nqueue {N}' .format(base = macrobase, build = options.builddir, code = options.codedir, macropath = newpath, geopath = options.geopath, outpath = options.output, N = njob))
 
 def SplitMacros():
     #initializing random seed with the time
@@ -96,6 +103,7 @@ def SplitMacros():
     options = parseInputArgs()
     MACRO=options.macro
     CODEDIR=options.codedir
+    OUTDIR=options.output
     nevents=int(options.nevents)
     nperjob=int(options.nperjob)
     typesim=options.typesim
@@ -107,9 +115,25 @@ def SplitMacros():
     if os.path.exists(newpath):
         print('%s already exists. Do you want to write there? (y/n)'%(newpath))
         if not query_yes_no():
+            print('Specify another path to write the macros')
             sys.exit()
     else: os.system("mkdir -p %s"%(newpath))
 
+    #create out directory
+    if os.path.exists(OUTDIR):
+        print('%s already exists. Do you want to save the output there? (y/n)'%(OUTDIR))
+        if not query_yes_no():
+            print('Specify another output path')
+            sys.exit()
+        os.system("mkdir -p %s/output/"%(OUTDIR))
+        os.system("mkdir -p %s/log/"%(OUTDIR))
+        os.system("mkdir -p %s/error/"%(OUTDIR))
+    else: 
+        print('Creating new folder %s'%(OUTDIR))
+        os.system("mkdir -p %s/output/"%(OUTDIR))
+        os.system("mkdir -p %s/log/"%(OUTDIR))
+        os.system("mkdir -p %s/error/"%(OUTDIR))
+        
     #split the macro!
     if typesim=='external':
         CreateSubmitFile(newpath,nevents//nperjob)
