@@ -4,7 +4,7 @@ from optparse import OptionParser
 
 ## python3 scripts/create_submit_condor.py -m <macroname> -n <tot_events> -j <events_per_job> -o <output_directory> -c <code_directory> -b <executable_directory> -g <geometry_path> -s <external_or_radioactivity> -f <isotopes_file> 
 
-#example: python3 scripts/create_submit_condor.py -m macro/LIMEtest_condor -n 10000 -j 1000 -o /jupyter-workspace/private/Simulation/CYGNO-MC/output/ -c /jupyter-workspace/private/Simulation/CYGNO-MC/ -b /jupyter-workspace/private/Simulation/CYGNO-MC-build/ -g /jupyter-workspace/private/Simulation/geometry/lime_new -s radioactivity -f test_bkg.txt
+#example: python3 scripts/create_submit_condor.py -m macro/LIMEtest_condor -n 10000 -j 1000 -o /jupyter-workspace/private/Simulation/LIME-MC/output/ -c /jupyter-workspace/private/Simulation/LIME-MC/ -b /jupyter-workspace/private/Simulation/LIME-MC-build/ -g /jupyter-workspace/private/Simulation/geometry/lime_new -s radioactivity -f test_bkg.txt
 
 #notice: the submit files are written in a "submit_macros" directory, parallel to the code directory
 
