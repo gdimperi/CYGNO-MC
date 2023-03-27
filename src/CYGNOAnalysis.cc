@@ -110,18 +110,18 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     hi_list.clear();//list of TH1I
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
-    analysisManager->CreateH1("NTot","", 5, 0, 5);
-    analysisManager->CreateH1("numFlu0","", 5, 0, 5);
-    analysisManager->CreateH1("numFluGamma1","", 5, 0, 5);
-    analysisManager->CreateH1("numFluGamma2","", 5, 0, 5);
-    analysisManager->CreateH1("numFluGamma3","", 5, 0, 5);
-    analysisManager->CreateH1("numFluGammaAirBox","", 5, 0, 5);
-    analysisManager->CreateH1("numFluNeutron1","", 5, 0, 5);
-    analysisManager->CreateH1("numFluNeutron2","", 5, 0, 5);
-    analysisManager->CreateH1("numFluNeutron3","", 5, 0, 5);
-    analysisManager->CreateH1("numFluNeutronAirBox","", 5, 0, 5);
-    analysisManager->CreateH1("numFluNeutronOut","", 10, 0, 10);
-    analysisManager->CreateH1("numFluGammaOut","", 10, 0, 10);
+
+    analysisManager->CreateH1("NTot","", 50, 0, 50);
+    analysisManager->CreateH1("numFlu0","", 50, 0, 50);
+    analysisManager->CreateH1("numFluGamma1","", 50, 0, 50);
+    analysisManager->CreateH1("numFluGamma2","", 50, 0, 50);
+    analysisManager->CreateH1("numFluGamma3","", 50, 0, 50);
+    analysisManager->CreateH1("numFluGammaAirBox","", 50, 0, 50);
+    analysisManager->CreateH1("numFluNeutron1","", 50, 0, 50);
+    analysisManager->CreateH1("numFluNeutron2","", 50, 0, 50);
+    analysisManager->CreateH1("numFluNeutron3","", 50, 0, 50);
+    analysisManager->CreateH1("numFluNeutronAirBox","", 50, 0, 50);
+
     hi_list.push_back(std::make_pair("NTot",&NTot));
     hi_list.push_back(std::make_pair("numFlu0",&numflu0));
     hi_list.push_back(std::make_pair("numFluGamma1",&numflugamma1));
@@ -698,9 +698,13 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int vo
       if (prestepVolNo==4 && volNo==5 && PDG==2112) numfluneu2 += 1; //count neutrons entering shield2 from shield1
       if (prestepVolNo==5 && volNo==6 && PDG==2112) numfluneu3 += 1; //count neutrons entering shield3 from shield2
       if (prestepVolNo==6 && volNo==7 && PDG==2112) numfluneu_airbox += 1; //count neutrons entering airbox from shield3
+<<<<<<< HEAD
       if (prestepVolNo==4 && volNo==3 && PDG==2112) numfluneu_out += 1; //neutrons going outside of shield1 and entering shield0
       if (prestepVolNo==4 && volNo==3 && PDG==22) numflugamma_out += 1; //gammas going outside of shield1 and entering shield0
       
+=======
+        
+>>>>>>> 20dfa6ce79b0da34eb33d50f86c75269b99888c9
       numflu += 1;
     }
 
@@ -974,9 +978,12 @@ G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
     else if(PVname=="AirBox") volNo = AIRBOX;
     else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
+<<<<<<< HEAD
     else if(PVname=="TIR_gallery") volNo = TUNNEL;
     else if(PVname=="DAMA_container") volNo = DAMA;
     else if(PVname=="Control_Room") volNo = CONTROLROOM;
+=======
+>>>>>>> 20dfa6ce79b0da34eb33d50f86c75269b99888c9
     
     return volNo;
 }

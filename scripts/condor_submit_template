@@ -1,0 +1,11 @@
+verse   = vanilla
+executable = CYGNO
+arguments = macro.mac
+log        = logfile.log
+output     = outfile.out
+error      = errorfile.error
+getenv = True
+transfer_input_files = path/to/CYGNO/executable/CYGNO, path/to/macro/macro.mac, /geometry/lime, /usr/local/lib/libcadmesh.so
+transfer_output_files	= condor_14C_test.root
++OWNER = "condor"
+queue
