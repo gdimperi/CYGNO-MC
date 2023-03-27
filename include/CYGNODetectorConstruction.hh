@@ -8,6 +8,7 @@ class CYGNODetectorConstructionMessenger;
 class G4VSolid;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+class G4UserLimits;
 
 // CADMESH //
 #include "CADMesh.hh"
@@ -69,7 +70,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     //G4VSolid * world_solid;
     //G4LogicalVolume* world_logical;
     //G4VPhysicalVolume* world_physical;
-    
+    G4UserLimits* fStepLimit;
 
     G4double InsideVolume_OR;
     G4double InsideVolume_Z;

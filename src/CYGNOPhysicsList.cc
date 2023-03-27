@@ -82,6 +82,7 @@
 #include "MyCerenkov.hh"
 #include "MyOpWLS.hh"
 */
+#include "G4MuonNuclearProcess.hh"
 
 #include "CYGNOStepMax.hh"
 
@@ -125,6 +126,8 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   //RegisterPhysics(new G4EmPenelopePhysics());
   //RegisterPhysics(new G4EmLivermorePhysics());
   //RegisterPhysics(new G4EmLowEPPhysics());
+
+//RegisterPhysics(new G4MuonVDNuclearModel());
 
   //Had Physics
   size_t find = LEN_model.find("LEND__");
@@ -232,6 +235,12 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
         ionIoni->SetStepFunction(1e-5, 0.1*um);
         pmanager->AddProcess(ionIoni,                   -1, 2, 2);
       }
+/*else if (particleName == "mu+" || particleName == "mu-")
+{
+G4MuonNuclearProcess* MNP = new G4MuonNuclearProcess();
+pmanager->AddProcess(MNP);
+}*/
+
   }
   // Neutron tracking cut --> not by default
   // RegisterPhysics( new G4NeutronTrackingCut(verbose));
@@ -328,6 +337,11 @@ void CYGNOPhysicsList::ConstructOp()
   G4EmSaturation* emSaturation = G4LossTableManager::Instance()->EmSaturation();
   fScintillationProcess->AddSaturation(emSaturation);
 
+//////////////////////////////
+
+/////////////////////////////
+
+
   auto theParticleIterator=GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
@@ -363,6 +377,12 @@ void CYGNOPhysicsList::ConstructOp()
       ph->RegisterProcess(fBoundaryProcess, particle);
       ph->RegisterProcess(fWLSProcess, particle);
     }
+
+////////////////////////////
+
+
+////////////////////////////
+
   }
 }
 

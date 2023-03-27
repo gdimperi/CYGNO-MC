@@ -4,6 +4,7 @@
 #include "CYGNOActionInitialization.hh"
 #include "G4EmProcessOptions.hh"
 #include "G4PhysListFactory.hh"
+#include "G4StepLimiterPhysics.hh"
 //#ifdef G4MULTITHREADED
 //#include "G4MTRunManager.hh"
 //#else
@@ -69,10 +70,14 @@ int main(int argc,char** argv)
   // CYGNO physics list is the Shielding physics list with the addition of emlists option4 and of fluo,PIXE,Auger. In a second moment we can add the optical photons and simulate the scintillation
   // For the study of systematics, change Shielding to QGSP_BERT_HP and QGSP_BIC_HP, and the option4 to livermore and penelope.
   CYGNOPhysicsList* physics = new CYGNOPhysicsList;
+  physics->RegisterPhysics(new G4StepLimiterPhysics());
   runManager->SetUserInitialization(physics);
    
   // User Action classes
   runManager->SetUserInitialization(new CYGNOActionInitialization(detector));
+  
+  //CYGNOPrimaryGeneratorAction* myaction = new CYGNOPrimaryGeneratorAction(detector);
+  //runManager->SetUserAction(myaction);
 
   // Initialize G4 kernel
   //
