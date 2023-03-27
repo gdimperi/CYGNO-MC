@@ -156,6 +156,9 @@ private:
   G4int    numele=0;
   G4int    numpos=0;
   
+  G4int    numflugamma_out=0;
+  G4int    numfluneu_out=0;
+  
   std::vector<int>    v_pdgID_hits;
   std::vector<G4String>    v_processIni_hits;
   std::vector<G4String>    v_processFin_hits;

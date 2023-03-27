@@ -120,6 +120,8 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     analysisManager->CreateH1("numFluNeutron2","", 5, 0, 5);
     analysisManager->CreateH1("numFluNeutron3","", 5, 0, 5);
     analysisManager->CreateH1("numFluNeutronAirBox","", 5, 0, 5);
+    analysisManager->CreateH1("numFluNeutronOut","", 10, 0, 10);
+    analysisManager->CreateH1("numFluGammaOut","", 10, 0, 10);
     hi_list.push_back(std::make_pair("NTot",&NTot));
     hi_list.push_back(std::make_pair("numFlu0",&numflu0));
     hi_list.push_back(std::make_pair("numFluGamma1",&numflugamma1));
@@ -130,6 +132,9 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     hi_list.push_back(std::make_pair("numFluNeutron2",&numfluneu2));
     hi_list.push_back(std::make_pair("numFluNeutron3",&numfluneu3));
     hi_list.push_back(std::make_pair("numFluNeutronAirBox",&numfluneu_airbox));
+    hi_list.push_back(std::make_pair("numFluNeutronOut",&numfluneu_out));
+    hi_list.push_back(std::make_pair("numFluGammaOut",&numflugamma_out));
+    
     NAlwaysFilledHistI+=6;
     //G4cout << "hi_list.size() = "<< hi_list.size() << G4endl;
     //G4cout << "NAlwaysFilledHistI = "<< NAlwaysFilledHistI << G4endl;
@@ -242,6 +247,8 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     i_list.push_back(std::make_pair("numfluneutron2",&numfluneu2));
     i_list.push_back(std::make_pair("numfluneutron3",&numfluneu3));
     i_list.push_back(std::make_pair("numfluneutron_airbox",&numfluneu_airbox));
+    i_list.push_back(std::make_pair("numfluneutron_out",&numfluneu_out));
+    i_list.push_back(std::make_pair("numflugamma_out",&numflugamma_out));
     i_list.push_back(std::make_pair("numflu",&numflu));
     i_list.push_back(std::make_pair("numneu",&numneu));
     i_list.push_back(std::make_pair("numion",&numion));
@@ -453,6 +460,8 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     numfluneu2=0;
     numfluneu3=0;
     numfluneu_airbox=0;
+    numfluneu_out=0;
+    numflugamma_out=0;
 
     //cleaning vectors
     vol_name_mass->clear();
@@ -689,8 +698,12 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int vo
       if (prestepVolNo==4 && volNo==5 && PDG==2112) numfluneu2 += 1; //count neutrons entering shield2 from shield1
       if (prestepVolNo==5 && volNo==6 && PDG==2112) numfluneu3 += 1; //count neutrons entering shield3 from shield2
       if (prestepVolNo==6 && volNo==7 && PDG==2112) numfluneu_airbox += 1; //count neutrons entering airbox from shield3
+      if (prestepVolNo==4 && volNo==3 && PDG==2112) numfluneu_out += 1; //neutrons going outside of shield1 and entering shield0
+      if (prestepVolNo==4 && volNo==3 && PDG==22) numflugamma_out += 1; //gammas going outside of shield1 and entering shield0
+      
       numflu += 1;
     }
+
 }
 
 void CYGNOAnalysis::RegisterNeutron(G4int TrackId, G4int ParentId, G4ThreeVector postStepPt, G4LorentzVector QuadriMomentum)
@@ -856,6 +869,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_time_hits.push_back((*CYGNOHC)[i]->GetGlobalTime());
                     v_kinEne_hits.push_back((*CYGNOHC)[i]->GetKineticEne());
                     v_processIni_hits.push_back((*CYGNOHC)[i]->GetProcessIni());
+                    //G4cout<<(*CYGNOHC)[i]->GetProcessIni()<<G4endl;
                     v_processFin_hits.push_back((*CYGNOHC)[i]->GetProcessFin());
                     v_x_vertex_hits.push_back(v_xpos_vertex[0]);
                     v_y_vertex_hits.push_back(v_ypos_vertex[0]);
@@ -935,8 +949,11 @@ G4int CYGNOAnalysis::GetVolNo(const G4Track* track)
     else if(PVname=="AirBox") volNo = AIRBOX;
     else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
-
-    return volNo;
+    else if(PVname=="TIR_gallery") volNo = TUNNEL;
+    else if(PVname=="DAMA_container") volNo = DAMA;
+    else if(PVname=="Control_Room") volNo = CONTROLROOM;
+    
+        return volNo;
 }
 
 G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
@@ -957,7 +974,10 @@ G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
     else if(PVname=="AirBox") volNo = AIRBOX;
     else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
-
+    else if(PVname=="TIR_gallery") volNo = TUNNEL;
+    else if(PVname=="DAMA_container") volNo = DAMA;
+    else if(PVname=="Control_Room") volNo = CONTROLROOM;
+    
     return volNo;
 }
 
