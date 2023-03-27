@@ -91,7 +91,10 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
      (name!="Shield2" && nextname=="Shield2") || 
      (name!="Shield3" && nextname=="Shield3") || 
      (name!="AirBox" && nextname=="AirBox") || 
-     (name!="CYGNO_gas" && nextname=="CYGNO_gas")) {
+     (name!="CYGNO_gas" && nextname=="CYGNO_gas") || 
+     (name!="Control_Room" && nextname=="Control_Room") || 
+     (name!="DAMA_container" && nextname=="DAMA_container") || 
+     (name!="TIR_gallery" && nextname=="TIR_gallery")) {
 
      //G4cout << "trackID = " << trackID << "  vol name = " << name << "  next vol name = " << nextname << G4endl;
      analysis->RegisterParticle(trackID, preVolNo, nextVolNo, nextCopyNo, PDGcode, preStepPoint, postStepPoint, quadriMom);

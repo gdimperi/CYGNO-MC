@@ -187,7 +187,24 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * camera_lens_log; 
     G4LogicalVolume * camera_shield_log;
     G4LogicalVolume * window_log;
-
+    G4LogicalVolume * ambe_capsule_log;
+    G4LogicalVolume * ambe_source_log;
+    G4LogicalVolume * ambe_shield_log;
+    G4LogicalVolume * ambe_pb_shield_log;
+    G4LogicalVolume * PC_wallLNGS_log;
+    G4LogicalVolume * Al_wallLNGS_log;
+    G4LogicalVolume * PU_wallLNGS_log;
+    G4LogicalVolume * Al_ext_wallLNGS_log;
+    G4LogicalVolume * CR_PC_wallLNGS_log;
+    G4LogicalVolume * CR_Al_wallLNGS_log;
+    G4LogicalVolume * CR_PU_wallLNGS_log;
+    G4LogicalVolume * CR_Al_ext_wallLNGS_log;
+    G4LogicalVolume * LIME_base_log;
+    G4LogicalVolume * DAMA_container_log;
+    G4LogicalVolume * TIR_gallery_log;
+    G4LogicalVolume * Control_Room_log;
+    G4LogicalVolume * Rock_gallery_log;
+    
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
     G4VPhysicalVolume* productionRockThinTube_phys;
@@ -220,6 +237,24 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* camera_lens_phys; 
     G4VPhysicalVolume* camera_shield_phys;
     G4VPhysicalVolume* window_phys;
+    G4VPhysicalVolume* ambe_capsule_phys;
+    G4VPhysicalVolume* ambe_source_phys;
+    G4VPhysicalVolume* ambe_shield_phys;
+    G4VPhysicalVolume* ambe_pb_shield_phys;
+    
+    G4VPhysicalVolume * PC_wallLNGS_phys;
+    G4VPhysicalVolume * Al_wallLNGS_phys;
+    G4VPhysicalVolume * PU_wallLNGS_phys;
+    G4VPhysicalVolume * Al_ext_wallLNGS_phys;
+    G4VPhysicalVolume * CR_PC_wallLNGS_phys;
+    G4VPhysicalVolume * CR_Al_wallLNGS_phys;
+    G4VPhysicalVolume * CR_PU_wallLNGS_phys;
+    G4VPhysicalVolume * CR_Al_ext_wallLNGS_phys;
+    G4VPhysicalVolume * LIME_base_phys;
+    G4VPhysicalVolume * DAMA_container_phys; 
+    G4VPhysicalVolume * TIR_gallery_phys; 
+    G4VPhysicalVolume * Control_Room_phys;
+    G4VPhysicalVolume * Rock_gallery_phys;     
    
     //CYGNO sensitive detector
     CYGNOSensitiveDetector * CYGNOSD;

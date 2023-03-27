@@ -51,6 +51,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     G4Element* elCa = man->FindOrBuildElement("Ca");
     G4Element* elB = man->FindOrBuildElement("B");
     G4Element* elCu = man->FindOrBuildElement("Cu");
+    G4Element* elCd = man->FindOrBuildElement("Cd");
     
     O = man->FindOrBuildMaterial("G4_O");
     Na = man->FindOrBuildMaterial("G4_Na");
@@ -64,6 +65,8 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     Ni = man->FindOrBuildMaterial("G4_Ni");
     Si = man->FindOrBuildMaterial("G4_Si");
     In = man->FindOrBuildMaterial("G4_In");
+    Cd = man->FindOrBuildMaterial("G4_Cd");
+    Be = man->FindOrBuildMaterial("G4_Be");
     
     Teflon  = man->FindOrBuildMaterial("G4_TEFLON");
     
@@ -136,6 +139,23 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     Ceramic = new G4Material (name="Ceramic", density, ncomponents = 2);
     Ceramic->AddElement (elAl, natoms = 2);
     Ceramic->AddElement (elO, natoms = 3);
+    
+    //AmBe source
+        
+    //material: AmO2 0.388% in volume del mix di Am e Be (https://www.researchgate.net/publication/319436285_In-Line_a_n_Source_Sampling_Methodology_for_Monte_Carlo_Radiation_Transport_Simulations)
+
+    G4Isotope* Am241 = new G4Isotope("Am241", z=95, a=241.,241*g/mole);
+    G4Element* elAm = new G4Element("elAm241", "Am241", ncomponents = 1);
+    elAm->AddIsotope(Am241, 100.*perCent);
+    density = 11.68 * g/cm3;
+    AmO2 = new G4Material("AmO2",density,ncomponents = 2); //americium dioxide
+    AmO2->AddElement(elAm, natoms = 1);
+    AmO2->AddElement(elO, natoms = 2);
+    
+    density = 1.88 * g/cm3; //density of metallic Be 1.84g/cm3
+    AmBe = new G4Material ("AmBe", density, ncomponents = 2);
+    AmBe->AddMaterial(AmO2, fractionmass = 0.045); //about 4.5% in mass in AmO2
+    AmBe->AddMaterial(Be, fractionmass = 0.955);
 
     // SF6_gas 
 
@@ -205,6 +225,25 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     PE  = man->FindOrBuildMaterial("G4_POLYETHYLENE");
     Concrete  = man->FindOrBuildMaterial("G4_CONCRETE");
 	
+	//Walls of underground container for LIME
+	// Polyurethane
+	PU = new G4Material("Polyurethane", density = 1100.*kg/m3, ncomponents = 4, kStateSolid);
+	PU->AddElement(elC, natoms = 3);
+	PU->AddElement(elH, natoms = 8);
+	PU->AddElement(elN, natoms = 2);
+	PU->AddElement(elO, natoms = 1);
+
+	// Polyurethane foam
+	// Combine the polyurethane with air to make foam of density 35 kg/m3
+	// 96.924 % of air + remainder polyurethane has a density of 35 kg/m3
+	PU_foam = new G4Material(name = "PolyurethaneFoam", density = 35 * kg / m3, ncomponents = 2, kStateSolid);
+	PU_foam->AddMaterial(Air, 96.924 * perCent);
+	PU_foam->AddMaterial(PU, 3.076 * perCent);
+	
+	// Polycarbonate
+	PC = man->FindOrBuildMaterial("G4_POLYCARBONATE");
+	
+	
     
     //**********************************************************************
     //   DEFINITION OF VISUALIZATION ATTRIBUTES
@@ -218,6 +257,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     CameraVis = new G4VisAttributes(G4Colour(1.,0.,1.));
     PerspexVis = new G4VisAttributes(G4Colour(0.,1.,1.));
     CYGNOGasVis = new G4VisAttributes(G4Colour(0.,1.,0.));
+    AmBeVis = new G4VisAttributes(G4Colour(1.,1.,0.));
     //CopperVis->SetForceWireframe(true);
 }
 
@@ -257,6 +297,8 @@ G4Material* CYGNODetectorMaterial::Material(G4String what)
   if(what == "Ni")                material = Ni;
   if(what == "Si")                material = Si;
   if(what == "In")                material = In;
+  if(what == "Cd")                material = Cd;
+  if(what == "AmBe")              material = AmBe;
   if(what == "Teflon")            material = Teflon;
   if(what == "PyrexGlass")        material = PyrexGlass;
   if(what == "BSglass")           material = BSglass;
@@ -274,7 +316,10 @@ G4Material* CYGNODetectorMaterial::Material(G4String what)
   if(what == "Camera")            material = Camera;
   if(what == "Kapton")            material = Kapton;
   if(what == "GEM")               material = GEM;
- 
+  if(what == "PU")                material = PU;
+  if(what == "PU_foam")           material = PU_foam;
+  if(what == "PC")                material = PC;
+    
   return material;
 }
 

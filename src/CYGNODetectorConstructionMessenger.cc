@@ -31,11 +31,11 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fLabDirectory->SetGuidance("Control commands for lab:");
 
     fCYGNOLabCmd = new G4UIcmdWithAString("/CYGNO/lab/select",this);
-    fCYGNOLabCmd->SetGuidance("Select the CYGNO laboratory geometry. Possible choices: LNGS, SUPL or NoCave");
+    fCYGNOLabCmd->SetGuidance("Select the CYGNO laboratory geometry. Possible choices: LNGS, SUPL, MuonLNGS or NoCave");
     fCYGNOLabCmd->SetGuidance("LNGS: Set the laboratory geometry of LNGS");
     fCYGNOLabCmd->SetGuidance("NoCave: Remove the laboratory and replaces it with a large box of air");
     fCYGNOLabCmd->SetDefaultValue("LNGS");
-    fCYGNOLabCmd->SetCandidates("LNGS NoCave");
+    fCYGNOLabCmd->SetCandidates("LNGS NoCave MuonLNGS");
     fCYGNOLabCmd->SetParameterName("choice",false);
     fCYGNOLabCmd->AvailableForStates(G4State_Init,G4State_Idle);
 
@@ -71,8 +71,9 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fCYGNOShieldingCmd->SetGuidance("FullShield: four concentric boxes of different thicknesses and materials. Shielding thickness and material to be selected by user");
     fCYGNOShieldingCmd->SetGuidance("NoShield: there is no shielding around the vessel.");
     fCYGNOShieldingCmd->SetGuidance("LIMEShield: only virtual shieldings made of air to count fluxes (solid shields are imported from CAD).");
+    fCYGNOShieldingCmd->SetGuidance("AmBe: only virtual shieldings made of air to count fluxes (solid shields are imported from CAD), plus AmBe source.");
     fCYGNOShieldingCmd->SetDefaultValue("FullShield");
-    fCYGNOShieldingCmd->SetCandidates("FullShield NoShield LIMEShield");
+    fCYGNOShieldingCmd->SetCandidates("FullShield NoShield LIMEShield AmBe");
     fCYGNOShieldingCmd->SetParameterName("choice",false);
     fCYGNOShieldingCmd->AvailableForStates(G4State_Init,G4State_Idle);
     
@@ -129,7 +130,7 @@ CYGNODetectorConstructionMessenger::CYGNODetectorConstructionMessenger
     fMat2Cmd->SetGuidance("This command is valid only if CYGNOShielding has been selected as FullShield");
     fMat2Cmd->SetParameterName("choice",true);
     fMat2Cmd->SetDefaultValue("Pb");
-    fMat2Cmd->SetCandidates("Pb PE Cu Air Water Steel");
+    fMat2Cmd->SetCandidates("Pb PE Cu Air Water Steel Cd");
     fMat2Cmd->AvailableForStates(G4State_Init,G4State_Idle);
   
     fMat3Cmd = new G4UIcmdWithAString("/CYGNO/shield/mat3",this);
