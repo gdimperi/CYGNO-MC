@@ -698,13 +698,9 @@ void CYGNOAnalysis::RegisterParticle(G4int trackID, G4int prestepVolNo, G4int vo
       if (prestepVolNo==4 && volNo==5 && PDG==2112) numfluneu2 += 1; //count neutrons entering shield2 from shield1
       if (prestepVolNo==5 && volNo==6 && PDG==2112) numfluneu3 += 1; //count neutrons entering shield3 from shield2
       if (prestepVolNo==6 && volNo==7 && PDG==2112) numfluneu_airbox += 1; //count neutrons entering airbox from shield3
-<<<<<<< HEAD
       if (prestepVolNo==4 && volNo==3 && PDG==2112) numfluneu_out += 1; //neutrons going outside of shield1 and entering shield0
       if (prestepVolNo==4 && volNo==3 && PDG==22) numflugamma_out += 1; //gammas going outside of shield1 and entering shield0
-      
-=======
-        
->>>>>>> 20dfa6ce79b0da34eb33d50f86c75269b99888c9
+
       numflu += 1;
     }
 
@@ -978,12 +974,10 @@ G4int CYGNOAnalysis::GetPreVolNo(const G4Track* track)
     else if(PVname=="AirBox") volNo = AIRBOX;
     else if(PVname=="TPC_gas") volNo = TPCGAS;
     else if(PVname=="CYGNO_gas") volNo = CYGNOGAS;
-<<<<<<< HEAD
     else if(PVname=="TIR_gallery") volNo = TUNNEL;
     else if(PVname=="DAMA_container") volNo = DAMA;
     else if(PVname=="Control_Room") volNo = CONTROLROOM;
-=======
->>>>>>> 20dfa6ce79b0da34eb33d50f86c75269b99888c9
+
     
     return volNo;
 }
