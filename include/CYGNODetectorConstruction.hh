@@ -93,20 +93,20 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
 
 
     //CADMesh
-    CADMesh * mesh_LIMEDetectorBody;
-    CADMesh * mesh_LIMEinternalStructure;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEDetectorBody;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEinternalStructure;
     //CADMesh * mesh_camera;
-    CADMesh * mesh_LIMEendPMT;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEendPMT;
     //CADMesh * mesh_turns_support;
-    CADMesh * mesh_FieldRings;
-    CADMesh * mesh_GEMstretchers;
-    CADMesh * mesh_GEMsupportStructure;
-    CADMesh * mesh_GEMfoils;
-    CADMesh * mesh_SupportBenchLime;
-    CADMesh * mesh_Cathode; 
-    CADMesh * mesh_LIMEResistors;
-    CADMesh * mesh_CopperShielding;
-    CADMesh * mesh_WaterShielding;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_FieldRings;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMstretchers;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMsupportStructure;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMfoils;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_SupportBenchLime;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_Cathode; 
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEResistors;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_CopperShielding;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_WaterShielding;
     
     //Building blocks: logic volumes, sizes and positions
     G4ThreeVector  tr_Tot;
