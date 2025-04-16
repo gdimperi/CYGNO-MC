@@ -839,9 +839,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     }
   
     //TPC gas
-    G4double TPC_x = 635.*mm;//640.*mm;
-    G4double TPC_y = 495.*mm; //500
-    G4double TPC_z = 450.*mm; //470.*mm;
+    G4double TPC_x = 630.*mm;//640.*mm;
+    G4double TPC_y = 500.*mm; //500
+    G4double TPC_z = 460.*mm; //470.*mm;
       
     name_phys="TPC";
     name_log=name_phys+"_log";
@@ -851,8 +851,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     
     //CYGNO fiducial gas
     G4double CYGNO_x = 480.*mm;//480 mm
-    G4double CYGNO_y = 320.*mm;
-    G4double CYGNO_z = 320.*mm;//300.*mm; 320 used for AmBe to digitize
+    G4double CYGNO_y = 315.*mm;
+    G4double CYGNO_z = 315.*mm;//300.*mm; 320 used for AmBe to digitize
       
     name_phys="CYGNO";
     name_log=name_phys+"_log";
@@ -938,7 +938,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4ThreeVector tr_airbox;
     tr_airbox = G4ThreeVector(8*cm,5*cm,0);
     G4ThreeVector tr_tpc;
-    tr_tpc=G4ThreeVector(-(TPC_x/2.-CYGNO_x/2.-60.*mm),1.5*cm,0.);
+    tr_tpc=G4ThreeVector(-(TPC_x/2.-CYGNO_x/2.-40.*mm),1.5*cm,0.);
     //tr_tpc = G4ThreeVector(0.,0.,0.);
     G4ThreeVector tr_shield3;
     tr_shield3 = G4ThreeVector(20*cm,10*cm,0);
@@ -1141,12 +1141,12 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_LIMEendPMT_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_airbox), 
         	    cad_LIMEendPMT_logical,"cad_LIMEendPMT_physical", AirBox_log, false, 0, true);
     }
-    tr=G4ThreeVector(0.,0.,0.);
+    tr=G4ThreeVector(-1.*cm,0.,0.);
     //FIXME
     TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr_tpc-tr_airbox),
       	    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
     
-    tr_CYGNO_gas_1= -1.*tr_tpc;
+    tr_CYGNO_gas_1= -1.*tr_tpc+G4ThreeVector(-1*cm,-0.5*cm,0);
     //tr_CYGNO_gas_1=G4ThreeVector(TPC_x/2.-CYGNO_x/2.-50.*mm,-20.*mm,0.);
     CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1),
       	    CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);

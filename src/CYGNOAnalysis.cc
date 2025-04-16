@@ -260,7 +260,9 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     i_list.push_back(std::make_pair("inelasticflag",&inelasticflag));
     d_list.clear();
     d_list.push_back(std::make_pair("energyDep",&energyDep));
+    d_list.push_back(std::make_pair("energyDep_QF",&energyDep_QF));
     d_list.push_back(std::make_pair("energyDep_NR",&energyDep_NR));
+    d_list.push_back(std::make_pair("energyDep_NRQF",&energyDep_NRQF));
 
 
     f_list.clear();
@@ -315,6 +317,8 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
       analysisManager->CreateNtupleDColumn("z_vertex_hits",v_z_vertex_hits);
       analysisManager->CreateNtupleDColumn("tracklen_hits",v_len_hits);
       analysisManager->CreateNtupleDColumn("energyDep_hits",v_energyDep_hits);
+      analysisManager->CreateNtupleDColumn("energyDep_hits_NR",v_energyDep_hits_NR);
+      analysisManager->CreateNtupleDColumn("energyDep_hits_NRQF",v_energyDep_hits_NRQF);
       
      }  
     if(fRegisterOn){
@@ -495,6 +499,8 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     v_y_vertex_hits.clear();
     v_z_vertex_hits.clear();
     v_energyDep_hits.clear();
+    v_energyDep_hits_NR.clear();
+    v_energyDep_hits_NRQF.clear();
     v_len_hits.clear();    
 
     v_A_ion.clear();
@@ -850,7 +856,9 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
     }
     
     energyDep=0.;
+    energyDep_QF=0.;
     energyDep_NR=0.;
+    energyDep_NRQF=0.;
     G4ThreeVector tempvec;
 
 
@@ -862,7 +870,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
             // fill hit_array with the id of the detectors hit
             for (G4int i=0; i<numhits; i++)
             {
-            if(fHitsInfo){
+                if(fHitsInfo){
                     v_parentID_hits.push_back((int)(*CYGNOHC)[i]->GetParentID());//It is the generator parent track ID
                     v_pdgID_hits.push_back((int)(*CYGNOHC)[i]->GetParticleID());
                     v_trackID_hits.push_back((int)(*CYGNOHC)[i]->GetTrackID());//It is the generator track ID
@@ -879,15 +887,51 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_y_hits.push_back(tempvec.getY());
                     v_z_hits.push_back(tempvec.getZ());
                     v_len_hits.push_back((*CYGNOHC)[i]->GetLength());
-	            v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());
-	    }
+
+		    G4double rawEdep = (*CYGNOHC)[i]->GetEdep();
+		    G4int pdg = (int)(*CYGNOHC)[i]->GetParticleID(); 
+		    
+		    // store raw deposit in energyDep_hits
+		    v_energyDep_hits.push_back(rawEdep);   // not a standard hit
+		    
+		    if(pdg > 1000000000) {
+		        // Ion => fill NR (raw) and NRQF (quenched)
+		        // store raw deposit in energyDep_hits_NR
+		        v_energyDep_hits_NR.push_back(rawEdep);
+		        // apply QF for the same hit
+		        (*CYGNOHC)[i]->ApplyQuenching(); 
+		        // store the now‐modified deposit
+		        v_energyDep_hits_NRQF.push_back((*CYGNOHC)[i]->GetEdep());
+		    
+		        // optional: restore the original edep if you do NOT want
+		        // to leave it permanently changed inside the hit object
+		        // (*CYGNOHC)[i]->SetEdep(rawEdep);
+		    } else {
+		        // Not an ion => zero in the NR variables
+		        v_energyDep_hits_NR.push_back(0.0);
+		        v_energyDep_hits_NRQF.push_back(0.0);
+		    }
+
+
+	        }
 
 	    
-	    // sum total energy deposited in hits
-	    energyDep += (*CYGNOHC)[i]->GetEdep();
-	    //if particle releasing energy is an ion (PDG numbering scheme for ions 100ZZZAAAI)
-            if ((int)(*CYGNOHC)[i]->GetParticleID()>1000000000)
-	      energyDep_NR += (*CYGNOHC)[i]->GetEdep();
+	        // sum total energy deposited in hits
+	        energyDep += (*CYGNOHC)[i]->GetEdep();
+	        //if particle releasing energy is an ion (PDG numbering scheme for ions 100ZZZAAAI)
+	        G4double original_edep = (*CYGNOHC)[i]->GetEdep();   
+	        if ((int)(*CYGNOHC)[i]->GetParticleID()>1000000000)
+	        {
+	           // Apply QF derivative step by step for nuclear hits
+	           energyDep_NR += original_edep;
+
+	           (*CYGNOHC)[i]->ApplyQuenching();                    
+	           energyDep_NRQF += (*CYGNOHC)[i]->GetEdep();        
+	           energyDep_QF   += (*CYGNOHC)[i]->GetEdep();
+	        }
+	        else{
+	           energyDep_QF   += original_edep;
+	        }
 	    }
     	}
     } 
@@ -918,6 +962,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
         analysisManager->AddNtupleRow(0);
     }  
     energyDep_NR=0.;
+    energyDep_NRQF=0.;
 }
 
 

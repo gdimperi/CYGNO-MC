@@ -45,6 +45,8 @@ class CYGNOHit : public G4VHit
       G4double GetEdep()    { return edep; };      
       G4ThreeVector GetPos(){ return pos; };
       G4double GetLength(){ return trackLen; };
+
+      void ApplyQuenching();
        
   private:
  
