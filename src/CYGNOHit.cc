@@ -115,10 +115,10 @@ void CYGNOHit::ApplyQuenching()
 
 // --- QF functions for different ions ---
 
-// Helium
-static const double k_helium = 0.1406;
-static const double a_helium = 3.388;
-static const double b_helium = 0.2901;
+// Helium from F. Di Giambattista PhD thesis
+static const double k_helium = 0.117;
+static const double a_helium = 3.9;
+static const double b_helium = 0.44;
 
 Double_t f_helium(Double_t E) {
     return k_helium * (E + a_helium * pow(E, b_helium));
@@ -143,10 +143,10 @@ Double_t dRdE_helium(Double_t E) {
     return QF_helium(E) + E * QFprime_helium(E);
 }
 
-// Carbon
-static const double k_carbon = 0.02162;
-static const double a_carbon = 13.89;
-static const double b_carbon = 0.28;
+// Carbon from F. Di Giambattista PhD thesis
+static const double k_carbon = 0.0195;
+static const double a_carbon = 14.7;
+static const double b_carbon = 0.33;
 
 Double_t f_carbon(Double_t E) {
     return k_carbon * (E + a_carbon * pow(E, b_carbon));
@@ -171,10 +171,10 @@ Double_t dRdE_carbon(Double_t E) {
     return QF_carbon(E) + E * QFprime_carbon(E);
 }
 
-// Fluorine
-static const double k_flor   = 0.008739;
-static const double a_flor   = 27.29;
-static const double b_flor   = 0.2785;
+// Fluorine from F. Di Giambattista PhD thesis
+static const double k_flor   = 0.0083;
+static const double a_flor   = 27.4;
+static const double b_flor   = 0.303;
 
 Double_t f_flor(Double_t E) {
     return k_flor * (E + a_flor * pow(E, b_flor));
