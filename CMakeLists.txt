@@ -24,10 +24,6 @@ endif()
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-# Include CADMesh in your project.
-find_package(cadmesh)
-include_directories(${CADMESH_INCLUDE_DIRS})
-
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
