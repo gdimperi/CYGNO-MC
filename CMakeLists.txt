@@ -32,30 +32,10 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #----------------------------------------------------------------------------
-# Include root
-find_package(ROOT)
-if(NOT ROOT_FOUND)
-       message(WARNING "ROOT not found")
-else()
-	message(STATUS "ROOT version:" ${ROOT_VERSION})
-	if(ROOT_VERSION VERSION_LESS "6.5")
-		include_directories(${ROOT_INCLUDE_DIR})
-		message(STATUS "ROOT include dirs:" ${ROOT_INCLUDE_DIR})
-	else()
-		include_directories(${ROOT_INCLUDE_DIRS})
-		message(STATUS "ROOT include dirs:" ${ROOT_INCLUDE_DIRS})
-	endif()
-endif()
-
-#----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(CYGNO CYGNO.cc ${sources} ${headers})
 target_link_libraries(CYGNO ${Geant4_LIBRARIES})
-if(ROOT_FOUND)
-	target_link_libraries(CYGNO ${ROOT_LIBRARIES})
-endif()
-target_link_libraries(CYGNO ${cadmesh_LIBRARIES})
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build B1. This is so that we can run the executable directly because it
