@@ -743,17 +743,17 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     snprintf(namestl, sizeof(namestl), "%s/GEMstretchers.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     if (infile.good())
-      mesh_FieldRings = CADMesh::TessellatedMesh::FromSTL(namestl); 
+      mesh_GEMstretchers = CADMesh::TessellatedMesh::FromSTL(namestl); 
     
     snprintf(namestl, sizeof(namestl), "%s/GEMsupportStructure.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;     
     if (infile.good())
-      mesh_GEMstretchers= CADMesh::TessellatedMesh::FromSTL(namestl);
+      mesh_GEMsupportStructure = CADMesh::TessellatedMesh::FromSTL(namestl);
 
     snprintf(namestl, sizeof(namestl), "%s/GEMfoils.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
     if (infile.good())
-      mesh_GEMsupportStructure = CADMesh::TessellatedMesh::FromSTL(namestl); 
+      mesh_GEMfoils = CADMesh::TessellatedMesh::FromSTL(namestl); 
  
     snprintf(namestl, sizeof(namestl), "%s/Cathode_new.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
@@ -866,9 +866,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
 
       //GEMfoils
-      // cad_GEMfoils_solid = mesh_GEMfoils->GetSolid();
-      // cad_GEMfoils_logical = new G4LogicalVolume(cad_GEMfoils_solid, CYGNOMaterials->Material("GEM"), "cad_GEMfoils_logical", 0, 0, 0); //GEM material is an effective material of kapton + copper 
-      //cad_GEMfoils_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_GEMfoils_logical->GetMaterial()->GetName()));
+      cad_GEMfoils_solid = mesh_GEMfoils->GetSolid();
+      cad_GEMfoils_logical = new G4LogicalVolume(cad_GEMfoils_solid, CYGNOMaterials->Material("GEM"), "cad_GEMfoils_logical", 0, 0, 0); //GEM material is an effective material of kapton + copper 
+      cad_GEMfoils_logical->SetVisAttributes(CYGNOMaterials->VisAttributes(cad_GEMfoils_logical->GetMaterial()->GetName()));
       
 //      //Support Bench LIME
 //      cad_SupportBenchLime_solid = mesh_SupportBenchLime->GetSolid();
@@ -1129,8 +1129,8 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         	    cad_GEMstretchers_logical,"cad_GEMstretchers_physical", TPC_log, false, 0, true);
       cad_GEMsupportStructure_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_GEMsupportStructure_logical,"cad_GEMsupportStructure_physical", TPC_log, false, 0, true);
-      // cad_GEMfoils_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
-      //   	    cad_GEMfoils_logical,"cad_GEMfoils_physical", TPC_log, false, 0, true);
+      cad_GEMfoils_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
+        	    cad_GEMfoils_logical,"cad_GEMfoils_physical", TPC_log, false, 0, true);
       cad_Cathode_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
         	    cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
       cad_LIMEResistors_physical = new G4PVPlacement(G4Transform3D(rot,tr_cad-tr_tpc), 
@@ -1235,7 +1235,7 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEendPMT_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMstretchers_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMsupportStructure_logical);
-    // CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMfoils_logical);
+    CYGNOProperties->AddVolumeNameMassAndDensity(cad_GEMfoils_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_Cathode_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_FieldRings_logical);
     CYGNOProperties->AddVolumeNameMassAndDensity(cad_LIMEResistors_logical);
