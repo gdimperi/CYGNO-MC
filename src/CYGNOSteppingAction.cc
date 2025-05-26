@@ -31,38 +31,38 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
   G4int particleID = particleDefinition->GetPDGEncoding();
 
   // Get the volume the particle is entering
-  G4StepPoint* preStepPoint = fStep->GetPreStepPoint();
-  G4LogicalVolume* preVolume = preStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
-  std::string volumeName = preVolume->GetName();
+//   G4StepPoint* preStepPoint = fStep->GetPreStepPoint();
+//   G4LogicalVolume* preVolume = preStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
+//   std::string volumeName = preVolume->GetName();
 
-  if (volumeName == "CYGNO_log" && particleID > 1000000000) { 
-      // Retrieve total energy deposited in the step
-      G4double totalEnergyDeposit = fStep->GetTotalEnergyDeposit();
+//   if (volumeName == "CYGNO_log" && particleID > 1000000000) { 
+//       // Retrieve total energy deposited in the step
+//       G4double totalEnergyDeposit = fStep->GetTotalEnergyDeposit();
       
-      // Retrieve non-ionizing energy deposited in the step
-      G4double nonIonizingEnergyDeposit = fStep->GetNonIonizingEnergyDeposit();
+//       // Retrieve non-ionizing energy deposited in the step
+//       G4double nonIonizingEnergyDeposit = fStep->GetNonIonizingEnergyDeposit();
       
-      // Calculate ionizing energy deposit
-      G4double ionizingEnergyDeposit = totalEnergyDeposit - nonIonizingEnergyDeposit;
+//       // Calculate ionizing energy deposit
+//       G4double ionizingEnergyDeposit = totalEnergyDeposit - nonIonizingEnergyDeposit;
 
-      totalEnergyDepositAccum += totalEnergyDeposit;
-      IonizingEnergyDepositAccum += ionizingEnergyDeposit;
+//       totalEnergyDepositAccum += totalEnergyDeposit;
+//       IonizingEnergyDepositAccum += ionizingEnergyDeposit;
 
-  }
+//   }
 
-  if (track->GetTrackStatus() == fStopAndKill) {
-      G4cout << "End of Track - Accumulated Energy Deposits for Particle: " 
-              << track->GetDefinition()->GetParticleName() << " (PDG ID: " 
-              << track->GetDefinition()->GetPDGEncoding() << ")" << G4endl;
-      G4cout << "Total Energy Deposited during track: " 
-              << totalEnergyDepositAccum / CLHEP::keV << " keV" << G4endl;
-      G4cout << "Total Ionizing Energy Deposited during track: " 
-              << IonizingEnergyDepositAccum / CLHEP::keV << " keV" << G4endl;
+//   if (track->GetTrackStatus() == fStopAndKill) {
+//       G4cout << "End of Track - Accumulated Energy Deposits for Particle: " 
+//               << track->GetDefinition()->GetParticleName() << " (PDG ID: " 
+//               << track->GetDefinition()->GetPDGEncoding() << ")" << G4endl;
+//       G4cout << "Total Energy Deposited during track: " 
+//               << totalEnergyDepositAccum / CLHEP::keV << " keV" << G4endl;
+//       G4cout << "Total Ionizing Energy Deposited during track: " 
+//               << IonizingEnergyDepositAccum / CLHEP::keV << " keV" << G4endl;
 
-      // Reset accumulators for the next track
-      totalEnergyDepositAccum = 0.0;
-      IonizingEnergyDepositAccum = 0.0;
-  }
+//       // Reset accumulators for the next track
+//       totalEnergyDepositAccum = 0.0;
+//       IonizingEnergyDepositAccum = 0.0;
+//   }
 
 }
 
