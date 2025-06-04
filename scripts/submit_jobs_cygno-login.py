@@ -22,6 +22,8 @@ echo This is running as group \$(id -gn)
 END
 
 #this is a very simple example of submission script
+export AllowForHeavyElements=1
+
 
 TAG=%(TAG)s
 CODEDIR=%(CODEDIR)s
@@ -56,6 +58,9 @@ cp ${BUILDDIR}CYGNO ./
 cp ${WORKDIR}/${MACRONAME}.root ${OUTDIR}/${PBSOUTDIR}${TAG}/
 cp ${TMPDIR}/${TAG}/pbslog_${MACRONAME}.log ${OUTDIR}/pbs_logs/${TAG}/
 cd ${OUTDIR}
+chmod 755 ${OUTDIR}/${PBSOUTDIR}${TAG}/
+chmod 755 ${OUTDIR}/pbs_logs/${TAG}/${MACRONAME}.log
+chmod 755 ${OUTDIR}/pbs_logs/${TAG}/pbslog_${MACRONAME}.log
 rm -rf ${WORKDIR}/
 rm -f ${TMPDIR}/${TAG}/*
 """

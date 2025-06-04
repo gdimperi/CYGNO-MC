@@ -85,6 +85,15 @@
 #include "G4MuonNuclearProcess.hh"
 
 #include "CYGNOStepMax.hh"
+#include "G4ParticleTable.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4IonConstructor.hh"
+#include "G4BosonConstructor.hh"
+#include "G4LeptonConstructor.hh"
+#include "G4MesonConstructor.hh"
+#include "G4BaryonConstructor.hh"
+#include "G4ShortLivedConstructor.hh"
+#include "G4IonTable.hh"
 
 
 G4ThreadLocal G4Cerenkov* CYGNOPhysicsList::fCerenkovProcess = 0;
@@ -121,7 +130,8 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   //EM Physics
   //RegisterPhysics(new G4EmStandardPhysics());
   RegisterPhysics(new G4EmStandardPhysics_option4(verbose));//recommended option
-  //RegisterPhysics(new G4EmDNAPhysics_option2(verbose));//GEANT4-DNA 
+  G4cout << "####### set EmStandardPhysics_option4 ##########" << G4endl;  
+//RegisterPhysics(new G4EmDNAPhysics_option2(verbose));//GEANT4-DNA 
   //RegisterPhysics(new G4EmStandardPhysicsSS(verbose));//single scattering
   //RegisterPhysics(new G4EmPenelopePhysics());
   //RegisterPhysics(new G4EmLivermorePhysics());
@@ -196,52 +206,71 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   //RegisterPhysics( new G4IonQMDPhysics(verbose));  
   //RegisterPhysics( new G4IonElasticPhysics(verbose));
 
-  //Low energy ion
-  auto particleIterator=GetParticleIterator();
-  particleIterator->reset();
-  while( (*particleIterator)() ){
-    G4ParticleDefinition* particle = particleIterator->value();
-    G4ProcessManager* pmanager = particle->GetProcessManager();
-    G4String particleName = particle->GetParticleName();
-    G4String particleType = particle->GetParticleType();
-    G4double charge = particle->GetPDGCharge();
+//  //construct all particles for iterator
+//  G4IonConstructor ionConstructor;
+//  ionConstructor.ConstructParticle();
+//
+//  G4BosonConstructor bosonConstructor;
+//  bosonConstructor.ConstructParticle();
+//
+//  G4LeptonConstructor leptonConstructor;
+//  leptonConstructor.ConstructParticle();
+//
+//  G4MesonConstructor mesonConstructor;
+//  mesonConstructor.ConstructParticle();
+//
+//  G4BaryonConstructor baryonConstructor;
+//  baryonConstructor.ConstructParticle();
+//
+//  G4ShortLivedConstructor shortLivedConstructor;
+//  shortLivedConstructor.ConstructParticle();
+//  
 
-    if(particleName == "alpha"      ||
-             particleName == "deuteron"   ||
-             particleName == "triton"     ||
-             particleName == "He3")
-      {
-        //multiple scattering
-        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
-
-        //ionisation
-        G4ionIonisation* ionIoni = new G4ionIonisation();
-        ionIoni->SetEmModel(new G4BetheBlochModel());
-        ionIoni->SetStepFunction(1e-5, 0.1*um);
-        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
-      }
-    else if (particleName == "GenericIon")
-      {
-        // OBJECT may be dynamically created as either a GenericIon or nucleus
-        // G4Nucleus exists and therefore has particle type nucleus
-        // genericIon:
-
-        //multiple scattering
-        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
-
-        //ionisation
-        G4ionIonisation* ionIoni = new G4ionIonisation();
-        ionIoni->SetEmModel(new G4IonParametrisedLossModel());
-        ionIoni->SetStepFunction(1e-5, 0.1*um);
-        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
-      }
+  
+//  while( (*particleIterator)() ){
+//    G4ParticleDefinition* particle = particleIterator->value();
+//    G4ProcessManager* pmanager = particle->GetProcessManager();
+//    G4String particleName = particle->GetParticleName();
+//    G4String particleType = particle->GetParticleType();
+//    G4double charge = particle->GetPDGCharge();
+//
+//    if(particleName == "alpha"      ||
+//             particleName == "deuteron"   ||
+//             particleName == "triton"     ||
+//             particleName == "He3")
+//      {
+//        //multiple scattering
+//        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+//
+//        //ionisation
+//        G4ionIonisation* ionIoni = new G4ionIonisation();
+//        ionIoni->SetEmModel(new G4BetheBlochModel());
+//        ionIoni->SetStepFunction(1e-5, 0.1*um);
+//        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+//      }
+//    else if (particleName == "GenericIon")
+//      {
+//        // OBJECT may be dynamically created as either a GenericIon or nucleus
+//        // G4Nucleus exists and therefore has particle type nucleus
+//        // genericIon:
+//
+//        //multiple scattering
+//        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+//
+//        //ionisation
+//        G4ionIonisation* ionIoni = new G4ionIonisation();
+//        ionIoni->SetEmModel(new G4IonParametrisedLossModel());
+//        G4cout << "############# setting step funcion for ions #############" << G4endl;
+//	ionIoni->SetStepFunction(1e-5, 0.1*um);
+//        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+//      }
 /*else if (particleName == "mu+" || particleName == "mu-")
 {
 G4MuonNuclearProcess* MNP = new G4MuonNuclearProcess();
 pmanager->AddProcess(MNP);
 }*/
 
-  }
+//  }
   // Neutron tracking cut --> not by default
   // RegisterPhysics( new G4NeutronTrackingCut(verbose));
 
@@ -268,7 +297,8 @@ pmanager->AddProcess(MNP);
   cutForElectron  = defaultCutValue;
   cutForPositron  = defaultCutValue;
 
-
+  G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV, 1*GeV);
+  //there is also a specific setting in DetectorConstruction for the CYGNO gas  
   
 }
 
@@ -399,7 +429,7 @@ void CYGNOPhysicsList::SetCuts()
   SetCutValue(cutForGamma, "gamma");
   SetCutValue(cutForElectron, "e-");
   SetCutValue(cutForPositron, "e+");
-  
+ 
   if (verboseLevel>0) DumpCutValuesTable();
   
 }  

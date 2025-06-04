@@ -13,6 +13,9 @@
 #include "G4Gamma.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4EmCalculator.hh"
+#include "G4ParticleTable.hh"
+#include "G4Material.hh"
 
 CYGNOSteppingAction::CYGNOSteppingAction(CYGNODetectorConstruction* det)://, CYGNOEventAction* evt ):
 fDetector(det) {}//, fEventAction(evt){ }
@@ -37,7 +40,7 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
     {
       //G4cout <<"StepNo "<<StepNo<<" secondary nucleus "<<fTrack->GetDefinition()->GetParticleName()<<G4endl;
       G4double energy = fTrack->GetKineticEnergy();
-      if (energy < 0.1*keV) // FIXME: check this value of energy
+      if (energy < 0.001*keV) // FIXME: check this value of energy
         {
           G4Ions* ion = (G4Ions*) fTrack->GetDefinition();
           G4double lifetime = ion->GetPDGLifeTime();
@@ -74,7 +77,18 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
         }
     }
 
-  
+   //FIXME: verbose to check QF calculated by geant4
+   //if (fStep->GetTrack()->GetDefinition()->GetParticleType() == "nucleus") {
+   //    G4double E_total = fStep->GetTotalEnergyDeposit();
+   //    G4double E_nonion = fStep->GetNonIonizingEnergyDeposit();
+   //    G4double E_ion = E_total - E_nonion;
+   //    
+   //    G4cout << "Nucleus step: total = " << E_total/keV
+   //           << " keV, non-ionizing = " << E_nonion/keV
+   //           << " keV, ionizing = " << E_ion/keV << " keV" << G4endl;
+   //}
+   
+
   G4int trackID = fTrack->GetTrackID();
   G4int preVolNo = analysis->GetPreVolNo(fTrack);
   G4int nextVolNo = analysis->GetVolNo(fTrack);
@@ -159,7 +173,62 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
 	  G4LorentzVector fourMom = fTrack->GetDynamicParticle()->Get4Momentum();
           G4double kinE_prestep = fStep->GetPreStepPoint()->GetKineticEnergy();
 	  analysis->RegisterIon(A, Z, pdg, volNo, copyNo, trackID, fTrack->GetParentID(), postStpPt, fourMom, kinE_prestep);
+          G4String procName = "None";
+    G4StepPoint* prePoint = fStep->GetPreStepPoint();
+    G4StepPoint* postPoint = fStep->GetPostStepPoint();
+    if (postPoint->GetProcessDefinedStep()) {
+        procName = postPoint->GetProcessDefinedStep()->GetProcessName();
+    }
+   
+    //FIXME: verbose to check reason for track termination
+    //    G4cout 
+    //    << "Step #" << fTrack->GetCurrentStepNumber()
+    //    << ", Pos: " << fTrack->GetPosition()
+    //    << ", Ekin: " << fTrack->GetKineticEnergy()/keV << " keV"
+    //    << ", Edep: " << fStep->GetTotalEnergyDeposit()/keV << " keV"
+    //    << ", StepLength: " << fStep->GetStepLength()/mm << " mm"
+    //    << ", Proc: " << procName
+    //    << ", TrackStatus: " << postPoint->GetStepStatus()
+    //    << G4endl;
+    //
+    //// If track is killed or stopped, log reason
+    //if (fTrack->GetTrackStatus() == fStopAndKill) {
+    //    G4cout << "Track terminated at step " 
+    //           << fTrack->GetCurrentStepNumber() 
+    //           << ", reason: fStopAndKill" 
+    //           << G4endl;
+    //} 
+       if (fTrack->GetTrackStatus() == fStopAndKill) {
+        G4cout << "Track killed at: " << fTrack->GetPosition()
+               << ", particle: " << fTrack->GetDefinition()->GetParticleName()
+               << ", energy: " << fTrack->GetKineticEnergy()/keV << " keV"
+               << G4endl;
+
+        // Optional: print process that caused it
+        const G4VProcess* proc = fStep->GetPostStepPoint()->GetProcessDefinedStep();
+        if (proc) {
+            G4cout << "Killed by process: " << proc->GetProcessName() << G4endl;
+        } else {
+            G4cout << "No process recorded — may be geometry boundary or user kill." << G4endl;
         }
+       }
+
+    G4double energy = fTrack->GetKineticEnergy();
+    G4String particleName = fTrack->GetParticleDefinition()->GetParticleName();
+    G4String materialName = fTrack->GetMaterial()->GetName();
+
+    static G4EmCalculator emCal;
+    G4double range = emCal.GetRange(energy, particleName, materialName);
+      
+    // You can use this to compare with step length
+    G4double stepLength = fStep->GetStepLength();  
+    // Ion Ionisation kills the track below 1 keV (could not figure out where is coded?)
+//    if (fTrack->GetKineticEnergy()/keV <= 1.07 ) { //choose the threshold because of the step loss function 
+//        G4cout << "remaining range = " << range/mm << " mm        step lenght = " << stepLength/mm << " mm" << G4endl;
+//	    fTrack->SetTrackStatus(fStopAndKill);
+//    }
+    	
+	}
     }
 
   // electrons

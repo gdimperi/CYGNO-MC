@@ -47,6 +47,9 @@ class CYGNOHit : public G4VHit
       G4double GetLength(){ return trackLen; };
 
       void ApplyQuenching();
+      void ApplyQuenchingAvg();
+      void SetIonizingEnergy(G4double val) { fIonizingEnergy = val; }
+      G4double GetIonizingEnergy() const { return fIonizingEnergy; }
        
   private:
  
@@ -60,7 +63,10 @@ class CYGNOHit : public G4VHit
       G4double      edep;
       G4ThreeVector pos;
       G4double      trackLen;
+      G4double fIonizingEnergy = 0.;  // stored in keV
  };
+
+
 
 typedef G4THitsCollection<CYGNOHit> CYGNOHitsCollection;
 

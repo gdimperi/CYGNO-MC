@@ -5,6 +5,9 @@
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
 #include "G4ios.hh"
+#include "G4EmCalculator.hh"
+#include "G4ParticleTable.hh"
+#include "G4Material.hh"
 
 CYGNOSensitiveDetector::CYGNOSensitiveDetector(G4String name)
   :G4VSensitiveDetector(name), fHCID(-1)
@@ -45,8 +48,30 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
   newHit->SetGlobalTime  (aStep->GetTrack()->GetGlobalTime()/s);
   // kinetic energy in keV
   newHit->SetKineticEne  (aStep->GetPreStepPoint()->GetKineticEnergy()/keV);
-  // step length in mm
+    G4double energy = aStep->GetTrack()->GetKineticEnergy();
+    G4String particleName = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
+    G4String materialName = aStep->GetTrack()->GetMaterial()->GetName();
+
+    static G4EmCalculator emCal;
+    G4double range = emCal.GetRange(energy, particleName, materialName);
+      
+    // You can use this to compare with step length
+    G4double stepLength = aStep->GetStepLength();  
+//    if (aStep->GetTrack()->GetKineticEnergy()/keV <= 1.07 ) { //choose the threshold because of the step loss function 
+//  // step length in mm
+//  newHit->SetLength  (range/mm);
+//   G4cout << "Sensitive det class: remaining range = " << newHit->GetLength() << " mm" << G4endl;
+//    }
+//    else{
   newHit->SetLength  (aStep->GetStepLength()/mm);
+    
+//    }
+  G4double eDepTotal = aStep->GetTotalEnergyDeposit();
+  G4double eDepNonIon = aStep->GetNonIonizingEnergyDeposit();
+  G4double eDepIon = eDepTotal - eDepNonIon;
+  
+  // Save eDepIon in your CYGNOHit object (in keV)
+  newHit->SetIonizingEnergy(eDepIon/keV);
 
    
   if (aStep->GetPreStepPoint()->GetProcessDefinedStep() != NULL) {

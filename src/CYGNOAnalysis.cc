@@ -263,6 +263,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     d_list.push_back(std::make_pair("energyDep_QF",&energyDep_QF));
     d_list.push_back(std::make_pair("energyDep_NR",&energyDep_NR));
     d_list.push_back(std::make_pair("energyDep_NRQF",&energyDep_NRQF));
+    d_list.push_back(std::make_pair("energyDep_NRQF_geant",&energyDep_NRQF_geant));
 
 
     f_list.clear();
@@ -319,6 +320,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
       analysisManager->CreateNtupleDColumn("energyDep_hits",v_energyDep_hits);
       analysisManager->CreateNtupleDColumn("energyDep_hits_NR",v_energyDep_hits_NR);
       analysisManager->CreateNtupleDColumn("energyDep_hits_NRQF",v_energyDep_hits_NRQF);
+      analysisManager->CreateNtupleDColumn("energyDep_hits_NRQF_geant",v_energyDep_hits_NRQF_geant);
       
      }  
     if(fRegisterOn){
@@ -501,6 +503,7 @@ void CYGNOAnalysis::BeginOfEvent(const G4Event *event, CYGNODetectorConstruction
     v_energyDep_hits.clear();
     v_energyDep_hits_NR.clear();
     v_energyDep_hits_NRQF.clear();
+    v_energyDep_hits_NRQF_geant.clear();
     v_len_hits.clear();    
 
     v_A_ion.clear();
@@ -858,6 +861,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
     energyDep=0.;
     energyDep_NR=0.;
     energyDep_NRQF=0.;
+    energyDep_NRQF_geant=0.;
     G4ThreeVector tempvec;
 
 
@@ -888,17 +892,27 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_z_hits.push_back(tempvec.getZ());
                     v_len_hits.push_back((*CYGNOHC)[i]->GetLength());
 		    v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());   //fill with raw energy
+		    v_energyDep_hits_NRQF_geant.push_back((*CYGNOHC)[i]->GetIonizingEnergy());   //fill with ionising energy calculated by geant4
 
 		    G4int pdg = (int)(*CYGNOHC)[i]->GetParticleID(); 
 		    if(pdg > 1000000000) {
 		        // Ion => fill NR (raw) and NRQF (quenched)
 		        // store raw deposit in energyDep_hits_NR
 		        v_energyDep_hits_NR.push_back(rawEdep);
+			//G4cout << "kin ene: " << (*CYGNOHC)[i]->GetKineticEne() << G4endl;
 		        // apply QF for the same hit
-		        (*CYGNOHC)[i]->ApplyQuenching(); 
+		        if ((*CYGNOHC)[i]->GetKineticEne() <= 1.){
+  				//G4cout << "######## Applying QF average when track goes <1 keV (due to kill track at 1 keV) ############" << G4endl; 
+				(*CYGNOHC)[i]->ApplyQuenchingAvg(); 
+			}
+			else{
+  				//G4cout << "######## Applying dQFdE ############" << G4endl; 
+				(*CYGNOHC)[i]->ApplyQuenching(); 
+			}
+		        //G4cout << "raw ene " << rawEdep << "\t corrected with QF\t" << (*CYGNOHC)[i]->GetEdep() <<"\tQF\t"<< (*CYGNOHC)[i]->GetEdep()/rawEdep  << G4endl;
 		        // store the now‐modified deposit
 		        v_energyDep_hits_NRQF.push_back((*CYGNOHC)[i]->GetEdep());
-		    
+
 		        // optional: restore the original edep if you do NOT want
 		        // to leave it permanently changed inside the hit object
 		        // (*CYGNOHC)[i]->SetEdep(rawEdep);
@@ -920,8 +934,8 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
 	       // Apply QF derivative step by step for nuclear hits
 	       energyDep_NR += rawEdep;
 
-	       //(*CYGNOHC)[i]->ApplyQuenching();                    
 	       energyDep_NRQF += (*CYGNOHC)[i]->GetEdep();        
+	       energyDep_NRQF_geant += (*CYGNOHC)[i]->GetIonizingEnergy();        
 	       energyDep_QF += (*CYGNOHC)[i]->GetEdep();
 	    }
 	    else{

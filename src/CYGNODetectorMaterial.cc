@@ -16,7 +16,7 @@ CYGNODetectorMaterial::CYGNODetectorMaterial():
 }
 
 
-void CYGNODetectorMaterial::ConstructMaterials(){
+    void CYGNODetectorMaterial::ConstructMaterials(){
 
     //**********************************************************************
     //   DEFINITION OF MATERIALS

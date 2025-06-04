@@ -177,10 +177,12 @@ private:
   std::vector<double>  v_energyDep_hits;
   std::vector<double>  v_energyDep_hits_NR;
   std::vector<double>  v_energyDep_hits_NRQF;
+  std::vector<double>  v_energyDep_hits_NRQF_geant;
   G4double  energyDep=0;
   G4double  energyDep_QF=0;
   G4double  energyDep_NR=0;
   G4double  energyDep_NRQF=0;
+  G4double  energyDep_NRQF_geant=0;
     
   //ions
   std::vector<G4int>         v_A_ion;

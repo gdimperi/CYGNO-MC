@@ -112,6 +112,20 @@ void CYGNOHit::ApplyQuenching()
   }
   edep *= dRdE;
 }
+void CYGNOHit::ApplyQuenchingAvg()
+{
+  // Only apply quenching if the hit belongs to a nucleus.
+  // (Here we check the particleID for helium, carbon, or fluorine.)
+  double QFavg = 1.0;
+  if (particleID == 1000020040) {         // Helium ion (example PDG code)
+    QFavg = QF_helium(kinEne);
+  } else if (particleID == 1000060120) {  // Carbon ion (example PDG code)
+    QFavg = QF_carbon(kinEne);
+  } else if (particleID == 1000090190) {  // Fluorine ion (example PDG code)
+    QFavg = QF_flor(kinEne);
+  }
+  edep *= QFavg;
+}
 
 // --- QF functions for different ions ---
 
