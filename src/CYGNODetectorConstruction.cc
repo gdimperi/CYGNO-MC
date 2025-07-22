@@ -864,31 +864,33 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4Box* CYGNO_box = new G4Box(name_solid,0.5*CYGNO_x,0.5*CYGNO_y,0.5*CYGNO_z);
     CYGNO_log = new G4LogicalVolume(CYGNO_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
     
-    //G4double maxStep = 0.1*mm;
-    //fStepLimit = new G4UserLimits(maxStep);
-    //CYGNO_log->SetUserLimits(fStepLimit); 
+    G4double maxStep = 0.1*mm;
+    fStepLimit = new G4UserLimits(maxStep);
+    CYGNO_log->SetUserLimits(fStepLimit); 
 
-    G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV, 100*GeV);
-    G4EmParameters* emParams = G4EmParameters::Instance();
-    emParams->SetMinEnergy(10 * eV);
-    emParams->SetLowestElectronEnergy(10 * eV);
+    //TEST - track low energy ions
+    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV, 100*GeV);
+    //G4EmParameters* emParams = G4EmParameters::Instance();
+    //emParams->SetMinEnergy(10 * eV);
+    //emParams->SetLowestElectronEnergy(10 * eV);
+    //END TEST - not limited to cygno gas and increases exponentially computation load
 
-    // Create a production cuts object
-    G4ProductionCuts* cuts = new G4ProductionCuts();
+    //// Create a production cuts object
+    //G4ProductionCuts* cuts = new G4ProductionCuts();
 
-    // Set range cut values for each particle type
-    cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("gamma"));
-    cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e-"));
-    cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e+"));
-    //probably not working for alpha ain ions....
-    cuts->SetProductionCut(0.1*um, G4ProductionCuts::GetIndex("alpha"));
-    cuts->SetProductionCut(0.1*um, G4ProductionCuts::GetIndex("GenericIon"));
+    //// Set range cut values for each particle type
+    //cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("gamma"));
+    //cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e-"));
+    //cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e+"));
+    ////probably not working for alpha ain ions....
+    //cuts->SetProductionCut(0.1*um, G4ProductionCuts::GetIndex("alpha"));
+    //cuts->SetProductionCut(0.1*um, G4ProductionCuts::GetIndex("GenericIon"));
 
 
-    // Apply to your logical volume (or world volume)
-    G4Region* region = new G4Region("GasRegion");
-    region->AddRootLogicalVolume(CYGNO_log);
-    region->SetProductionCuts(cuts);
+    //// Apply to your logical volume (or world volume)
+    //G4Region* region = new G4Region("GasRegion");
+    //region->AddRootLogicalVolume(CYGNO_log);
+    //region->SetProductionCuts(cuts);
 
 
     //CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes(CYGNO_log->GetMaterial()->GetName()));
