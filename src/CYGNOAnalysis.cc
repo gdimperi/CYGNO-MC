@@ -891,7 +891,7 @@ void CYGNOAnalysis::EndOfEvent(const G4Event *event)
                     v_y_hits.push_back(tempvec.getY());
                     v_z_hits.push_back(tempvec.getZ());
                     v_len_hits.push_back((*CYGNOHC)[i]->GetLength());
-		    v_energyDep_hits.push_back((*CYGNOHC)[i]->GetEdep());   //fill with raw energy
+		    v_energyDep_hits.push_back(rawEdep);   //fill with raw energy
 		    v_energyDep_hits_NRQF_geant.push_back((*CYGNOHC)[i]->GetIonizingEnergy());   //fill with ionising energy calculated by geant4
 
 		    G4int pdg = (int)(*CYGNOHC)[i]->GetParticleID(); 
