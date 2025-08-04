@@ -301,6 +301,10 @@ void CYGNOSteppingAction::UserSteppingAction(const G4Step* fStep)
         }
     }
 
-  if(StepNo >= 10000) fTrack->SetTrackStatus(fStopAndKill);
+  //FIXME for high energy NR
+  if(StepNo >= 50000) {
+    fTrack->SetTrackStatus(fStopAndKill);
+    G4cout << "#### WARNING: killng track because of too many steps! ######" << G4endl;
+  }
 }
 
