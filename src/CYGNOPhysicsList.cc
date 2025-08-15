@@ -297,7 +297,8 @@ pmanager->AddProcess(MNP);
   cutForElectron  = defaultCutValue;
   cutForPositron  = defaultCutValue;
 
-  G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV, 1*GeV);
+  //FIXME: check if  number of hits improves...
+  //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV, 1*GeV);
   //there is also a specific setting in DetectorConstruction for the CYGNO gas  
   
 }
