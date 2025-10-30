@@ -55,10 +55,12 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
   }
 
   // event summary
-  G4double totEnergy         = 0.;
-  G4double totEnergyNR       = 0.;
-  G4double hitEnergy         = 0.;
-  G4double hitEnergy_ion     = 0.;
+  G4double  energyDep=0.;
+  G4double  energyDep_QF=0.;
+  G4double  energyDep_QF_geant=0.;
+  G4double  energyDep_NR=0.;
+  G4double  energyDep_NRQF=0.;
+  G4double  energyDep_NRQF_geant=0.;
 
   v_pdgID_hits.clear();
   v_tracklen_hits.clear();
@@ -66,7 +68,11 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
   v_py_particle.clear();
   v_pz_particle.clear();
   v_energyDep_hits.clear();
-  v_energyDep_ion_hits.clear();
+  v_energyDep_hits_QF.clear();
+  v_energyDep_hits_QF_geant.clear();
+  v_energyDep_hits_NR.clear();
+  v_energyDep_hits_NRQF.clear();
+  v_energyDep_hits.clear();
   v_x_hits.clear();
   v_y_hits.clear();
   v_z_hits.clear();
@@ -84,27 +90,75 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
       
       for (G4int i=0; i<CYGNO_hits; i++) {
         
-        hitEnergy         = (*CYGNOHC)[i]->GetEdep();
-        hitEnergy_ion     = (*CYGNOHC)[i]->GetEdep_ion();
-        totEnergy        += hitEnergy;
-        
         v_pdgID_hits.push_back((*CYGNOHC)[i]->GetParticleID());
         v_tracklen_hits.push_back((*CYGNOHC)[i]->GetLength());
         v_px_particle.push_back((*CYGNOHC)[i]->GetMom().x());
         v_py_particle.push_back((*CYGNOHC)[i]->GetMom().y());
         v_pz_particle.push_back((*CYGNOHC)[i]->GetMom().z());
-        v_energyDep_hits.push_back(hitEnergy);
-        v_energyDep_ion_hits.push_back(hitEnergy_ion);
         v_x_hits.push_back((*CYGNOHC)[i]->GetPos().x());
         v_y_hits.push_back((*CYGNOHC)[i]->GetPos().y());
         v_z_hits.push_back((*CYGNOHC)[i]->GetPos().z());
+        
+	G4double rawEdep = (*CYGNOHC)[i]->GetEdep();
+        v_energyDep_hits.push_back(rawEdep);
+	
+	G4int pdg = (int)(*CYGNOHC)[i]->GetParticleID(); 
+	if(pdg > 1000000000) {
+	    // Ion => fill NR (raw) and NRQF (quenched)
+	    // store raw deposit in energyDep_hits_NR
+	    v_energyDep_hits_NR.push_back(rawEdep);
+	    v_energyDep_hits_NRQF_geant.push_back((*CYGNOHC)[i]->GetIonizingEnergy());   //fill with ionising energy calculated by geant4
+	    v_energyDep_hits_QF_geant.push_back((*CYGNOHC)[i]->GetIonizingEnergy());   //fill with ionising energy calculated by geant4
+	    //G4cout << "kin ene: " << (*CYGNOHC)[i]->GetKineticEne() << G4endl;
+	    // apply QF for the same hit
+	    if ((*CYGNOHC)[i]->GetKineticEne() <= 1.){
+	    	//G4cout << "######## Applying QF average when track goes <1 keV (due to kill track at 1 keV) ############" << G4endl; 
+	    	(*CYGNOHC)[i]->ApplyQuenchingAvg(); 
+	    }
+	    else{
+	    	//G4cout << "######## Applying dQFdE ############" << G4endl; 
+	    	(*CYGNOHC)[i]->ApplyQuenching(); 
+	    }
+	    //G4cout << "raw ene " << rawEdep << "\t corrected with QF\t" << (*CYGNOHC)[i]->GetEdep() <<"\tQF\t"<< (*CYGNOHC)[i]->GetEdep()/rawEdep  << G4endl;
+	    // store the now‐modified deposit
+	    v_energyDep_hits_NRQF.push_back((*CYGNOHC)[i]->GetEdep());
+	    v_energyDep_hits_QF.push_back((*CYGNOHC)[i]->GetEdep());   //fill with corrected energy
 
-        if ((int)(*CYGNOHC)[i]->GetParticleID()>1000000000){
-          totEnergyNR += hitEnergy;
-        }
+	    // optional: restore the original edep if you do NOT want
+	    // to leave it permanently changed inside the hit object
+	    // (*CYGNOHC)[i]->SetEdep(rawEdep);
+	} else {
+	    // Not an ion => fill energyDep_hits, zero in the other two
+	    v_energyDep_hits_NR.push_back(0.0);
+	    v_energyDep_hits_NRQF.push_back(0.0);
+	    v_energyDep_hits_QF.push_back(rawEdep);   //fill with raw energy
+	    v_energyDep_hits_NRQF_geant.push_back(0.0);
+	    v_energyDep_hits_QF_geant.push_back(rawEdep);
+	}
+
+      // sum total energy deposited in hits (no QF)
+	    energyDep += rawEdep;
+	    //if particle releasing energy is an ion (PDG numbering scheme for ions 100ZZZAAAI)
+	    if ((int)(*CYGNOHC)[i]->GetParticleID()>1000000000)
+	    {
+	       // Apply QF derivative step by step for nuclear hits
+	       energyDep_NR += rawEdep;
+
+	       energyDep_NRQF += (*CYGNOHC)[i]->GetEdep();        
+	       energyDep_NRQF_geant += (*CYGNOHC)[i]->GetIonizingEnergy();        
+	       energyDep_QF += (*CYGNOHC)[i]->GetEdep();
+	       energyDep_QF_geant +=  (*CYGNOHC)[i]->GetIonizingEnergy();
+	    }
+	    else{
+	       energyDep_QF += rawEdep;
+	       energyDep_QF_geant +=  rawEdep;
+	    }
       }
-      man->FillNtupleDColumn(2,4,totEnergy);
-      man->FillNtupleDColumn(2,5,totEnergyNR);
+      man->FillNtupleDColumn(2,4,energyDep);
+      man->FillNtupleDColumn(2,5,energyDep_QF);
+      man->FillNtupleDColumn(2,6,energyDep_NR);
+      man->FillNtupleDColumn(2,7,energyDep_NRQF);
+      man->FillNtupleDColumn(2,8,energyDep_NRQF_geant);
       man->AddNtupleRow(2);
     }
   }

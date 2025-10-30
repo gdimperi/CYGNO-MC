@@ -5,6 +5,7 @@
 #include "G4EmParameters.hh"
 #include "G4PhysListFactory.hh"
 #include "G4MTRunManager.hh"
+#include "G4RunManagerFactory.hh"
 
 #include "G4Timer.hh"
 #include "Randomize.hh"
@@ -42,8 +43,11 @@ int main(int argc,char** argv)
   //  G4VSteppingVerbose::SetInstance(verbosity);
   
   // Run manager
-  G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
+//  G4MTRunManager* runManager = new G4MTRunManager;
+//  runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
+//FIXME - try single thread
+auto* runManager =
+    G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
 
   // User Initialization classes (mandatory)
   //

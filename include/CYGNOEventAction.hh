@@ -24,7 +24,11 @@ class CYGNOEventAction : public G4UserEventAction
   std::vector<G4double>& Get_py_particle() { return v_py_particle; };
   std::vector<G4double>& Get_pz_particle() { return v_pz_particle; };
   std::vector<G4double>& Get_energyDep_hits() { return v_energyDep_hits; };
-  std::vector<G4double>& Get_energyDep_ion_hits() { return v_energyDep_ion_hits; };
+  std::vector<G4double>& Get_energyDep_QF_hits() { return v_energyDep_hits_QF; };
+  std::vector<G4double>& Get_energyDep_QF_geant_hits() { return v_energyDep_hits_QF_geant; };
+  std::vector<G4double>& Get_energyDep_NR_hits() { return v_energyDep_hits_NR; };
+  std::vector<G4double>& Get_energyDep_NR_QF_hits() { return v_energyDep_hits_NRQF; };
+  std::vector<G4double>& Get_energyDep_NR_QF_geant_hits() { return v_energyDep_hits_NRQF_geant; };
   std::vector<G4double>& Get_x_hits() { return v_x_hits; };
   std::vector<G4double>& Get_y_hits() { return v_y_hits; };
   std::vector<G4double>& Get_z_hits() { return v_z_hits; };
@@ -42,7 +46,11 @@ class CYGNOEventAction : public G4UserEventAction
   std::vector<G4double> v_py_particle;
   std::vector<G4double> v_pz_particle;
   std::vector<G4double> v_energyDep_hits;
-  std::vector<G4double> v_energyDep_ion_hits;
+  std::vector<G4double>   v_energyDep_hits_QF;
+  std::vector<G4double>   v_energyDep_hits_QF_geant;
+  std::vector<G4double>   v_energyDep_hits_NR;
+  std::vector<G4double>   v_energyDep_hits_NRQF;
+  std::vector<G4double>   v_energyDep_hits_NRQF_geant;
   std::vector<G4double> v_x_hits;
   std::vector<G4double> v_y_hits;
   std::vector<G4double> v_z_hits;

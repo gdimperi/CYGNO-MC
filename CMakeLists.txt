@@ -67,4 +67,7 @@ set(CMAKE_BUILD_TYPE Debug)
 #
 install(TARGETS CYGNO DESTINATION bin)
 
+find_package(ROOT REQUIRED)
+include_directories(${ROOT_INCLUDE_DIRS})
+target_link_libraries(CYGNO ${ROOT_LIBRARIES})
 

@@ -192,46 +192,49 @@ CYGNOPhysicsList::CYGNOPhysicsList(G4int verbose, G4String LEN_model, G4String H
   //RegisterPhysics( new G4IonQMDPhysics(verbose));  
   //RegisterPhysics( new G4IonElasticPhysics(verbose));
 
-  //Low energy ion
-  auto particleIterator=GetParticleIterator();
-  particleIterator->reset();
-  while( (*particleIterator)() ){
-    G4ParticleDefinition* particle = particleIterator->value();
-    G4ProcessManager* pmanager = particle->GetProcessManager();
-    G4String particleName = particle->GetParticleName();
-    G4String particleType = particle->GetParticleType();
-    G4double charge = particle->GetPDGCharge();
+/* this part is ignored when using option4
+//  //Low energy ion
+//  auto particleIterator=GetParticleIterator();
+//  particleIterator->reset();
+//  while( (*particleIterator)() ){
+//    G4ParticleDefinition* particle = particleIterator->value();
+//    G4ProcessManager* pmanager = particle->GetProcessManager();
+//    G4String particleName = particle->GetParticleName();
+//    G4String particleType = particle->GetParticleType();
+//    G4double charge = particle->GetPDGCharge();
+//
+//    if(particleName == "alpha"      ||
+//             particleName == "deuteron"   ||
+//             particleName == "triton"     ||
+//             particleName == "He3")
+//      {
+//        //multiple scattering
+//        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+//
+//        //ionisation
+//        G4ionIonisation* ionIoni = new G4ionIonisation();
+//        ionIoni->SetEmModel(new G4BetheBlochModel());
+//        ionIoni->SetStepFunction(1e-5, 0.1*um);
+//        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+//      }
+//    else if (particleName == "GenericIon")
+//      {
+//        // OBJECT may be dynamically created as either a GenericIon or nucleus
+//        // G4Nucleus exists and therefore has particle type nucleus
+//        // genericIon:
+//
+//        //multiple scattering
+//        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
+//
+//        //ionisation
+//        G4ionIonisation* ionIoni = new G4ionIonisation();
+//        ionIoni->SetEmModel(new G4IonParametrisedLossModel());
+//        ionIoni->SetStepFunction(1e-5, 0.1*um);
+//        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
+//      }
+//  }
+*/
 
-    if(particleName == "alpha"      ||
-             particleName == "deuteron"   ||
-             particleName == "triton"     ||
-             particleName == "He3")
-      {
-        //multiple scattering
-        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
-
-        //ionisation
-        G4ionIonisation* ionIoni = new G4ionIonisation();
-        ionIoni->SetEmModel(new G4BetheBlochModel());
-        ionIoni->SetStepFunction(1e-5, 0.1*um);
-        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
-      }
-    else if (particleName == "GenericIon")
-      {
-        // OBJECT may be dynamically created as either a GenericIon or nucleus
-        // G4Nucleus exists and therefore has particle type nucleus
-        // genericIon:
-
-        //multiple scattering
-        pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
-
-        //ionisation
-        G4ionIonisation* ionIoni = new G4ionIonisation();
-        ionIoni->SetEmModel(new G4IonParametrisedLossModel());
-        ionIoni->SetStepFunction(1e-5, 0.1*um);
-        pmanager->AddProcess(ionIoni,                   -1, 2, 2);
-      }
-  }
   // Neutron tracking cut --> not by default
   // RegisterPhysics( new G4NeutronTrackingCut(verbose));
 

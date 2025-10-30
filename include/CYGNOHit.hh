@@ -49,7 +49,12 @@ class CYGNOHit : public G4VHit
       G4ThreeVector GetPos(){ return pos; };
       G4double GetLength(){ return trackLen; };
       G4ThreeVector GetMom(){ return momentum; };
-       
+      
+      void ApplyQuenching();
+      void ApplyQuenchingAvg();
+      void SetIonizingEnergy(G4double val) { fIonizingEnergy = val; }
+      G4double GetIonizingEnergy() const { return fIonizingEnergy; }
+
   private:
  
       G4int         parentID;
@@ -64,7 +69,8 @@ class CYGNOHit : public G4VHit
       G4ThreeVector pos;
       G4double      trackLen;
       G4ThreeVector momentum;
- };
+      G4double fIonizingEnergy = 0.; // stored in keV	 
+};
 
 typedef G4THitsCollection<CYGNOHit> CYGNOHitsCollection;
 

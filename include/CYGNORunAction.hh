@@ -24,7 +24,7 @@ class CYGNORunAction : public G4UserRunAction
 
   private:
 
-  void Book();
+  void Book(const G4Run*);
   
   CYGNORunActionMessenger* fMessenger;  
   CYGNODetectorConstruction* fDetector;

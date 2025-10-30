@@ -47,8 +47,14 @@ G4bool CYGNOSensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
   newHit->SetKineticEne  (aStep->GetPreStepPoint()->GetKineticEnergy()/keV);
   // step length in mm
   newHit->SetLength      (aStep->GetStepLength()/mm);
+  
+  G4double eDepTotal = aStep->GetTotalEnergyDeposit();
+  G4double eDepNonIon = aStep->GetNonIonizingEnergyDeposit();
+  G4double eDepIon = eDepTotal - eDepNonIon;
 
-   
+  // Save eDepIon in your CYGNOHit object (in keV)
+  newHit->SetIonizingEnergy(eDepIon/keV);
+
   if (aStep->GetPreStepPoint()->GetProcessDefinedStep() != NULL) {
     newHit->SetProcessIni  (aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName());
   }

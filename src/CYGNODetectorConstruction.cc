@@ -826,10 +826,11 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     name_solid=name_phys+"_solid";
     G4Box* CYGNO_box = new G4Box(name_solid,0.5*CYGNO_x,0.5*CYGNO_y,0.5*CYGNO_z);
     CYGNO_log = new G4LogicalVolume(CYGNO_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
-    
-    G4double maxStep = 1*um;
-    fStepLimit = new G4UserLimits(maxStep);
-    CYGNO_log->SetUserLimits(fStepLimit); 
+  
+//FIXME remove step limiter    
+//    G4double maxStep = 1*um;
+//    fStepLimit = new G4UserLimits(maxStep);
+//    CYGNO_log->SetUserLimits(fStepLimit); 
 
     //CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes(CYGNO_log->GetMaterial()->GetName()));
     CYGNO_log->SetVisAttributes(CYGNOMaterials->VisAttributes("CYGNO_gas"));
