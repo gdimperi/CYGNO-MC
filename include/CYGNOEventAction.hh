@@ -3,6 +3,7 @@
 
 #include "G4UserEventAction.hh"
 #include "CYGNORunAction.hh"
+//#include "CYGNOAnalysis.hh"
 
 class G4Event;
 class CYGNODetectorConstruction;
@@ -33,6 +34,7 @@ class CYGNOEventAction : public G4UserEventAction
   std::vector<G4double>& Get_y_hits() { return v_y_hits; };
   std::vector<G4double>& Get_z_hits() { return v_z_hits; };
 
+
   private: 
   CYGNODetectorConstruction* fDetector;
 
@@ -45,7 +47,7 @@ class CYGNOEventAction : public G4UserEventAction
   std::vector<G4double> v_px_particle;
   std::vector<G4double> v_py_particle;
   std::vector<G4double> v_pz_particle;
-  std::vector<G4double> v_energyDep_hits;
+  std::vector<G4double> v_energyDep_hits; 
   std::vector<G4double>   v_energyDep_hits_QF;
   std::vector<G4double>   v_energyDep_hits_QF_geant;
   std::vector<G4double>   v_energyDep_hits_NR;
