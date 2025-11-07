@@ -156,9 +156,10 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
       }
       man->FillNtupleDColumn(2,4,energyDep);
       man->FillNtupleDColumn(2,5,energyDep_QF);
-      man->FillNtupleDColumn(2,6,energyDep_NR);
-      man->FillNtupleDColumn(2,7,energyDep_NRQF);
-      man->FillNtupleDColumn(2,8,energyDep_NRQF_geant);
+      man->FillNtupleDColumn(2,6,energyDep_QF_geant);
+      man->FillNtupleDColumn(2,7,energyDep_NR);
+      man->FillNtupleDColumn(2,8,energyDep_NRQF);
+      man->FillNtupleDColumn(2,9,energyDep_NRQF_geant);
       
       man->AddNtupleRow(2);
     }
