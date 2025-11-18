@@ -66,6 +66,7 @@ void CYGNORunAction::Book()
   man->CreateNtupleIColumn("particle_type");
   man->CreateNtupleDColumn("energyDep");
   man->CreateNtupleDColumn("energyDep_QF");
+  man->CreateNtupleDColumn("energyDep_QF_geant");
   man->CreateNtupleDColumn("energyDep_NR");
   man->CreateNtupleDColumn("energyDep_NRQF");
   man->CreateNtupleDColumn("energyDep_NRQF_geant");
