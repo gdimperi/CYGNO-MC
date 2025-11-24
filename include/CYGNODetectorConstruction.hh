@@ -93,20 +93,15 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
 
 
     //CADMesh
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEDetectorBody;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEinternalStructure;
-    //CADMesh * mesh_camera;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEendPMT;
-    //CADMesh * mesh_turns_support;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_FieldRings;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMstretchers;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMsupportStructure;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEMfoils;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_SupportBenchLime;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_Cathode; 
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_LIMEResistors;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_CopperShielding;
-    std::shared_ptr<CADMesh::TessellatedMesh> mesh_WaterShielding;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_Cathode;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_FCSupport;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_FieldCage;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GEM;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_GemFrame;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_InnerShieldCu;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_OuterShieldCu;
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_PEBase; 
+    std::shared_ptr<CADMesh::TessellatedMesh> mesh_PMMABox;
     
     //Building blocks: logic volumes, sizes and positions
     G4ThreeVector  tr_Tot;
@@ -143,21 +138,15 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     
     
     //Solids and meshes
-    G4VSolid * cad_LIMEDetectorBody_solid;
-    G4VSolid * cad_LIMEinternalStructure_solid;
-    //G4VSolid * cad_cameras_all_solid;
-    //G4VSolid * cad_window_solid;
-    G4VSolid * cad_LIMEendPMT_solid;
-    //G4VSolid * cad_turns_support_solid;
-    G4VSolid * cad_GEMstretchers_solid;
-    G4VSolid * cad_GEMsupportStructure_solid;
-    G4VSolid * cad_GEMfoils_solid;
-    G4VSolid * cad_SupportBenchLime_solid;
     G4VSolid * cad_Cathode_solid;
-    G4VSolid * cad_FieldRings_solid;
-    G4VSolid * cad_LIMEResistors_solid;
-    G4VSolid * cad_CopperShielding_solid;
-    G4VSolid * cad_WaterShielding_solid;
+    G4VSolid * cad_FCSupport_solid;
+    G4VSolid * cad_FieldCage_solid;
+    G4VSolid * cad_GEM_solid;
+    G4VSolid * cad_GemFrame_solid;
+    G4VSolid * cad_InnerShieldCu_solid;
+    G4VSolid * cad_OuterShieldCu_solid;
+    G4VSolid * cad_PEBase_solid;
+    G4VSolid * cad_PMMABox_solid;
    
     
     // Logical volumes
@@ -168,44 +157,20 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume* Shield3_log; 
     G4LogicalVolume* AirBox_log;
 
-    G4LogicalVolume * cad_LIMEDetectorBody_logical;
-    G4LogicalVolume * cad_LIMEinternalStructure_logical;
-    //G4LogicalVolume * cad_cameras_all_logical;
-    //G4LogicalVolume * cad_window_logical;
+    G4LogicalVolume * cad_Cathode_logical;
+    G4LogicalVolume * cad_FCSupport_logical;
     G4LogicalVolume * TPC_log;
     G4LogicalVolume * CYGNO_log;
-    G4LogicalVolume * cad_LIMEendPMT_logical;
-    //G4LogicalVolume * cad_turns_support_logical;
-    G4LogicalVolume * cad_GEMstretchers_logical;
-    G4LogicalVolume * cad_GEMsupportStructure_logical;
-    G4LogicalVolume * cad_GEMfoils_logical;
-    G4LogicalVolume * cad_SupportBenchLime_logical;
-    G4LogicalVolume * cad_Cathode_logical;
-    G4LogicalVolume * cad_FieldRings_logical;
-    G4LogicalVolume * cad_LIMEResistors_logical; 
-    G4LogicalVolume * cad_CopperShielding_logical; 
-    G4LogicalVolume * cad_WaterShielding_logical; 
+    G4LogicalVolume * cad_FieldCage_logical;
+    G4LogicalVolume * cad_GEM_logical;
+    G4LogicalVolume * cad_GemFrame_logical;
+    G4LogicalVolume * cad_InnerShieldCu_logical;
+    G4LogicalVolume * cad_OuterShieldCu_logical;
+    G4LogicalVolume * cad_PEBase_logical;
+    G4LogicalVolume * cad_PMMABox_logical;
     G4LogicalVolume * camera_log; 
     G4LogicalVolume * camera_lens_log; 
     G4LogicalVolume * camera_shield_log;
-    G4LogicalVolume * window_log;
-    G4LogicalVolume * ambe_capsule_log;
-    G4LogicalVolume * ambe_source_log;
-    G4LogicalVolume * ambe_shield_log;
-    G4LogicalVolume * ambe_pb_shield_log;
-    G4LogicalVolume * PC_wallLNGS_log;
-    G4LogicalVolume * Al_wallLNGS_log;
-    G4LogicalVolume * PU_wallLNGS_log;
-    G4LogicalVolume * Al_ext_wallLNGS_log;
-    G4LogicalVolume * CR_PC_wallLNGS_log;
-    G4LogicalVolume * CR_Al_wallLNGS_log;
-    G4LogicalVolume * CR_PU_wallLNGS_log;
-    G4LogicalVolume * CR_Al_ext_wallLNGS_log;
-    G4LogicalVolume * LIME_base_log;
-    G4LogicalVolume * DAMA_container_log;
-    G4LogicalVolume * TIR_gallery_log;
-    G4LogicalVolume * Control_Room_log;
-    G4LogicalVolume * Rock_gallery_log;
     
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
@@ -218,45 +183,21 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* Shield3_phys;
     G4VPhysicalVolume* AirBox_phys;
 
-    G4VPhysicalVolume * cad_LIMEDetectorBody_physical;
-    G4VPhysicalVolume * cad_LIMEinternalStructure_physical;
-    //G4VPhysicalVolume * cad_cameras_all_physical;
-    //G4VPhysicalVolume * cad_window_physical;
+    G4VPhysicalVolume * cad_Cathode_physical;
+    G4VPhysicalVolume * cad_FCSupport_physical;
+    G4VPhysicalVolume * cad_FieldCage_physical;
     G4VPhysicalVolume * TPC_phys;
     G4VPhysicalVolume * CYGNO_phys;
-    G4VPhysicalVolume * cad_LIMEendPMT_physical;
-    //G4VPhysicalVolume * cad_turns_support_physical;
-    G4VPhysicalVolume * cad_GEMstretchers_physical;
-    G4VPhysicalVolume * cad_GEMsupportStructure_physical;
-    G4VPhysicalVolume * cad_GEMfoils_physical;
-    G4VPhysicalVolume * cad_SupportBenchLime_physical;
-    G4VPhysicalVolume * cad_Cathode_physical;
-    G4VPhysicalVolume * cad_FieldRings_physical;
-    G4VPhysicalVolume* cad_LIMEResistors_physical;
-    G4VPhysicalVolume* cad_CopperShielding_physical;
-    G4VPhysicalVolume* cad_WaterShielding_physical;
+    G4VPhysicalVolume * cad_GEM_physical;
+    G4VPhysicalVolume * cad_GemFrame_physical;
+    G4VPhysicalVolume * cad_InnerShieldCu_physical;
+    G4VPhysicalVolume * cad_OuterShieldCu_physical;
+    G4VPhysicalVolume * cad_PEBase_physical;
+    G4VPhysicalVolume * cad_PMMABox_physical;
     G4VPhysicalVolume* camera_phys; 
     G4VPhysicalVolume* camera_lens_phys; 
     G4VPhysicalVolume* camera_shield_phys;
-    G4VPhysicalVolume* window_phys;
-    G4VPhysicalVolume* ambe_capsule_phys;
-    G4VPhysicalVolume* ambe_source_phys;
-    G4VPhysicalVolume* ambe_shield_phys;
-    G4VPhysicalVolume* ambe_pb_shield_phys;
     
-    G4VPhysicalVolume * PC_wallLNGS_phys;
-    G4VPhysicalVolume * Al_wallLNGS_phys;
-    G4VPhysicalVolume * PU_wallLNGS_phys;
-    G4VPhysicalVolume * Al_ext_wallLNGS_phys;
-    G4VPhysicalVolume * CR_PC_wallLNGS_phys;
-    G4VPhysicalVolume * CR_Al_wallLNGS_phys;
-    G4VPhysicalVolume * CR_PU_wallLNGS_phys;
-    G4VPhysicalVolume * CR_Al_ext_wallLNGS_phys;
-    G4VPhysicalVolume * LIME_base_phys;
-    G4VPhysicalVolume * DAMA_container_phys; 
-    G4VPhysicalVolume * TIR_gallery_phys; 
-    G4VPhysicalVolume * Control_Room_phys;
-    G4VPhysicalVolume * Rock_gallery_phys;     
 
 
 };
