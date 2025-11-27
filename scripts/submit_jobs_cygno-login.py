@@ -40,9 +40,11 @@ source /nfs/cygno/software/root-v6-22-02-py38-install/bin/thisroot.sh
 #python3.8
 export PYTHONPATH=$PYTHONPATH:/home/$USER/.local/lib/python3.8/site-packages/ 
 ## geant
-source /nfs/cygno/software/geant4-v10.5.1-cygno-install/bin/geant4.sh
+#source /nfs/cygno/software/geant4-v10.5.1-cygno-install/bin/geant4.sh
+source /nfs/cygno/software/geant4-v11.3.1-install/bin/geant4.sh
 ## cadmesh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/nfs/cygno/software/CADMesh-v1.1-cygno-install/lib
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/nfs/cygno/software/CADMesh-v1.1-cygno-install/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/nfs/cygno/software/CADMesh2
 
 
 ## enter workdir

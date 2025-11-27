@@ -526,10 +526,10 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
     }
   
-    //TPC gas
-    G4double TPC_x = 500.*mm;
-    G4double TPC_y = 800.*mm;
-    G4double TPC_z = 980.*mm;
+    //TPC gas //FIXME (overlap with PMMA box)
+    G4double TPC_x = 640.*mm;
+    G4double TPC_y = 940.*mm;
+    G4double TPC_z = 1060.*mm;
       
     name_phys="TPC";
     name_log=name_phys+"_log";
@@ -538,9 +538,9 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     TPC_log = new G4LogicalVolume(TPC_box,CYGNOMaterials->Material("CYGNO_gas"),name_log,0,0,0);
     
     //CYGNO fiducial gas
-    G4double CYGNO_x = 498.*mm;
-    G4double CYGNO_y = 798.*mm;
-    G4double CYGNO_z = 490.*mm;
+    G4double CYGNO_x = 484.*mm;
+    G4double CYGNO_y = 784.*mm;
+    G4double CYGNO_z = 470.*mm;
       
     name_phys="CYGNO";
     name_log=name_phys+"_log";
@@ -627,23 +627,14 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         	    cad_OuterShieldCu_logical,"cad_OuterShieldCu_physical", AirBox_log, false, 0, true);
       cad_PMMABox_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
         	    cad_PMMABox_logical,"cad_PMMABox_physical", AirBox_log, false, 0, true); 
-
-      cad_FieldCage_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-        	    cad_FieldCage_logical,"cad_FieldCage_physical", AirBox_log, false, 0, true);
-      cad_FCSupport_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-        	    cad_FCSupport_logical,"cad_FCSupport_physical", AirBox_log, false, 0, true);
-      cad_GEM_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-        	    cad_GEM_logical,"cad_GEM_physical", AirBox_log, false, 0, true);
-      cad_GemFrame_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
-        	    cad_GemFrame_logical,"cad_GemFrame_physical", AirBox_log, false, 0, true);
     }
     tr=G4ThreeVector(0.,0.,0.);
     //FIXME
     TPC_phys = new G4PVPlacement(G4Transform3D(rot, tr),
       	    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
     
-    tr_CYGNO_gas_1= G4ThreeVector(0.,0.,0.5*CYGNO_z+5.*mm);
-    tr_CYGNO_gas_2= G4ThreeVector(0.,0.,-0.5*CYGNO_z-5.*mm);
+    tr_CYGNO_gas_1= G4ThreeVector(0.,0.,0.5*CYGNO_z+10.*mm);
+    tr_CYGNO_gas_2= G4ThreeVector(0.,0.,-0.5*CYGNO_z-10.*mm);
     //tr_CYGNO_gas_1=G4ThreeVector(TPC_x/2.-CYGNO_x/2.-50.*mm,-20.*mm,0.);
     CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_1), CYGNO_log,"CYGNO_gas", TPC_log, false, 0, true);
     CYGNO_phys = new G4PVPlacement(G4Transform3D(rot,tr_CYGNO_gas_2), CYGNO_log,"CYGNO_gas", TPC_log, false, 1, true);
@@ -653,6 +644,15 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     if (infile.good()){
       //cad_Cathode_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), cad_Cathode_logical,"cad_Cathode_physical", TPC_log, false, 0, true);
       Cathode_phys = new G4PVPlacement(G4Transform3D(rot,tr), Cathode_log,"Cathode", TPC_log, false, 0, true);
+
+      cad_FieldCage_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+        	    cad_FieldCage_logical,"cad_FieldCage_physical", TPC_log, false, 0, true);
+      cad_FCSupport_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+        	    cad_FCSupport_logical,"cad_FCSupport_physical", TPC_log, false, 0, true);
+      cad_GEM_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+        	    cad_GEM_logical,"cad_GEM_physical", TPC_log, false, 0, true);
+      cad_GemFrame_physical = new G4PVPlacement(G4Transform3D(rot_cad,tr_cad), 
+        	    cad_GemFrame_logical,"cad_GemFrame_physical", TPC_log, false, 0, true);
     }  
     
 	//camera_phys = new G4PVPlacement(rotcam0,trcam0,camera_log,"camera",AirBox_log, false, 0, true);

@@ -201,7 +201,7 @@ void CYGNODetectorMaterial::ConstructMaterials(){
     GEM->AddMaterial(Cu, fracMass=0.56);
 
     // Field Cage effective material of 35 um copper strips + 50 um kapton. Strips width 1 cm, gap 1 cm. Take into account holes in kapton 5.5x0.5 cm2 (528 holes per FC side).
-    density = 2.58*g/cm3;
+    density = 2.58*g/cm3; //FIXME (density calculated for the CAD model of 100um tickness)
     FieldCage = new G4Material("FieldCage", density, ncomponents=2);
     FieldCage->AddMaterial(Kapton, fracMass=0.285);
     FieldCage->AddMaterial(Cu, fracMass=0.715);
