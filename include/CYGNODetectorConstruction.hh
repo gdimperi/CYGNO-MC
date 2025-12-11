@@ -16,6 +16,7 @@ class G4UserLimits;
 // USER //
 class CYGNOSensitiveDetector;
 
+#include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4RotationMatrix.hh"
@@ -47,7 +48,14 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     void SetCYGNOShielding(G4String shield) {CYGNOShielding = shield;}
     G4String GetCYGNOShielding() {return CYGNOShielding;}
 
-    void SetGeomPath(G4String path) {CYGNOGeomPath = path;}
+    void SetGeomPath(const G4String& path) {
+      CYGNOGeomPath = path;
+    
+      // Tell Geant4 that geometry must be rebuilt
+      G4RunManager::GetRunManager()->InitializeGeometry();
+      G4RunManager::GetRunManager()->GeometryHasBeenModified();
+    }
+    G4String GetGeomPath() {return CYGNOGeomPath;}
 
     void SetShieldThick0(G4double thick) {thick0 = thick;}
     void SetShieldThick1(G4double thick) {thick1 = thick;}
