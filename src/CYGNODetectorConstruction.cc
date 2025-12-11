@@ -48,8 +48,19 @@
 #include "CADMesh.hh"
 //#include "CYGNOBiasMultiParticleChangeCrossSection.hh"
 
+#include <fstream>
+#include <unistd.h>
+size_t GetMemoryUsageMB()
+{
+    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024;
+    std::ifstream statm("/proc/self/statm");
+    long size, resident;
+    statm >> size >> resident;  // read both values
+    return resident * page_size_kb / 1024;  // MB
+}
+
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
-   CYGNOGeomPath("../geometry/cygno_04_v3_ASCII/"),
+   CYGNOGeomPath("/nfs/cygno/geometry/cygno_04_v3_ASCII/"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    //rockThicknessInner(4.*m),
@@ -77,6 +88,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 {
    
     //UpdateGeometryPath(CYGNOGeomPath); 
+    //G4cout << "Updated geometry path..." << G4endl;
 	
     G4NistManager * nist_manager = G4NistManager::Instance();
    
@@ -403,7 +415,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     // ********* CYGNO volumes form CADMesh *****************************
     //**********************************************************************
     
-    char namestl[70];
+    char namestl[100];
     
     ifstream infile(CYGNOGeomPath.c_str());
     //snprintf(namestl, sizeof(namestl), "%s/Cathode.stl", CYGNOGeomPath.c_str());
@@ -414,14 +426,30 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
 
     snprintf(namestl, sizeof(namestl), "%s/FCSupport.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
-    if (infile.good())
-      mesh_FCSupport = CADMesh::TessellatedMesh::FromSTL(namestl);
+    if (infile.good()){
+           G4cout << "Memory before loading CAD: "
+              << GetMemoryUsageMB() << " MB" << G4endl;
+           mesh_FCSupport = CADMesh::TessellatedMesh::FromSTL(namestl);
+   
+   
+       G4cout << "Memory after loading CAD: "
+              << GetMemoryUsageMB() << " MB" << G4endl;
+   
+       //if (GetMemoryUsageMB() > 1000) {
+       //    G4Exception("CYGNODetectorConstruction::Construct",
+       //                "MEM-01", FatalException,
+       //                "Memory limit exceeded while constructing geometry.");
+       //}
+     }
     else G4cout << "########## WARNING: CAD geometry from "<< namestl  <<" not loaded! ##############" << G4endl;
     
     snprintf(namestl, sizeof(namestl), "%s/FieldCage.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl;
-    if (infile.good())
+    if (infile.good()){
       mesh_FieldCage = CADMesh::TessellatedMesh::FromSTL(namestl);  
+      G4cout << "Memory after loading CAD: "
+              << GetMemoryUsageMB() << " MB" << G4endl;
+    }
     else G4cout << "########## WARNING: CAD geometry from "<< namestl  <<" not loaded! ##############" << G4endl;
     
     snprintf(namestl, sizeof(namestl), "%s/GEM.stl",CYGNOGeomPath.c_str());
@@ -457,8 +485,12 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     snprintf(namestl, sizeof(namestl), "%s/PMMABox.stl",CYGNOGeomPath.c_str());
     G4cout << namestl << G4endl; 
     if (infile.good())
-      mesh_PMMABox = CADMesh::TessellatedMesh::FromSTL(namestl);
-    else G4cout << "########## WARNING: CAD geometry from "<< namestl  <<" not loaded! ##############" << G4endl;
+      {
+	mesh_PMMABox = CADMesh::TessellatedMesh::FromSTL(namestl);
+      G4cout << "Memory after loading CAD: "
+              << GetMemoryUsageMB() << " MB" << G4endl;
+      }
+      else G4cout << "########## WARNING: CAD geometry from "<< namestl  <<" not loaded! ##############" << G4endl;
     
        
     //Cathode made of the same GEM material 
@@ -728,6 +760,7 @@ void CYGNODetectorConstruction::SaveMassAndDensity()
   G4cout << "All volume masses and densities saved"<< G4endl;
 }
 
+//FIXME UpdateGeometry() is NOT MT-safe!!!
 void CYGNODetectorConstruction::UpdateGeometry()
 {
 
