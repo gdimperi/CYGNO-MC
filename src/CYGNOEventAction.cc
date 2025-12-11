@@ -12,6 +12,17 @@
 #include "G4SDManager.hh"
 #include "G4AnalysisManager.hh"
 
+#include <fstream>
+#include <unistd.h>
+size_t GetMemoryUsageMB_2()
+{
+    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024;
+    std::ifstream statm("/proc/self/statm");
+    long size, resident;
+    statm >> size >> resident;  // read both values
+    return resident * page_size_kb / 1024;  // MB
+}
+
 CYGNOEventAction::CYGNOEventAction(CYGNODetectorConstruction* myDC)
   : G4UserEventAction(), fDetector(myDC)
 {
@@ -72,7 +83,7 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
   v_energyDep_hits_QF_geant.clear();
   v_energyDep_hits_NR.clear();
   v_energyDep_hits_NRQF.clear();
-  v_energyDep_hits.clear();
+  v_energyDep_hits_NRQF_geant.clear();
   v_x_hits.clear();
   v_y_hits.clear();
   v_z_hits.clear();
@@ -86,7 +97,7 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
       man->FillNtupleIColumn(2,1,CYGNO_hits);
       man->FillNtupleDColumn(2,2,(*CYGNOHC)[0]->GetKineticEne());
       man->FillNtupleIColumn(2,3,(*CYGNOHC)[0]->GetParticleID());
-      G4cout << "firstParticleE =" << (*CYGNOHC)[0]->GetKineticEne() << "keV" << G4endl;
+      //G4cout << "firstParticleE =" << (*CYGNOHC)[0]->GetKineticEne() << "keV" << G4endl;
       
       for (G4int i=0; i<CYGNO_hits; i++) {
         
@@ -165,4 +176,11 @@ void CYGNOEventAction::EndOfEventAction(const G4Event* evt)
     }
   }
 
+// FIXME - memory control
+size_t mem = GetMemoryUsageMB_2();
+
+    if (mem > 3800) {  // 4 GB limit
+        G4cout << "Memory limit WARNING: " << mem << " MB!! (Limit 4GB)" << G4endl;
+        //G4RunManager::GetRunManager()->AbortRun(true);
+    }
 }
