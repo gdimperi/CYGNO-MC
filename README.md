@@ -1,7 +1,7 @@
 # Introduction
 
 This repository hosts the Monte Carlo simulation for CYGNO experiment.
-The prerequisite to run this simulations is to have ROOT (v6.X.X), GEANT4 (v10.05.X) and CADMesh (v1.1) software installed.
+The prerequisite to run this simulations is to have ROOT (v6.X.X), GEANT4 (v11.2.X) and CADMesh (v2) software installed.
 For more informations about the software see:
 * ROOT:  https://root.cern.ch/ 
 * GEANT4: http://geant4.cern.ch/
@@ -12,57 +12,22 @@ For more informations about the software see:
 
 Setup all the environment variables of ROOT and GEANT4.
 
-## Instructions for Roma 1 cluster
+## Instructions 
 
-In `farm-login.roma1.infn.it` you can do
+In  general you can do
 ```
 ###for ROOT
-alias cmake="/ua9/soft/cmake-3.14.4-install/bin/cmake"
-source /ua9/soft/root-v6-12-06-install/bin/thisroot.sh
+source <path-to-root>/bin/thisroot.sh
 ## for pyROOT
 export LD_LIBRARY_PATH=$PYTHONDIR/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 ## for geant4
-source /ua9/soft/geant4.10.05.p01-install/bin/geant4.sh 
-alias g4cmake="cmake -DGeant4_DIR=/ua9/soft/geant4.10.05.p01-install/lib64/Geant4-10.5.1/ -Dcadmesh_DIR=/ua9/soft/CADMesh-install/lib/cmake/cadmesh-1.1.0/"
-
-## CADMesh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ua9/soft/CADMesh-install-geant10.4.2/lib
-```
-
-## Instructions for Roma 3 cluster
-
-In `ui7-01.roma3.infn.it` you can do
-```
-#####for ROOT
-alias cmake="/storage/local/exp_soft/cygnorm3/cmake-3.14.6-install/bin/cmake"
-source /storage/local/exp_soft/cygnorm3/root-v6-12-06-install/bin/thisroot.sh
-### for pyROOT
-export LD_LIBRARY_PATH=$PYTHONDIR/lib:$LD_LIBRARY_PATH
-export PYTHONPATH=$ROOTSYS/lib:/storage/local/exp_soft/cygnorm3/python2.7-local/lib/python2.7/site-packages:/storage/local/exp_soft/cygnorm3/python2.7-local/python2.7-local/lib64/python2.7/site-packages:$PYTHONPATH
-#### for geant4
-source /storage/local/exp_soft/cygnorm3/geant4-v10.5.1-install/bin/geant4.sh
-alias g4cmake="cmake -DGeant4_DIR=/storage/local/exp_soft/cygnorm3/geant4-v10.5.1-install/lib64/Geant4-10.5.1/ -Dcadmesh_DIR=/storage/local/exp_soft/cygnorm3/CADMesh-install/lib/cmake/cadmesh-1.1.0/"
-
-#### CADMesh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/storage/local/exp_soft/cygnorm3/CADMesh-install/lib/
-```
-
-In general:
-
-```
-source path-to-root-install/bin/thisroot.sh
-source path-to-geant-install/bin/geant.sh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:path-to-CADmesh-install/lib
-```
-
-
-You can put these commands in your `.bashrc` to execute them automatically every time you open a bash shell.
+source <path-to-geant>/bin/geant4.sh 
+alias g4cmake="cmake -DGeant4_DIR=<path-to-geant4>lib64/Geant4-11.X.X/"
 
 # Download CYGNO-MC repository
 
-Download CYGNO and LIME geometry files
+Download geometry files
 ```
 git clone git@github.com:CYGNUS-RD/geometry.git
 ```
@@ -70,10 +35,6 @@ git clone git@github.com:CYGNUS-RD/geometry.git
 Download Geant4 code 
 ```
 git clone git@github.com:CYGNUS-RD/CYGNO-MC.git
-```
-or, if you don't want to configure a ssh key in gitlab use https protocol
-```
-git clone https://github.com/CYGNUS-RD/CYGNO-MC.git
 ```
 
 Now you have downloaded the code in `CYGNO-MC/` directory
@@ -128,7 +89,7 @@ qstat -u $USER
 
 Example to split 100M events into 100 jobs:
 ```
-python scripts/submit_jobs_rm3.py -m CYGNOtest_surface_gamma --tag ext_gamma -n 100000000 -e 1000000 --builddir /storage/local/home/cygnorm3/dimperio/CYGNO/CYGNO-MC-build/
+python scripts/submit_jobs_lngs.py -m CYGNOtest_surface_gamma --tag ext_gamma -n 100000000 -e 1000000 --builddir ../CYGNO-MC-build/ --outdir ./
 ```
 
 Options meaning:
@@ -138,10 +99,10 @@ Options meaning:
 * `-e` events per job
 * `--tag` useful tag to identify the simulation. Output will be saved in a directory with this name
 * `--builddir` path to dir containing CYGNO executable
+* `--outdir` out path
 
-By default the output is saved in `/storage/DATA-03/cygnorm3/CYGNO-MC-data/pbs_outputs/<tag-string>`
+The output is saved in `<outdir>/pbs_outputs/<tag-string>`
 Also other directories will be created in `pbs_logs` and  `pbs_workdir` folders, containing respectively the logs and the copy of the macro for each job.
-
 
 ## Submit jobs with multiple macro configurations (for radioactive decays)
 
