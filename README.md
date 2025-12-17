@@ -24,7 +24,7 @@ export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 ## for geant4
 source <path-to-geant>/bin/geant4.sh 
 alias g4cmake="cmake -DGeant4_DIR=<path-to-geant4>lib64/Geant4-11.X.X/"
-
+```
 # Download CYGNO-MC repository
 
 Download geometry files
