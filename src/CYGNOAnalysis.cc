@@ -261,6 +261,7 @@ void CYGNOAnalysis::InitRun(G4String FileName="out", CYGNODetectorConstruction* 
     d_list.clear();
     d_list.push_back(std::make_pair("energyDep",&energyDep));
     d_list.push_back(std::make_pair("energyDep_QF",&energyDep_QF));
+    d_list.push_back(std::make_pair("energyDep_QF_geant",&energyDep_QF_geant));
     d_list.push_back(std::make_pair("energyDep_NR",&energyDep_NR));
     d_list.push_back(std::make_pair("energyDep_NRQF",&energyDep_NRQF));
     d_list.push_back(std::make_pair("energyDep_NRQF_geant",&energyDep_NRQF_geant));
