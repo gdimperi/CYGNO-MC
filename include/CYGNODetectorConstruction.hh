@@ -141,6 +141,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4RotationMatrix rot_cad_shield;
     G4ThreeVector tr_cad_shield;
     
+    G4ThreeVector tr_source;
+    G4ThreeVector tr_collimator;
+    
     
     //Solids and meshes
     G4VSolid * cad_LIMEDetectorBody_solid;
@@ -207,6 +210,9 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume * Control_Room_log;
     G4LogicalVolume * Rock_gallery_log;
     
+    G4LogicalVolume * source_log;
+    G4LogicalVolume * collimator_log;
+    
     // Physical volumes
     G4VPhysicalVolume* WorldVolume_phys;
     G4VPhysicalVolume* productionRockThinTube_phys;
@@ -258,5 +264,7 @@ class CYGNODetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume * Control_Room_phys;
     G4VPhysicalVolume * Rock_gallery_phys;     
 
+    G4VPhysicalVolume * source_phys;
+    G4VPhysicalVolume * collimator_phys;
 
 };

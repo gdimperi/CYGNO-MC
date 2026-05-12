@@ -49,7 +49,7 @@
 //#include "CYGNOBiasMultiParticleChangeCrossSection.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
-   CYGNOGeomPath("../geometry_ASCII/lime_new"),
+   CYGNOGeomPath("../geometry/lime_new_ASCII"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    //rockThicknessInner(4.*m),
@@ -805,6 +805,38 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
       cad_LIMEinternalStructure_logical->SetVisAttributes(CYGNOMaterials->VisAttributes("Perspex"));
     }
   
+    //source 55Fe
+    G4double source_Odiam = 10.*mm;
+    G4double source_thick = 0.01*mm;
+      
+    name_phys="source";
+    name_log=name_phys+"_log";
+    name_solid=name_phys+"_solid";
+    G4Tubs* source = new G4Tubs(name_solid,0.,0.5*source_Odiam,source_thick,0.0 * deg,  360.0 * deg);
+    source_log = new G4LogicalVolume(source,CYGNOMaterials->Material("Fe"),name_log,0,0,0);
+    
+    //source collimator
+    G4double collimator_Odiam = 12.*mm;
+    G4double collimator_thick = 2*mm;
+
+    G4Tubs* collimator_full = new G4Tubs("collimator_full_solid",0.,0.5*collimator_Odiam,collimator_thick,0.*deg, 360.*deg);
+    
+    //source collimator_hole
+    G4double collimator_hole_x = 0.1*mm;
+    G4double collimator_hole_y = 2*mm;
+    G4double collimator_hole_z = 10*mm;
+    G4Box* collimator_hole = new G4Box("collimator_hole_solid",0.5*collimator_hole_x,0.5*collimator_hole_y,0.5*collimator_hole_z);
+    
+    name_phys="collimator";
+    name_log=name_phys+"_log";
+    name_solid=name_phys+"_solid";
+    G4SubtractionSolid* collimator = new G4SubtractionSolid(name_solid, 
+		    collimator_full,
+		    collimator_hole
+		    );	
+    
+    collimator_log = new G4LogicalVolume(collimator,CYGNOMaterials->Material("Fe"),name_log,0,0,0);
+
     //TPC gas
     G4double TPC_x = 635.*mm;//640.*mm;
     G4double TPC_y = 495.*mm; //500
@@ -1110,7 +1142,19 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
         	    cad_LIMEendPMT_logical,"cad_LIMEendPMT_physical", AirBox_log, false, 0, true);
     }
     tr=G4ThreeVector(0.,0.,0.);
+    tr_collimator=G4ThreeVector(0.,0.5*TPC_y+collimator_thick,0.);
+    tr_source=G4ThreeVector(0.,collimator_thick+0.5*source_thick,0.);
+    G4RotationMatrix* rot_source = new G4RotationMatrix; 
+    rot_source->rotateX(90.*deg);  
+    
     //FIXME
+    //source 55Fe
+    source_phys = new G4PVPlacement(G4Transform3D(*rot_source,tr_tpc-tr_airbox+tr_collimator+tr_source),
+		    source_log,"source", AirBox_log, false, 0, true);
+    //collimator source 55Fe
+    collimator_phys = new G4PVPlacement(G4Transform3D(*rot_source,tr_tpc-tr_airbox+tr_collimator),
+		    collimator_log,"collimator", AirBox_log, false, 0, true);
+
     TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr_tpc-tr_airbox),
       	    TPC_log,"TPC_gas", AirBox_log, false, 0, true);
     
