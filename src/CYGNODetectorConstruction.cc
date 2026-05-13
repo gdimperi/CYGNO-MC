@@ -49,7 +49,7 @@
 //#include "CYGNOBiasMultiParticleChangeCrossSection.hh"
 
 CYGNODetectorConstruction::CYGNODetectorConstruction() :
-   CYGNOGeomPath("../geometry/lime_new_ASCII"),
+   CYGNOGeomPath("../geometry/lime_new_ASCII/"),
    rockThicknessOuter(-999*m),
    rockThicknessInner(-999*m),
    //rockThicknessInner(4.*m),
