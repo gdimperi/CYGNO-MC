@@ -961,7 +961,7 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     G4ThreeVector tr_airbox;
     tr_airbox = G4ThreeVector(8*cm,5*cm,0);
     G4ThreeVector tr_tpc;
-    tr_tpc=G4ThreeVector(-(TPC_x/2.-CYGNO_x/2.-60.*mm),1.5*cm,0.);
+    tr_tpc=G4ThreeVector(-(TPC_x/2.-CYGNO_x/2.-55.*mm),1.5*cm,0.);
     //tr_tpc = G4ThreeVector(0.,0.,0.);
     G4ThreeVector tr_shield3;
     tr_shield3 = G4ThreeVector(20*cm,10*cm,0);
