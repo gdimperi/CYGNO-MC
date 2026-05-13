@@ -1,0 +1,39 @@
+#============================
+# RADIOACTIVE DECAY TEST
+#============================
+
+# Particle: Fe-55 (Z=26, A=55, I=0)
+/gps/particle ion
+/gps/ion 26 55 0
+
+# Energy: small non-zero to trigger step
+/gps/energy 0 keV
+
+# Position: inside volume "camera"
+/gps/pos/type Volume
+/gps/pos/confine source
+/gps/pos/shape Para
+/gps/pos/centre -1.75 26.75 0. cm
+/gps/pos/halfx 5 mm
+/gps/pos/halfy 2 mm
+/gps/pos/halfz 5 mm
+
+
+# Physics: radioactive decay enabled
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+
+/run/initialize
+# Verbose for tracking steps
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+# Output file
+/CYGNO/outfile Fe55_test
+
+# Seeds (optional)
+/random/setSeeds 12345 67890
+
+# Generate 1 event
+/run/beamOn 10000000
+
