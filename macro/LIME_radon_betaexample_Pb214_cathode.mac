@@ -1,0 +1,35 @@
+# Setup particle source Bi-214
+/gps/particle ion
+/gps/ion 83 214 0 0        # Z, A, Q=0 (charge), excitation 
+
+# 
+/gps/energy 0
+
+# Distribuzione spaziale: linea sull'asse X, da -25 a 25 cm, a Y=0, Z=0
+/gps/pos/type Volume
+/gps/pos/shape Para #(parallelepipedo rettangolo)
+
+#/gps/pos/confine CYGNO_gas
+/gps/pos/centre -24. 0. 0. cm  #Cathode position 
+/gps/pos/halfx 0.1 mm  ## a thin layer at the surface of the cathode
+/gps/pos/halfy 157.5 mm
+/gps/pos/halfz 157.5 mm 
+
+# not necessary, simulating ions in a thin layer just aoutside the cathode
+#/gps/pos/confine cad_Cathode_logical 
+
+/CYGNO/stepmax 0.1 mm
+
+/run/initialize
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+#Output file name
+/CYGNO/outfile LIME_radon_Po214_cathode
+/random/setSeeds 654398224 471982701
+
+#Seleziona il numero di particelle
+/run/beamOn 200
