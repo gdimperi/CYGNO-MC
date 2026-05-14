@@ -1173,11 +1173,11 @@ G4VPhysicalVolume* CYGNODetectorConstruction::Construct()
     
     //FIXME
     //source 55Fe
-    source_case_phys = new G4PVPlacement(G4Transform3D(*rot_source,tr_tpc-tr_airbox+tr_source_case), source_case_log,"source_case", AirBox_log, false, 0, true);
+    source_case_phys = new G4PVPlacement(G4Transform3D(*rot_source,-1*tr_CYGNO_gas_1-tr_airbox+tr_source_case), source_case_log,"source_case", AirBox_log, false, 0, true);
 
-    source_phys = new G4PVPlacement(G4Transform3D(*rot_source,tr_tpc-tr_airbox+tr_collimator+tr_source), source_log,"source", AirBox_log, false, 0, true);
+    source_phys = new G4PVPlacement(G4Transform3D(*rot_source,-1*tr_CYGNO_gas_1-tr_airbox+tr_collimator+tr_source), source_log,"source", AirBox_log, false, 0, true);
     //collimator source 55Fe
-    collimator_phys = new G4PVPlacement(G4Transform3D(*rot_source,tr_tpc-tr_airbox+tr_collimator),
+    collimator_phys = new G4PVPlacement(G4Transform3D(*rot_source,-1*tr_CYGNO_gas_1-tr_airbox+tr_collimator),
 		    collimator_log,"collimator", AirBox_log, false, 0, true);
 
     TPC_phys = new G4PVPlacement(G4Transform3D(rot,tr_tpc-tr_airbox),
